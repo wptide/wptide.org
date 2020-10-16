@@ -1,9 +1,8 @@
-const YAML = require('yamljs');
 const { summarise } = require('swagger-routes-express');
+const {apiSpec} = require('../util/apiSpec');
 
 const schemaSummary = (req, res) => {
-    const apiSpec = YAML.load( 'tideapi.yml' );
-    const apiSummary = summarise(apiSpec);
+    const apiSummary = summarise(apiSpec());
     res.json(apiSummary);
 }
 

@@ -35,8 +35,7 @@
     "@google-cloud/functions-framework": "^1.7.1",
     "crypto-js": "^4.0.0",
     "dotenv-flow": "^3.2.0",
-    "jsonwebtoken": "^8.5.1",
-    "openapi-faas-mapper": "file:../openapi-faas-mapper"
+    "jsonwebtoken": "^8.5.1"
   },
   "devDependencies": {
     "eslint": "^7.11.0",
