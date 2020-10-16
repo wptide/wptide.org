@@ -1,0 +1,378 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: OpenAPI Cloud Functions
+  description: >-
+    Check [Tide](http://wptide.org) audit reports for plugins and themes
+  contact:
+    email: technology@xwp.co
+  license:
+    name: MIT
+    url: 'https://opensource.org/licenses/MIT'
+  x-publish-docs: true
+servers:
+  - url: /api/v1
+  - url: 'http://localhost:8080'
+  - url: 'https://api.wptide.org/'
+  - url: 'https://dev-api.wptide.org'
+tags:
+  - name: audit
+    description: Code audit reports
+paths:
+  /:
+    get:
+      tags:
+        - root
+      summary: Schema summary
+      description: >-
+        Returns the API schema endpoints.
+      operationId: schemaSummary
+      responses:
+        200:
+          description: Success.
+          content:
+            application/json:
+              schema:
+                type: object
+  /schema:
+    get:
+      tags:
+        - root
+      summary: Full schema
+      description: >-
+        Returns the API schema in the [OpenAPI
+        v3](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md)
+        Specification (OAS) format.
+      operationId: schema
+      responses:
+        200:
+          description: Success.
+          content:
+            application/json:
+              schema:
+                type: object
+  '/audit/{project_client}/{project_type}/{project_slug}/{version}':
+    get:
+      tags:
+        - audit
+      summary: Get audit info for a project
+      description: Get a theme or plugin audit for a project client, slug and version.
+      x-controller: getAudit
+      operationId: getAudit
+      parameters:
+        - in: path
+          name: project_client
+          description: The Tide API user login name representing a project client.
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: project_type
+          description: The project type.
+          required: true
+          schema:
+            type: string
+            enum:
+              - plugin
+              - theme
+        - in: path
+          name: project_slug
+          description: The taxonomy term representing the project slug.
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: version
+          description: The project version number.
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Audit'
+        401:
+          description: Access token is missing or invalid.
+        403:
+          description: Authorization failed.
+        404:
+          description: Audit not found.
+      security:
+        - jwtBearerAuth: []
+        - {}
+    post:
+      tags:
+        - audit
+      summary: Submit audit info for a project
+      description: Submit a theme or plugin audit for a project client, slug and version.
+      x-controller: postAudit
+      operationId: postAudit
+      parameters:
+        - in: path
+          name: project_client
+          description: The Tide API user login name representing a project client.
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: project_type
+          description: The project type.
+          required: true
+          schema:
+            type: string
+            enum:
+              - plugin
+              - theme
+        - in: path
+          name: project_slug
+          description: The taxonomy term representing the project slug.
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: version
+          description: The project version number.
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: callback
+          description: Callback URL for audit status updates
+          schema:
+            type: string
+            format: uri
+      responses:
+        200:
+          description: Success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Audit'
+        401:
+          description: Access token is missing or invalid.
+        403:
+          description: Authorization failed.
+        404:
+          description: Project not found.
+      security:
+        - jwtBearerAuth: []
+    delete:
+      tags:
+        - audit
+      summary: Delete audit info for a project
+      description: Delete a theme or plugin audit for a project client, slug and version.
+      x-controller: deleteAudit
+      operationId: deleteAudit
+      parameters:
+        - in: path
+          name: project_client
+          description: The Tide API user login name representing a project client.
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: project_type
+          description: The project type.
+          required: true
+          schema:
+            type: string
+            enum:
+              - plugin
+              - theme
+        - in: path
+          name: project_slug
+          description: The taxonomy term representing the project slug.
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: version
+          description: The project version number.
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Success.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  project_client:
+                    type: string
+                  project_type:
+                    type: string
+                    enum:
+                      - plugin
+                      - theme
+                  project_slug:
+                    type: string
+                  version:
+                    type: string
+                  audit_project:
+                    type: integer
+        401:
+          description: Access token is missing or invalid.
+        403:
+          description: Authorization failed.
+        404:
+          description: Audit not found.
+      security:
+        - jwtBearerAuth: []
+components:
+  securitySchemes:
+    jwtBearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Audit:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        date:
+          type: string
+          format: date-time
+        modified:
+          type: string
+          format: date-time
+        title:
+          type: string
+        content:
+          type: string
+        audit_project:
+          type: integer
+          format: int64
+        visibility:
+          type: string
+          enum: ["public", "private"]
+        version:
+          type: string
+        checksum:
+          type: string
+        project_type:
+          type: string
+          enum: ["plugin", "theme"]
+        source_url:
+          type: string
+          format: uri
+        source_type:
+          type: string
+          enum: ["zip", "git"]
+        code_info:
+          type: object
+        cloc:
+          type: object
+          properties:
+            css:
+              $ref: '#/components/schemas/Cloc'
+            javascript:
+              $ref: '#/components/schemas/Cloc'
+            php:
+              $ref: '#/components/schemas/Cloc'
+            plain_text:
+              $ref: '#/components/schemas/Cloc'
+            sum:
+              $ref: '#/components/schemas/Cloc'
+
+        standards:
+          type: array
+          items:
+            type: string
+            enum: ['phpcs_wordpress', 'phpcs_phpcompatibility', 'lighthouse']
+        reports:
+          type: object
+          properties:
+            phpcs_wordpress:
+              $ref: '#/components/schemas/PHPCSWPReport'
+            phpcs_phpcompatibility:
+              $ref: '#/components/schemas/PHPCSPHPReport'
+            lighthouse:
+              $ref: '#/components/schemas/LighthouseReport'
+        user_role:
+          type: integer
+          description: User Role
+          format: string
+    Cloc:
+      type: object
+      properties:
+        blank:
+          type: integer
+        comment:
+          type: integer
+        code:
+          type: integer
+        n_files:
+          type: integer
+
+    PHPCSWPReport:
+      type: object
+      properties:
+        summary:
+          type: object
+          properties:
+            files:
+              type: object
+              additionalProperties:
+                type: object
+                example:
+                  errors:
+                    type: integer
+                  warnings:
+                    type: integer
+            files_count:
+              type: integer
+            errors_count:
+              type: integer
+            warnings_count:
+              type: integer
+
+    PHPCSPHPReport:
+      allOf:
+        - $ref: '#/components/schemas/PHPCSWPReport'
+        - type: object
+          properties:
+            compatible_versions:
+              type: array
+              items:
+                type: string
+                example: 5.2
+
+    LighthouseReport:
+      type: object
+      properties:
+        summary:
+          type: object
+          properties:
+            categories:
+              type: object
+              properties:
+                accessibility:
+                  $ref: '#/components/schemas/LighthouseSummaryReport'
+                best_practices:
+                  $ref: '#/components/schemas/LighthouseSummaryReport'
+                performance:
+                  $ref: '#/components/schemas/LighthouseSummaryReport'
+                pwa:
+                  $ref: '#/components/schemas/LighthouseSummaryReport'
+                seo:
+                  $ref: '#/components/schemas/LighthouseSummaryReport'
+
+    LighthouseSummaryReport:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        id:
+          type: string
+        score:
+          type: number
+          example: 0.7
