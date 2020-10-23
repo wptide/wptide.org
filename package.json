@@ -32,7 +32,9 @@
   },
   "homepage": "https://github.com/ivankruchkoff/tide-faas#readme",
   "dependencies": {
+    "@google-cloud/datastore": "^6.2.0",
     "@google-cloud/functions-framework": "^1.7.1",
+    "@google-cloud/pubsub": "^2.6.0",
     "crypto-js": "^4.0.0",
     "dotenv-flow": "^3.2.0",
     "jsonwebtoken": "^8.5.1"
@@ -41,6 +43,7 @@
     "eslint": "^7.11.0",
     "express": "^4.17.1",
     "husky": "^4.3.0",
+    "lint-staged": "^10.4.2",
     "stylelint": "^13.7.2",
     "swagger-routes-express": "^3.2.1",
     "yamljs": "^0.3.0"
