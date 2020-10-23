@@ -1,0 +1,451 @@
+{
+    // ID corresponding to this unique version of this unique project
+    // E.g. a version of a theme from a repo, a repo at a particular commit, a repo at a particular commit and tag
+    "id": "46379064695a233492b04d0a5dfb42eb48a5c49a1b399051e1d8731d91e310a4",
+
+    // Seconds since epoch
+    "created_datetime": "1603164799",
+
+    // When last update was made e.g. last report came in.
+    "last_modified_datetime": "1603249803",
+
+    // ID corresponding to this project, without any versioning (theme version / svn revision or tag / git commit hash )
+    "project_id": "0312964caec3c596e5f4591858c81805d4bf9df8c9973675d86d1ef50dda77fd",
+
+    // Theme / plugin version or commit hash if git, svn revision if svn
+    "version": "2.1",
+
+    // Sha256 sum of zip file, or we archive the content and hash it?
+    "checksum": "d82d8eda04b37dd32e26cb5f9e9c91ddd42750bef999ff49223bb48c327cd4f9",
+
+    // Theme or Plugin
+    "project_type": "theme",
+
+    // If git, link to the commit?
+    "source_url": "https://downloads.wordpress.org/theme/twentyseventeen.2.1.zip",
+
+    // Enum zip, git, svn
+    "source_type": "zip",
+    "standards": [
+        // Only added as they are completed
+        "phpcs_wordpress",
+        "phpcs_phpcompatibility",
+        "lighthouse",
+        "cloc" // if we even want this?
+    ],
+    "audit_summary": {
+        // If we want any highlevel info for e.g. github badges.
+    },
+    "reports": {
+        "cloc": {
+            "css": {
+                "blank": 1291,
+                "comment": 515,
+                "code": 5751,
+                "n_files": 8
+            },
+            "javascript": {
+                "blank": 164,
+                "comment": 254,
+                "code": 693,
+                "n_files": 7
+            },
+            "php": {
+                "blank": 473,
+                "comment": 976,
+                "code": 2275,
+                "n_files": 35
+            },
+            "plain text": {
+                "blank": 40,
+                "comment": 0,
+                "code": 81,
+                "n_files": 1
+            },
+            "sum": {
+                "blank": 1968,
+                "comment": 1745,
+                "code": 8800,
+                "n_files": 51
+            }
+        },
+        "phpcs_wordpress": {
+            "summary": {
+                "files": {
+                    "404.php": {
+                        "errors": 2,
+                        "warnings": 0
+                    },
+                    "archive.php": {
+                        "errors": 0,
+                        "warnings": 0
+                    },
+                    "comments.php": {
+                        "errors": 4,
+                        "warnings": 0
+                    },
+                    "footer.php": {
+                        "errors": 0,
+                        "warnings": 0
+                    },
+                    "front-page.php": {
+                        "errors": 0,
+                        "warnings": 0
+                    },
+                    "functions.php": {
+                        "errors": 5,
+                        "warnings": 4
+                    },
+                    "header.php": {
+                        "errors": 1,
+                        "warnings": 0
+                    },
+                    "inc/back-compat.php": {
+                        "errors": 8,
+                        "warnings": 1
+                    },
+                    "inc/color-patterns.php": {
+                        "errors": 0,
+                        "warnings": 0
+                    },
+                    "inc/custom-header.php": {
+                        "errors": 0,
+                        "warnings": 0
+                    },
+                    "inc/customizer.php": {
+                        "errors": 0,
+                        "warnings": 0
+                    },
+                    "inc/icon-functions.php": {
+                        "errors": 0,
+                        "warnings": 1
+                    },
+                    "inc/template-functions.php": {
+                        "errors": 0,
+                        "warnings": 0
+                    },
+                    "inc/template-tags.php": {
+                        "errors": 14,
+                        "warnings": 0
+                    },
+                    "index.php": {
+                        "errors": 1,
+                        "warnings": 0
+                    },
+                    "page.php": {
+                        "errors": 0,
+                        "warnings": 0
+                    },
+                    "search.php": {
+                        "errors": 4,
+                        "warnings": 0
+                    },
+                    "searchform.php": {
+                        "errors": 5,
+                        "warnings": 0
+                    },
+                    "sidebar.php": {
+                        "errors": 0,
+                        "warnings": 0
+                    },
+                    "single.php": {
+                        "errors": 0,
+                        "warnings": 0
+                    },
+                    "template-parts/footer/footer-widgets.php": {
+                        "errors": 0,
+                        "warnings": 0
+                    },
+                    "template-parts/footer/site-info.php": {
+                        "errors": 2,
+                        "warnings": 0
+                    },
+                    "template-parts/header/header-image.php": {
+                        "errors": 0,
+                        "warnings": 0
+                    },
+                    "template-parts/header/site-branding.php": {
+                        "errors": 3,
+                        "warnings": 0
+                    },
+                    "template-parts/navigation/navigation-top.php": {
+                        "errors": 5,
+                        "warnings": 0
+                    },
+                    "template-parts/page/content-front-page-panels.php": {
+                        "errors": 2,
+                        "warnings": 0
+                    },
+                    "template-parts/page/content-front-page.php": {
+                        "errors": 1,
+                        "warnings": 0
+                    },
+                    "template-parts/page/content-page.php": {
+                        "errors": 0,
+                        "warnings": 0
+                    },
+                    "template-parts/post/content-audio.php": {
+                        "errors": 4,
+                        "warnings": 0
+                    },
+                    "template-parts/post/content-excerpt.php": {
+                        "errors": 1,
+                        "warnings": 0
+                    },
+                    "template-parts/post/content-gallery.php": {
+                        "errors": 4,
+                        "warnings": 0
+                    },
+                    "template-parts/post/content-image.php": {
+                        "errors": 3,
+                        "warnings": 0
+                    },
+                    "template-parts/post/content-none.php": {
+                        "errors": 4,
+                        "warnings": 0
+                    },
+                    "template-parts/post/content-video.php": {
+                        "errors": 4,
+                        "warnings": 0
+                    },
+                    "template-parts/post/content.php": {
+                        "errors": 3,
+                        "warnings": 0
+                    }
+                },
+                "files_count": 35,
+                "errors_count": 80,
+                "warnings_count": 6
+            }
+        },
+        "phpcs_phpcompatibility": {
+            "summary": {
+                "files": {
+                    "404.php": {
+                        "errors": 0,
+                        "warnings": 0
+                    },
+                    "archive.php": {
+                        "errors": 0,
+                        "warnings": 0
+                    },
+                    "comments.php": {
+                        "errors": 0,
+                        "warnings": 0
+                    },
+                    "footer.php": {
+                        "errors": 0,
+                        "warnings": 0
+                    },
+                    "front-page.php": {
+                        "errors": 0,
+                        "warnings": 0
+                    },
+                    "functions.php": {
+                        "errors": 0,
+                        "warnings": 0
+                    },
+                    "header.php": {
+                        "errors": 0,
+                        "warnings": 0
+                    },
+                    "inc/back-compat.php": {
+                        "errors": 0,
+                        "warnings": 0
+                    },
+                    "inc/color-patterns.php": {
+                        "errors": 0,
+                        "warnings": 0
+                    },
+                    "inc/custom-header.php": {
+                        "errors": 0,
+                        "warnings": 0
+                    },
+                    "inc/customizer.php": {
+                        "errors": 0,
+                        "warnings": 0
+                    },
+                    "inc/icon-functions.php": {
+                        "errors": 0,
+                        "warnings": 0
+                    },
+                    "inc/template-functions.php": {
+                        "errors": 0,
+                        "warnings": 0
+                    },
+                    "inc/template-tags.php": {
+                        "errors": 0,
+                        "warnings": 0
+                    },
+                    "index.php": {
+                        "errors": 0,
+                        "warnings": 0
+                    },
+                    "page.php": {
+                        "errors": 0,
+                        "warnings": 0
+                    },
+                    "search.php": {
+                        "errors": 0,
+                        "warnings": 0
+                    },
+                    "searchform.php": {
+                        "errors": 0,
+                        "warnings": 0
+                    },
+                    "sidebar.php": {
+                        "errors": 0,
+                        "warnings": 0
+                    },
+                    "single.php": {
+                        "errors": 0,
+                        "warnings": 0
+                    },
+                    "template-parts/footer/footer-widgets.php": {
+                        "errors": 0,
+                        "warnings": 0
+                    },
+                    "template-parts/footer/site-info.php": {
+                        "errors": 0,
+                        "warnings": 0
+                    },
+                    "template-parts/header/header-image.php": {
+                        "errors": 0,
+                        "warnings": 0
+                    },
+                    "template-parts/header/site-branding.php": {
+                        "errors": 0,
+                        "warnings": 0
+                    },
+                    "template-parts/navigation/navigation-top.php": {
+                        "errors": 0,
+                        "warnings": 0
+                    },
+                    "template-parts/page/content-front-page-panels.php": {
+                        "errors": 0,
+                        "warnings": 0
+                    },
+                    "template-parts/page/content-front-page.php": {
+                        "errors": 0,
+                        "warnings": 0
+                    },
+                    "template-parts/page/content-page.php": {
+                        "errors": 0,
+                        "warnings": 0
+                    },
+                    "template-parts/post/content-audio.php": {
+                        "errors": 0,
+                        "warnings": 0
+                    },
+                    "template-parts/post/content-excerpt.php": {
+                        "errors": 0,
+                        "warnings": 0
+                    },
+                    "template-parts/post/content-gallery.php": {
+                        "errors": 0,
+                        "warnings": 0
+                    },
+                    "template-parts/post/content-image.php": {
+                        "errors": 0,
+                        "warnings": 0
+                    },
+                    "template-parts/post/content-none.php": {
+                        "errors": 0,
+                        "warnings": 0
+                    },
+                    "template-parts/post/content-video.php": {
+                        "errors": 0,
+                        "warnings": 0
+                    },
+                    "template-parts/post/content.php": {
+                        "errors": 0,
+                        "warnings": 0
+                    }
+                },
+                "files_count": 35,
+                "errors_count": 0,
+                "warnings_count": 0
+            },
+            "compatible_versions": [
+                "5.2",
+                "5.3",
+                "5.4",
+                "5.5",
+                "5.6",
+                "7.0",
+                "7.1",
+                "7.2"
+            ]
+        },
+        "lighthouse": {
+            "summary": {
+                "categories": {
+                    "accessibility": {
+                        "title": "Accessibility",
+                        "description": "These checks highlight opportunities to [improve the accessibility of your web app](https://developers.google.com/web/fundamentals/accessibility). Only a subset of accessibility issues can be automatically detected so manual testing is also encouraged.",
+                        "id": "accessibility",
+                        "score": 0.9
+                    },
+                    "best-practices": {
+                        "title": "Best Practices",
+                        "description": "",
+                        "id": "best-practices",
+                        "score": 0.93
+                    },
+                    "performance": {
+                        "title": "Performance",
+                        "description": "",
+                        "id": "performance",
+                        "score": 0.96
+                    },
+                    "pwa": {
+                        "title": "Progressive Web App",
+                        "description": "These checks validate the aspects of a Progressive Web App, as specified by the baseline [PWA Checklist](https://developers.google.com/web/progressive-web-apps/checklist).",
+                        "id": "pwa",
+                        "score": 0.5
+                    },
+                    "seo": {
+                        "title": "SEO",
+                        "description": "These checks ensure that your page is optimized for search engine results ranking. There are additional factors Lighthouse does not check that may affect your search ranking. [Learn more](https://support.google.com/webmasters/answer/35769).",
+                        "id": "seo",
+                        "score": 0.7
+                    }
+                }
+            }
+        }
+    },
+    "links": {
+        "self": "https://wptide.org/api/tide/v1/audit/46379064695a233492b04d0a5dfb42eb48a5c49a1b399051e1d8731d91e310a4",
+        "audit_project": "https://wptide.org/api/tide/v1/project/0312964caec3c596e5f4591858c81805d4bf9df8c9973675d86d1ef50dda77fd",
+        "related_audits": [
+            // Urls of all different versions of this project excluding this one, can be null if this is only one
+        ],
+        "reports": [
+            {
+                "standard": "phpcs_wordpress",
+                "type": "raw",
+                "rel": "download",
+                // Signed expirable URLs: https://cloud.google.com/storage/docs/access-control/signed-urls
+                "href": "https://wptide.org/api/tide/v1/report/87735/raw/phpcs_wordpress"
+            },
+            {
+                "standard": "phpcs_phpcompatibility",
+                "type": "raw",
+                "rel": "download",
+                "href": "https://wptide.org/api/tide/v1/report/87735/raw/phpcs_phpcompatibility"
+            },
+            {
+                "standard": "phpcs_phpcompatibility",
+                "type": "parsed",
+                "rel": "download",
+                "href": "https://wptide.org/api/tide/v1/report/87735/parsed/phpcs_phpcompatibility"
+            },
+            {
+                "standard": "lighthouse",
+                "type": "raw",
+                "rel": "download",
+                "href": "https://wptide.org/api/tide/v1/report/87735/raw/lighthouse"
+            }
+        ]
+    }
+}
