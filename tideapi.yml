@@ -51,7 +51,7 @@ paths:
             application/json:
               schema:
                 type: object
-  '/audit/{project_client}/{project_type}/{project_slug}/{version}':
+  '/audit/wporg/{project_type}/{project_slug}/{version}':
     get:
       tags:
         - audit
@@ -61,12 +61,6 @@ paths:
       operationId: getAudit
       parameters:
         - in: path
-          name: project_client
-          description: The Tide API user login name representing a project client.
-          required: true
-          schema:
-            type: string
-        - in: path
           name: project_type
           description: The project type.
           required: true
@@ -94,141 +88,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Audit'
-        401:
-          description: Access token is missing or invalid.
-        403:
-          description: Authorization failed.
         404:
           description: Audit not found.
       security:
-        - jwtBearerAuth: []
         - {}
-    post:
-      tags:
-        - audit
-      summary: Submit audit info for a project
-      description: Submit a theme or plugin audit for a project client, slug and version.
-      x-controller: postAudit
-      operationId: postAudit
-      parameters:
-        - in: path
-          name: project_client
-          description: The Tide API user login name representing a project client.
-          required: true
-          schema:
-            type: string
-        - in: path
-          name: project_type
-          description: The project type.
-          required: true
-          schema:
-            type: string
-            enum:
-              - plugin
-              - theme
-        - in: path
-          name: project_slug
-          description: The taxonomy term representing the project slug.
-          required: true
-          schema:
-            type: string
-        - in: path
-          name: version
-          description: The project version number.
-          required: true
-          schema:
-            type: string
-        - in: query
-          name: callback
-          description: Callback URL for audit status updates
-          schema:
-            type: string
-            format: uri
-      responses:
-        200:
-          description: Success.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Audit'
-        401:
-          description: Access token is missing or invalid.
-        403:
-          description: Authorization failed.
-        404:
-          description: Project not found.
-      security:
-        - jwtBearerAuth: []
-    delete:
-      tags:
-        - audit
-      summary: Delete audit info for a project
-      description: Delete a theme or plugin audit for a project client, slug and version.
-      x-controller: deleteAudit
-      operationId: deleteAudit
-      parameters:
-        - in: path
-          name: project_client
-          description: The Tide API user login name representing a project client.
-          required: true
-          schema:
-            type: string
-        - in: path
-          name: project_type
-          description: The project type.
-          required: true
-          schema:
-            type: string
-            enum:
-              - plugin
-              - theme
-        - in: path
-          name: project_slug
-          description: The taxonomy term representing the project slug.
-          required: true
-          schema:
-            type: string
-        - in: path
-          name: version
-          description: The project version number.
-          required: true
-          schema:
-            type: string
-      responses:
-        200:
-          description: Success.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  project_client:
-                    type: string
-                  project_type:
-                    type: string
-                    enum:
-                      - plugin
-                      - theme
-                  project_slug:
-                    type: string
-                  version:
-                    type: string
-                  audit_project:
-                    type: integer
-        401:
-          description: Access token is missing or invalid.
-        403:
-          description: Authorization failed.
-        404:
-          description: Audit not found.
-      security:
-        - jwtBearerAuth: []
 components:
-  securitySchemes:
-    jwtBearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
   schemas:
     Audit:
       type: object
