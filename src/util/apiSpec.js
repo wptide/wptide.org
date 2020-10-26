@@ -1,5 +1,4 @@
 const YAML = require('yamljs');
-const apiSpec = () => {
-    return YAML.load( 'tideapi.yml' );
-}
+
+const apiSpec = () => YAML.load('tideapi.yml');
 exports.apiSpec = apiSpec;
