@@ -91,6 +91,7 @@ paths:
         404:
           description: Audit not found.
       security:
+        - jwtBearerAuth: []
         - {}
 components:
   schemas:
