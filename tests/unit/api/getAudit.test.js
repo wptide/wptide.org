@@ -1,6 +1,9 @@
 const getAudit = require('../../../src/api/getAudit');
 
 describe('Main index entry point', () => {
+    const res = {
+        json: jest.fn(),
+    };
     beforeEach(() => {
     });
 
@@ -17,6 +20,15 @@ describe('Main index entry point', () => {
                     },
                 });
             }).toThrow();
+            expect(() => {
+                getAudit({
+                    params: {
+                        project_type: 'theme',
+                        project_slug: 'fooslug',
+                        version: '1',
+                    },
+                }, res);
+            }).not.toThrow();
         });
     });
 });
