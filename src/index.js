@@ -1,4 +1,3 @@
-// const { apiMapper } = require( 'openapi-faas-mapper' );
 const { connector } = require('swagger-routes-express');
 const YAML = require('yamljs');
 const express = require('express');

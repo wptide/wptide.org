@@ -17,12 +17,15 @@ const messageTypes = {
 };
 
 let pubsubInstance;
-const topic = TOPIC_NAME;
 
 const getPubsub = async () => {
     if (!pubsubInstance) {
         pubsubInstance = new PubSub({ apiEndpoint: 'localhost:8085' });
-        await pubsubInstance.topic(topic).get({ autoCreate: true });
+        const topic = await pubsubInstance.topic(TOPIC_NAME);
+        const [topicExists] = await topic.exists();
+        if (!topicExists) {
+            await topic.create();
+        }
     }
     return pubsubInstance;
 };
@@ -30,8 +33,8 @@ const getPubsub = async () => {
 const publish = async (message) => {
     const buffer = Buffer.from(JSON.stringify(message));
     const pubsub = await getPubsub();
-    const messageId = await pubsub.topic(topic).publish(buffer);
-    console.debug(`Message ${messageId} published to ${topic} with ${JSON.stringify(message)}`); // eslint-disable-line no-console
+    const messageId = await pubsub.topic(TOPIC_NAME).publish(buffer);
+    console.debug(`Message ${messageId} published to ${TOPIC_NAME} with ${JSON.stringify(message)}`); // eslint-disable-line no-console
 };
 
 const getMessage = (messageType, messageBody) => {
