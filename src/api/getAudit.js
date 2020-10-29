@@ -16,15 +16,21 @@ const checkValidProject = async (url) => {
 };
 
 const sendAuditMessages = async (auditData) => {
+    const messageBody = {
+        id: auditData.id,
+        slug: auditData.project_slug,
+    };
+
     if (auditData.project_type === 'theme') {
-        const messageBody = {
-            id: auditData.id,
-            slug: auditData.project_slug,
-        };
         const message = getMessage(messageTypes.MESSAGE_TYPE_LIGHTHOUSE_REQUEST, messageBody);
         await publish(message);
     }
-    // Send phpcs messages
+
+    messageBody.project_type = auditData.project_type;
+    messageBody.version = auditData.version;
+
+    const message = getMessage(messageTypes.MESSAGE_TYPE_CODE_SNIFFER_REQUEST, messageBody);
+    await publish(message);
 };
 
 const createNewAudit = async (auditData, params) => {
