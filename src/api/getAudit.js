@@ -5,6 +5,7 @@ const { dateTime } = require('../util/time');
 // const lh = require('../audits/lighthouse');
 const { getAuditId, getProjectId } = require('../util/identifiers');
 const { get, set } = require('../integrations/datastore');
+const { publish, getMessage, messageTypes } = require('../integrations/pubsub');
 
 const checkValidProject = async (url) => {
     const response = await fetch(url, {
@@ -12,6 +13,18 @@ const checkValidProject = async (url) => {
     });
 
     return response.ok;
+};
+
+const sendAuditMessages = async (auditData) => {
+    if (auditData.project_type === 'theme') {
+        const messageBody = {
+            id: auditData.id,
+            slug: auditData.project_slug,
+        };
+        const message = getMessage(messageTypes.MESSAGE_TYPE_LIGHTHOUSE_REQUEST, messageBody);
+        await publish(message);
+    }
+    // Send phpcs messages
 };
 
 const createNewAudit = async (auditData, params) => {
@@ -23,9 +36,11 @@ const createNewAudit = async (auditData, params) => {
         audit.last_modified_datetime = timeNow;
         audit.version = params.version;
         audit.project_type = params.project_type;
+        audit.project_slug = params.project_slug;
         audit.source_url = url;
         audit.standards = [];
         await set(audit.id, audit);
+        await sendAuditMessages(audit);
         return get(audit.id);
     }
     return null; // Project not found

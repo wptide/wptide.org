@@ -2,7 +2,7 @@ const { Datastore } = require('@google-cloud/datastore');
 
 let datastoreInstance;
 
-const keyPath = 'Audit';
+const keyPath = `Audit${new Date().toJSON()}`; // @TODO: changeme, new queue every init
 
 const getDatastore = () => {
     if (!datastoreInstance) {

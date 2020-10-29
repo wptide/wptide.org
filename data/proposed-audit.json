@@ -21,6 +21,9 @@
     // Theme or Plugin
     "project_type": "theme",
 
+    // Project slug
+    "project_slug": "twentyseventeen",
+
     // Download URL
     "source_url": "https://downloads.wordpress.org/theme/twentyseventeen.2.1.zip",
 
