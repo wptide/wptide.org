@@ -51,13 +51,13 @@
     "yamljs": "^0.3.0"
   },
   "devDependencies": {
-    "eslint": "^7.2.0",
+    "eslint": "^7.12.1",
     "eslint-config-airbnb-base": "^14.2.0",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-jest": "^24.1.0",
     "husky": "^4.3.0",
-    "jest": "^26.6.1",
-    "lint-staged": "^10.4.2",
+    "jest": "^26.6.2",
+    "lint-staged": "^10.5.1",
     "stylelint": "^13.7.2"
   }
 }

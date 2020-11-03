@@ -1,20 +1,14 @@
-const { PubSub } = require('@google-cloud/pubsub');
+const { messageTypes, subscribe } = require('../../integrations/pubsub');
 
-async function main() {
-    const apiEndpoint = 'localhost:8085';
-    console.log(`Listening to the Pub/Sub emulator event at: ${apiEndpoint}`); // eslint-disable-line no-console
-    const pubsub = new PubSub({
-        apiEndpoint, // Pub/Sub emulator endpoint
-        projectId: 'myproject',
+const { MESSAGE_TYPE_LIGHTHOUSE_REQUEST } = messageTypes;
+
+const main = async () => {
+    await subscribe(MESSAGE_TYPE_LIGHTHOUSE_REQUEST, {
+        pushEndpoint: 'http://localhost:8090',
     });
-    const topic = await pubsub.topic('my-topic');
-    const [topicExists] = await topic.exists();
-    if (!topicExists) {
-        await topic.create();
-    }
-    await topic.createSubscription('my_subscription', {
-        pushEndpoint: 'http://localhost:8080',
-    });
-}
+
+    // Keep our process running indefinitely
+    setInterval(() => {}, 1 << 30); // eslint-disable-line no-bitwise
+};
 
 main();

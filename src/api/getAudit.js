@@ -2,10 +2,9 @@ const invariant = require('invariant');
 const fetch = require('node-fetch');
 const { dateTime } = require('../util/time');
 
-// const lh = require('../audits/lighthouse');
 const { getAuditId, getProjectId } = require('../util/identifiers');
 const { get, set } = require('../integrations/datastore');
-const { publish, getMessage, messageTypes } = require('../integrations/pubsub');
+const { publish, /* getMessage, */ messageTypes } = require('../integrations/pubsub');
 
 const checkValidProject = async (url) => {
     const response = await fetch(url, {
@@ -22,15 +21,15 @@ const sendAuditMessages = async (auditData) => {
     };
 
     if (auditData.project_type === 'theme') {
-        const message = getMessage(messageTypes.MESSAGE_TYPE_LIGHTHOUSE_REQUEST, messageBody);
-        await publish(message);
+        // const message = getMessage(messageTypes.MESSAGE_TYPE_LIGHTHOUSE_REQUEST, messageBody);
+        await publish(messageBody, messageTypes.MESSAGE_TYPE_LIGHTHOUSE_REQUEST);
     }
 
     messageBody.project_type = auditData.project_type;
     messageBody.version = auditData.version;
 
-    const message = getMessage(messageTypes.MESSAGE_TYPE_CODE_SNIFFER_REQUEST, messageBody);
-    await publish(message);
+    // const message = getMessage(messageTypes.MESSAGE_TYPE_CODE_SNIFFER_REQUEST, messageBody);
+    await publish(messageBody, messageTypes.MESSAGE_TYPE_CODE_SNIFFER_REQUEST);
 };
 
 const createNewAudit = async (auditData, params) => {

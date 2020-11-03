@@ -1,20 +1,27 @@
 const lighthouse = require('lighthouse');
-const chromeLauncher = require('chrome-launcher');
+const puppeteer = require('puppeteer');
 
 const lighthouseAudit = async (url) => {
-    const chrome = await chromeLauncher.launch({ chromeFlags: ['--headless'] });
     const options = {
-        logLevel: 'error', output: 'json', port: chrome.port,
+        chromeFlags: [
+            '--disable-gpu',
+            '--no-sandbox',
+            '--headless',
+        ],
+        logLevel: 'error',
+        output: 'json',
     };
+
+    const browser = await puppeteer.launch();
+    options.port = (new URL(browser.wsEndpoint())).port;
+
     const runnerResult = await lighthouse(url, options);
 
     const reportJson = runnerResult.report;
     const report = JSON.parse(reportJson);
-    await chrome.kill();
+    await browser.close();
     return {
         report,
-        url: runnerResult.lhr.finalUrl,
-        score: runnerResult.lhr.categories.performance.score * 100,
     };
 };
 
