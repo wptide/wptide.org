@@ -2,7 +2,7 @@
 mkdir audit output
 cd audit
 wget -qc "$1" && unzip -q *.zip && rm *.zip
-#../vendor/bin/phpcs -q -p . --standard=WordPress-Extra --extensions=php --report=json > ../output/extra.json
+../vendor/bin/phpcs -q -p . --standard=WordPress-Extra --extensions=php --report=json > ../output/extra.json
 ../vendor/bin/phpcs -q -p . --standard=PHPCompatibilityWP --extensions=php --runtime-set testVersion 5.2- --report=json > ../output/php5.2.json
 ../vendor/bin/phpcs -q -p . --standard=PHPCompatibilityWP --extensions=php --runtime-set testVersion 5.3- --report=json > ../output/php5.3.json
 ../vendor/bin/phpcs -q -p . --standard=PHPCompatibilityWP --extensions=php --runtime-set testVersion 5.4- --report=json > ../output/php5.4.json
