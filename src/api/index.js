@@ -1,6 +1,6 @@
 const schema = require('./schema');
-const schemaSummary = require('./schemaSummary');
 const getAudit = require('./getAudit');
+const getReport = require('./getReport');
 
 /**
  * Build your API by adding handlers to this index file,
@@ -11,6 +11,6 @@ const getAudit = require('./getAudit');
 
 module.exports = {
     schema,
-    schemaSummary,
+    getReport,
     getAudit,
 };

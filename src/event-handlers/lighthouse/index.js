@@ -1,4 +1,5 @@
 const lighthouse = require('../../audits/lighthouse');
+const { publish, messageTypes } = require('../../integrations/pubsub');
 
 const runAudit = async (themeName) => {
     const url = `https://wp-themes.com/${themeName.replace(/[^\w.-]+/g, '')}/`;
@@ -7,13 +8,15 @@ const runAudit = async (themeName) => {
 };
 
 const notifyAuditResults = async (id, audit) => {
-    console.log(id); // eslint-disable-line no-console
-    console.log(audit); // eslint-disable-line no-console
+    const message = {
+        id,
+        type: 'lighthouse',
+        audit,
+    };
+    await publish(message, messageTypes.MESSAGE_TYPE_AUDIT_RESPONSE);
 };
 
 exports.lighthouseAudit = async (data, context) => {
-    console.log(data); // eslint-disable-line no-console
-    console.log(context); // eslint-disable-line no-console
     const message = JSON.parse(Buffer.from(context.message.data, 'base64').toString('ascii'));
     if (!!message.id && !!message.slug) {
         const audit = await runAudit(message.slug);

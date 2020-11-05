@@ -6,6 +6,9 @@
   "scripts": {
     "start": "functions-framework --target=TideAPI --signature-type=http",
     "start:lighthouse": "cd src/event-handlers/lighthouse && functions-framework --target=lighthouseAudit --signature-type=event --port 8090",
+    "start:lighthouse:local": "cd src/event-handlers/lighthouse && node localTesting.js",
+    "start:audit-response": "cd src/event-handlers/audit-response && functions-framework --target=auditResponse --signature-type=event --port 8100",
+    "start:audit-response:local": "cd src/event-handlers/audit-response && node localTesting.js",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
     "test": "NODE_ENV=test jest",
