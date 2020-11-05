@@ -21,7 +21,7 @@ foreach( $audit_data as $filename => $phpcs_audit ) {
     }
     $version = str_replace( '../output/php', '', $filename );
     $version = str_replace( '.json', '', $version );
-    if ( false === strstr( $filename, 'raw' ) ) {
+    if ( false !== strstr( $filename, 'raw' ) ) {
         $output['reports']['phpcs_phpcompatibilitywp']['raw'] = $phpcs_audit;
         continue;
     }
