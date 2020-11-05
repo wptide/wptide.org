@@ -15,54 +15,30 @@
     // Theme / plugin version
     "version": "2.1",
 
-    // Sha256 sum of zip file
+    // Sha256 sum of zip file, can be used to track whether the zip file has been updated and the audit needs to be redone
     "checksum": "d82d8eda04b37dd32e26cb5f9e9c91ddd42750bef999ff49223bb48c327cd4f9",
 
     // Theme or Plugin
     "project_type": "theme",
 
+    // Project slug
+    "project_slug": "twentyseventeen",
+
     // Download URL
     "source_url": "https://downloads.wordpress.org/theme/twentyseventeen.2.1.zip",
 
-    "standards": [
-        // Only added as they are completed
-        "phpcs_wordpress",
-        "phpcs_phpcompatibility",
-        "lighthouse",
-        "cloc" // if we even want this?
-    ],
-    "links": {
-        "self": "https://wptide.org/api/tide/v1/audit/46379064695a233492b04d0a5dfb42eb48a5c49a1b399051e1d8731d91e310a4",
-        "audit_project": "https://wptide.org/api/tide/v1/project/0312964caec3c596e5f4591858c81805d4bf9df8c9973675d86d1ef50dda77fd",
-        "related_audits": [
-            // Urls of all different versions of this project excluding this one, can be null if this is only one
-        ],
-        "reports": [
-            {
-                "standard": "phpcs_wordpress",
-                "type": "raw",
-                "rel": "download",
-                // Signed expirable URLs: https://cloud.google.com/storage/docs/access-control/signed-urls
-                "href": "https://wptide.org/api/tide/v1/report/87735/raw/phpcs_wordpress"
-            },
-            {
-                "standard": "phpcs_phpcompatibility",
-                "type": "raw",
-                "rel": "download",
-                "href": "https://wptide.org/api/tide/v1/report/87735/raw/phpcs_phpcompatibility"
-            },
-            {
-                "standard": "phpcs_phpcompatibility",
-                "type": "parsed",
-                "rel": "download",
-                "href": "https://wptide.org/api/tide/v1/report/87735/parsed/phpcs_phpcompatibility"
-            },
-            {
-                "standard": "lighthouse",
-                "type": "raw",
-                "rel": "download",
-                "href": "https://wptide.org/api/tide/v1/report/87735/raw/lighthouse"
-            }
-        ]
+    "reports": {
+        "lighthouse": {
+            // We generate these deterministically so they can be updated / overwritten
+            // shasum256 of audit id and report key. ( id, lighthouse )
+            "report_id": "d6c59eef9bb2cfbad4d173c04e4e70777a101451d5a462c6b08e0f16d5291e66"
+        },
+        "phpcs_themeaudit": null, // this audit type is not finalised, but a null value indicates report is pending
+        "phpcs_phpcompatibilitywp": {
+            // We know that 5.6-7.3 are tested, 8.0 is not tested
+            "compatible_versions": ["7.0","7.1", "7.2", "7.3"],
+            "incompatible_versions": ["5.6"],
+            "report_id": "2206530cdc28e4749ff746606b108726cef0a1f86f0070386dd40a344df08af2"
+        }
     }
 }

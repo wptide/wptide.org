@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   version: 1.0.0
-  title: OpenAPI Cloud Functions
+  title: Tide API
   description: >-
     Check [Tide](http://wptide.org) audit reports for plugins and themes
   contact:
@@ -9,36 +9,12 @@ info:
   license:
     name: MIT
     url: 'https://opensource.org/licenses/MIT'
-  x-publish-docs: true
 servers:
   - url: /api/v1
-  - url: 'http://localhost:8080'
-  - url: 'https://api.wptide.org/'
-  - url: 'https://dev-api.wptide.org'
-tags:
-  - name: audit
-    description: Code audit reports
 paths:
   /:
     get:
-      tags:
-        - root
       summary: Schema summary
-      description: >-
-        Returns the API schema endpoints.
-      operationId: schemaSummary
-      responses:
-        200:
-          description: Success.
-          content:
-            application/json:
-              schema:
-                type: object
-  /schema:
-    get:
-      tags:
-        - root
-      summary: Full schema
       description: >-
         Returns the API schema in the [OpenAPI
         v3](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md)
@@ -53,11 +29,8 @@ paths:
                 type: object
   '/audit/wporg/{project_type}/{project_slug}/{version}':
     get:
-      tags:
-        - audit
       summary: Get audit info for a project
       description: Get a theme or plugin audit for a project client, slug and version.
-      x-controller: getAudit
       operationId: getAudit
       parameters:
         - in: path
@@ -81,6 +54,18 @@ paths:
           required: true
           schema:
             type: string
+        - in: query
+          name: reports
+          description: Whether or not we include audit reports in the response.
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - all
+                - lighthouse
+                - phpcs_phpcompatibilitywp
       responses:
         200:
           description: Success.
@@ -90,154 +75,30 @@ paths:
                 $ref: '#/components/schemas/Audit'
         404:
           description: Audit not found.
-      security:
-        - jwtBearerAuth: []
-        - {}
+  '/report/{report_id}':
+    get:
+      summary: Get report by id.
+      description: Get an audit report, e.g. lighthouse or phpcompatibilitywp for a specified report id listed in the audit info for a project.
+      operationId: getReport
+      parameters:
+        - in: path
+          name: report_id
+          description: Report id.
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Report'
+        404:
+          description: Audit not found.
 components:
   schemas:
     Audit:
       type: object
-      properties:
-        id:
-          type: integer
-          format: int64
-        date:
-          type: string
-          format: date-time
-        modified:
-          type: string
-          format: date-time
-        title:
-          type: string
-        content:
-          type: string
-        audit_project:
-          type: integer
-          format: int64
-        visibility:
-          type: string
-          enum: ["public", "private"]
-        version:
-          type: string
-        checksum:
-          type: string
-        project_type:
-          type: string
-          enum: ["plugin", "theme"]
-        source_url:
-          type: string
-          format: uri
-        source_type:
-          type: string
-          enum: ["zip", "git"]
-        code_info:
-          type: object
-        cloc:
-          type: object
-          properties:
-            css:
-              $ref: '#/components/schemas/Cloc'
-            javascript:
-              $ref: '#/components/schemas/Cloc'
-            php:
-              $ref: '#/components/schemas/Cloc'
-            plain_text:
-              $ref: '#/components/schemas/Cloc'
-            sum:
-              $ref: '#/components/schemas/Cloc'
-
-        standards:
-          type: array
-          items:
-            type: string
-            enum: ['phpcs_wordpress', 'phpcs_phpcompatibility', 'lighthouse']
-        reports:
-          type: object
-          properties:
-            phpcs_wordpress:
-              $ref: '#/components/schemas/PHPCSWPReport'
-            phpcs_phpcompatibility:
-              $ref: '#/components/schemas/PHPCSPHPReport'
-            lighthouse:
-              $ref: '#/components/schemas/LighthouseReport'
-        user_role:
-          type: integer
-          description: User Role
-          format: string
-    Cloc:
+    Report:
       type: object
-      properties:
-        blank:
-          type: integer
-        comment:
-          type: integer
-        code:
-          type: integer
-        n_files:
-          type: integer
-
-    PHPCSWPReport:
-      type: object
-      properties:
-        summary:
-          type: object
-          properties:
-            files:
-              type: object
-              additionalProperties:
-                type: object
-                example:
-                  errors:
-                    type: integer
-                  warnings:
-                    type: integer
-            files_count:
-              type: integer
-            errors_count:
-              type: integer
-            warnings_count:
-              type: integer
-
-    PHPCSPHPReport:
-      allOf:
-        - $ref: '#/components/schemas/PHPCSWPReport'
-        - type: object
-          properties:
-            compatible_versions:
-              type: array
-              items:
-                type: string
-                example: 5.2
-
-    LighthouseReport:
-      type: object
-      properties:
-        summary:
-          type: object
-          properties:
-            categories:
-              type: object
-              properties:
-                accessibility:
-                  $ref: '#/components/schemas/LighthouseSummaryReport'
-                best_practices:
-                  $ref: '#/components/schemas/LighthouseSummaryReport'
-                performance:
-                  $ref: '#/components/schemas/LighthouseSummaryReport'
-                pwa:
-                  $ref: '#/components/schemas/LighthouseSummaryReport'
-                seo:
-                  $ref: '#/components/schemas/LighthouseSummaryReport'
-
-    LighthouseSummaryReport:
-      type: object
-      properties:
-        title:
-          type: string
-        description:
-          type: string
-        id:
-          type: string
-        score:
-          type: number
-          example: 0.7
