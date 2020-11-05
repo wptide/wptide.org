@@ -33,13 +33,13 @@ const set = async (key, data) => {
 
 const getKey = (keyPath, id) => getDatastore().key([keyPath, id]);
 
-const getAuditDoc = async (id) => await get(getKey(auditKeyPath, id));
+const getAuditDoc = async (id) => get(getKey(auditKeyPath, id));
 
-const setAuditDoc = async (id, data) => await set(getKey(auditKeyPath, id), data);
+const setAuditDoc = async (id, data) => set(getKey(auditKeyPath, id), data);
 
-const getReport = async (id) => await get(getKey(reportKeyPath, id));
+const getReport = async (id) => get(getKey(reportKeyPath, id));
 
-const setReport = async (id, data) => await set(getKey(reportKeyPath, id), data);
+const setReport = async (id, data) => set(getKey(reportKeyPath, id), data);
 
 module.exports = {
     getAuditDoc,
