@@ -13,6 +13,7 @@ const notifyAuditResults = async (id, audit) => {
         type: 'lighthouse',
         audit,
     };
+
     await publish(message, messageTypes.MESSAGE_TYPE_AUDIT_RESPONSE);
 };
 

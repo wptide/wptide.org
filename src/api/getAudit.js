@@ -3,8 +3,8 @@ const fetch = require('node-fetch');
 const { dateTime } = require('../util/time');
 
 const { getAuditId, getProjectId } = require('../util/identifiers');
-const { get, set } = require('../integrations/datastore');
-const { publish, /* getMessage, */ messageTypes } = require('../integrations/pubsub');
+const { getAuditDoc, setAuditDoc } = require('../integrations/datastore');
+const { publish, messageTypes } = require('../integrations/pubsub');
 
 const checkValidProject = async (url) => {
     const response = await fetch(url, {
@@ -44,9 +44,9 @@ const createNewAudit = async (auditData, params) => {
         audit.project_slug = params.project_slug;
         audit.source_url = url;
         audit.standards = [];
-        await set(audit.id, audit);
+        await setAuditDoc(audit.id, audit);
         await sendAuditMessages(audit);
-        return get(audit.id);
+        return getAuditDoc(audit.id);
     }
     return null; // Project not found
 };
@@ -74,7 +74,7 @@ const getAudit = async (req, res) => {
         projectId,
     };
 
-    let existingAuditData = await get(id);
+    let existingAuditData = await getAuditDoc(id);
 
     if (!existingAuditData) {
         existingAuditData = await createNewAudit(auditData, req.params);

@@ -1,17 +1,12 @@
 const { PubSub } = require('@google-cloud/pubsub');
-const invariant = require('invariant');
 
 const MESSAGE_TYPE_LIGHTHOUSE_REQUEST = 'MESSAGE_TYPE_LIGHTHOUSE_REQUEST';
-// const MESSAGE_TYPE_LIGHTHOUSE_RESPONSE = 'MESSAGE_TYPE_LIGHTHOUSE_RESPONSE';
 const MESSAGE_TYPE_CODE_SNIFFER_REQUEST = 'MESSAGE_TYPE_CODE_SNIFFER_REQUEST';
-// const MESSAGE_TYPE_CODE_SNIFFER_RESPONSE = 'MESSAGE_TYPE_CODE_SNIFFER_RESPONSE';
 const MESSAGE_TYPE_AUDIT_RESPONSE = 'MESSAGE_TYPE_AUDIT_RESPONSE';
 
 const messageTypes = {
     MESSAGE_TYPE_LIGHTHOUSE_REQUEST,
-    //    MESSAGE_TYPE_LIGHTHOUSE_RESPONSE,
     MESSAGE_TYPE_CODE_SNIFFER_REQUEST,
-    //    MESSAGE_TYPE_CODE_SNIFFER_RESPONSE,
     MESSAGE_TYPE_AUDIT_RESPONSE,
 };
 
@@ -41,16 +36,9 @@ const publish = async (message, topicName) => {
     const buffer = Buffer.from(JSON.stringify(message));
     const pubsub = await getPubsub();
     const messageId = await pubsub.topic(topicName).publish(buffer);
-    console.debug(`Message ${messageId} published to ${topicName} with ${JSON.stringify(message)}`); // eslint-disable-line no-console
-};
-
-const getMessage = (messageType, messageBody) => {
-    invariant(messageTypes[messageType], `MessageType must be one of ${Object.keys(messageTypes).join()}`);
-
-    return {
-        type: messageType,
-        body: messageBody,
-    };
+    let debugMessage = JSON.stringify(message);
+    debugMessage = debugMessage.length > 200 ? Object.keys(message) : debugMessage;
+    console.debug(`Message ${messageId} published to ${topicName} with ${debugMessage}`); // eslint-disable-line no-console
 };
 
 const subscribe = async (subscriptionName, options) => {
@@ -81,5 +69,4 @@ module.exports = {
     messageTypes,
     subscribe,
     publish,
-    getMessage,
 };
