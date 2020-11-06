@@ -14,21 +14,29 @@ const checkValidProject = async (url) => {
     return response.ok;
 };
 
+const shouldLighthouseAudit = async (auditData) => {
+    const url = `https://api.wordpress.org/themes/info/1.1/?action=theme_information&request[slug]=${auditData.project_slug}`;
+    const response = await fetch(url, {
+        method: 'GET',
+    });
+    const themeInfo = await response.json();
+    // Checks whether the version supplied is equivalent to the version from themes api.
+    return themeInfo.version === auditData.version && themeInfo.slug === auditData.project_slug;
+};
+
 const sendAuditMessages = async (auditData) => {
     const messageBody = {
         id: auditData.id,
         slug: auditData.project_slug,
     };
 
-    if (auditData.project_type === 'theme') {
-        // const message = getMessage(messageTypes.MESSAGE_TYPE_LIGHTHOUSE_REQUEST, messageBody);
+    if (auditData.project_type === 'theme' && await shouldLighthouseAudit(auditData)) {
         await publish(messageBody, messageTypes.MESSAGE_TYPE_LIGHTHOUSE_REQUEST);
     }
 
     messageBody.project_type = auditData.project_type;
     messageBody.version = auditData.version;
 
-    // const message = getMessage(messageTypes.MESSAGE_TYPE_CODE_SNIFFER_REQUEST, messageBody);
     await publish(messageBody, messageTypes.MESSAGE_TYPE_CODE_SNIFFER_REQUEST);
 };
 
@@ -71,7 +79,7 @@ const getAudit = async (req, res) => {
     const projectId = getProjectId(req.params);
     const auditData = {
         id,
-        projectId,
+        project_id: projectId,
     };
 
     let existingAuditData = await getAuditDoc(id);
