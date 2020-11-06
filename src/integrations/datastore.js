@@ -4,8 +4,8 @@ let datastoreInstance;
 
 // const auditKeyPath = 'Audit';
 // const reportKeyPath = 'Report';
-const auditKeyPath = `Audit${new Date().toJSON().substr(0, 16)}`; // @TODO: changeme, new queue every init
-const reportKeyPath = `Report${new Date().toJSON().substr(0, 16)}`; // @TODO: changeme, new queue every init
+const auditKeyPath = `Audit${new Date().toJSON().substr(0, 16)}`; // @TODO: changeme
+const reportKeyPath = `Report${new Date().toJSON().substr(0, 16)}`; // @TODO: changeme
 
 const getDatastore = () => {
     if (!datastoreInstance) {

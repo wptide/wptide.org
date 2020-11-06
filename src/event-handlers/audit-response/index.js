@@ -4,16 +4,6 @@ const {
 const { dateTime } = require('../../util/time');
 const { getHash } = require('../../util/identifiers');
 
-/*
-const addLighthouseAudit = (auditData, lighthouseAudit) => {
-    const updatedAudit = { ...auditData };
-    updatedAudit.standards.push('lighthouse');
-    updatedAudit.reports = updatedAudit.reports || {};
-    updatedAudit.reports.lighthouse = lighthouseAudit;
-    return updatedAudit;
-};
- */
-
 exports.auditResponse = async (data, context) => {
     const buffer = Buffer.from(context.message.data, 'base64');
     const response = buffer.toString();
@@ -21,12 +11,20 @@ exports.auditResponse = async (data, context) => {
     const existingAuditData = await getAuditDoc(message.id);
     const updatedAudit = { ...existingAuditData };
     const timeNow = dateTime();
+
     if (message.type === 'lighthouse') {
-        // updatedAudit = addLighthouseAudit(existingAuditData, message.audit);
         const reportId = getHash(`${message.id}${message.type}`);
         const report = message.audit;
-        updatedAudit.repLighthouse = reportId; // Change this
-        updatedAudit.lighthouse = report; // Change this
+        updatedAudit.reports.lighthouse = { report_id: reportId };
+        await setReport(reportId, report);
+    } else if (message.type === 'phpcs_phpcompatibilitywp') {
+        const reportId = getHash(`${message.id}${message.type}`);
+        const report = message.audit;
+        updatedAudit.reports.phpcs_phpcompatibilitywp = {
+            report_id: reportId,
+            // @TODO add compatible/incompatible versions.
+        };
+
         await setReport(reportId, report);
     }
 

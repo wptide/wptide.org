@@ -3,7 +3,7 @@ const fetch = require('node-fetch');
 const { dateTime } = require('../util/time');
 
 const { getAuditId, getProjectId } = require('../util/identifiers');
-const { getAuditDoc, setAuditDoc } = require('../integrations/datastore');
+const { getAuditDoc, setAuditDoc, getReport } = require('../integrations/datastore');
 const { publish, messageTypes } = require('../integrations/pubsub');
 
 const checkValidProject = async (url) => {
@@ -30,7 +30,7 @@ const sendAuditMessages = async (auditData) => {
         slug: auditData.project_slug,
     };
 
-    if (auditData.project_type === 'theme' && await shouldLighthouseAudit(auditData)) {
+    if (auditData.reports && auditData.reports.lighthouse === null) {
         await publish(messageBody, messageTypes.MESSAGE_TYPE_LIGHTHOUSE_REQUEST);
     }
 
@@ -51,12 +51,46 @@ const createNewAudit = async (auditData, params) => {
         audit.project_type = params.project_type;
         audit.project_slug = params.project_slug;
         audit.source_url = url;
-        audit.standards = [];
+        audit.reports = {};
+        if (audit.project_type === 'theme' && await shouldLighthouseAudit(auditData)) {
+            audit.reports.lighthouse = null;
+        }
+        audit.reports.phpcs_phpcompatibilitywp = null;
         await setAuditDoc(audit.id, audit);
         await sendAuditMessages(audit);
         return getAuditDoc(audit.id);
     }
     return null; // Project not found
+};
+
+const addReports = async (audit, reportTypes) => {
+    const updatedAudit = { ...audit };
+    const validReportTypes = ['lighthouse', 'phpcs_phpcompatibilitywp'];
+    let fetchReportTypes = [];
+
+    if (reportTypes.includes('all')) {
+        fetchReportTypes = validReportTypes;
+    } else {
+        validReportTypes.forEach((validReportType) => {
+            if (reportTypes.includes(validReportType)) {
+                fetchReportTypes.push(validReportType);
+            }
+        });
+    }
+
+    await Promise.all(fetchReportTypes.map(async (reportType) => {
+        const reportId = updatedAudit.reports[reportType]
+            ? updatedAudit.reports[reportType].report_id : null;
+        if (reportId) {
+            const report = await getReport(reportId);
+            if (report) {
+                // Attach the audit report to the doc.
+                updatedAudit.reports[reportType] = { ...report, report_id: reportId };
+            }
+        }
+    }));
+
+    return updatedAudit;
 };
 
 /**
@@ -86,6 +120,10 @@ const getAudit = async (req, res) => {
 
     if (!existingAuditData) {
         existingAuditData = await createNewAudit(auditData, req.params);
+    }
+
+    if (existingAuditData && req.query && req.query.reports) {
+        existingAuditData = await addReports(existingAuditData, req.query.reports.split(','));
     }
 
     if (!existingAuditData) {
