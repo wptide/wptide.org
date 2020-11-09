@@ -53,8 +53,10 @@
     "mkdirp": "^1.0.4",
     "node-fetch": "^2.6.1",
     "puppeteer": "^5.4.1",
+    "rimraf": "^3.0.2",
     "swagger-routes-express": "^3.2.1",
-    "yamljs": "^0.3.0"
+    "yamljs": "^0.3.0",
+    "yauzl": "^2.10.0"
   },
   "devDependencies": {
     "eslint": "^7.12.1",

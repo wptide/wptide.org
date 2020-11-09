@@ -19,7 +19,6 @@ const notifyAuditResults = async (id, audit) => {
 exports.phpcsAudit = async (data, context) => {
     const message = JSON.parse(Buffer.from(context.message.data, 'base64').toString('ascii'));
     if (!!message.id && !!message.slug) {
-        console.log(message);
         const audit = runAudit(message);
         await notifyAuditResults(message.id, audit);
     }
