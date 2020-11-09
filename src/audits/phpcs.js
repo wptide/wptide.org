@@ -3,7 +3,6 @@ const fetch = require('node-fetch');
 
 const util = require('util');
 const fs = require('fs');
-// const yauzl = require('yauzl');
 const streamPipeline = util.promisify(require('stream').pipeline);
 
 const outputDir = '/tmp/output/';
@@ -15,42 +14,6 @@ const download = async (url, path) => {
     if (!response.ok) throw new Error(`unexpected response ${response.statusText}`);
     await streamPipeline(response.body, fs.createWriteStream(path));
 };
-
-/*
-const unzip = async (path) => {
-    const promise = new Promise((resolve, reject) => {
-        yauzl.open(path, { lazyEntries: true }, (err, zipfile) => {
-            if (err) {
-                reject();
-                throw err;
-            }
-            zipfile.readEntry();
-            zipfile.on('entry', (entry) => {
-                if (/\/$/.test(entry.fileName)) {
-                    // directory file names end with '/'
-                    fs.mkdirSync(entry.fileName, { recursive: true });
-                } else {
-                    // file entry
-                    zipfile.openReadStream(entry, (readErr, readStream) => {
-                        // ensure parent directory exists
-                        fs.mkdirSync(path.dirname(entry.fileName), { recursive: true });
-                        if (readErr) {
-                            reject();
-                            throw readErr;
-                        }
-                        readStream.pipe(fs.createWriteStream(entry.fileName));
-                        readStream.on('end', () => {
-                            zipfile.readEntry();
-                        });
-                    });
-                }
-            }).on('close', () => resolve());
-        });
-    });
-
-    await promise;
-};
- */
 
 const runAudits = async () => {
     const path = '/Users/ivan/projects/ofm/tide-faas/phpcs/vendor/bin/'; // Remove me
