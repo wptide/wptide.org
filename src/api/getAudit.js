@@ -1,12 +1,54 @@
 const invariant = require('invariant');
+const fetch = require('node-fetch');
+const { dateTime } = require('../util/time');
+
 // const lh = require('../audits/lighthouse');
 const { getAuditId, getProjectId } = require('../util/identifiers');
-// const { get, set } = require('../integrations/datastore');
-const { get } = require('../integrations/datastore');
+const { get, set } = require('../integrations/datastore');
+const { publish, getMessage, messageTypes } = require('../integrations/pubsub');
 
-const createNewAudit = (auditData, params) => {
-    console.debug(auditData); // eslint-disable-line no-console
-    console.debug(params); // eslint-disable-line no-console
+const checkValidProject = async (url) => {
+    const response = await fetch(url, {
+        method: 'HEAD',
+    });
+
+    return response.ok;
+};
+
+const sendAuditMessages = async (auditData) => {
+    const messageBody = {
+        id: auditData.id,
+        slug: auditData.project_slug,
+    };
+
+    if (auditData.project_type === 'theme') {
+        const message = getMessage(messageTypes.MESSAGE_TYPE_LIGHTHOUSE_REQUEST, messageBody);
+        await publish(message);
+    }
+
+    messageBody.project_type = auditData.project_type;
+    messageBody.version = auditData.version;
+
+    const message = getMessage(messageTypes.MESSAGE_TYPE_CODE_SNIFFER_REQUEST, messageBody);
+    await publish(message);
+};
+
+const createNewAudit = async (auditData, params) => {
+    const audit = { ...auditData };
+    const url = `https://downloads.wordpress.org/${params.project_type}/${params.project_slug}.${params.version}.zip`;
+    if (await checkValidProject(url)) {
+        const timeNow = dateTime();
+        audit.created_datetime = timeNow;
+        audit.last_modified_datetime = timeNow;
+        audit.version = params.version;
+        audit.project_type = params.project_type;
+        audit.project_slug = params.project_slug;
+        audit.source_url = url;
+        audit.standards = [];
+        await set(audit.id, audit);
+        await sendAuditMessages(audit);
+        return get(audit.id);
+    }
     return null; // Project not found
 };
 
@@ -22,25 +64,28 @@ const getAudit = async (req, res) => {
     invariant(req.params.project_slug, 'Project slug missing');
     invariant(req.params.version, 'Version missing');
     invariant(req.params.length !== 3, 'Only type, slug and version required');
+    req.params.project_type = req.params.project_type.replace(/[^\w.-]+/g, '');
+    req.params.project_slug = req.params.project_slug.replace(/[^\w.-]+/g, '');
+    req.params.version = req.params.version.replace(/[^\d.]+/g, '');
 
-    const auditId = getAuditId(req.params);
+    const id = getAuditId(req.params);
     const projectId = getProjectId(req.params);
     const auditData = {
-        auditId,
+        id,
         projectId,
-        date: new Date().toJSON(),
     };
 
-    let existingAuditData = await get(auditId);
+    let existingAuditData = await get(id);
 
     if (!existingAuditData) {
         existingAuditData = await createNewAudit(auditData, req.params);
     }
 
     if (!existingAuditData) {
-        res.status(404).json(req.params);
+        res.json('not found');
+    } else {
+        res.json(existingAuditData);
     }
-    res.json(existingAuditData);
     // res.json({ action: 'getAudit', params: req.params, setbar, getbar });
     // res.json({ action: 'getAudit', params: req.params, audit: await lh('https://wp-themes.com/twentytwenty/') });
 };

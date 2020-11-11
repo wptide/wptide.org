@@ -44,6 +44,8 @@
     "express": "^4.17.1",
     "invariant": "^2.2.4",
     "lighthouse": "^6.4.1",
+    "node-fetch": "^2.6.1",
+    "puppeteer": "^5.4.1",
     "swagger-routes-express": "^3.2.1",
     "yamljs": "^0.3.0"
   },
