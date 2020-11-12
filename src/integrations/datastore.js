@@ -2,8 +2,8 @@ const { Datastore } = require('@google-cloud/datastore');
 
 let datastoreInstance;
 
-const auditKeyPath = 'Audit992';
-const reportKeyPath = 'Report992';
+const auditKeyPath = 'Audit122';
+const reportKeyPath = 'Report122';
 // const auditKeyPath = `Audit${new Date().toJSON().substr(0, 16)}`; // @TODO: changeme
 // const reportKeyPath = `Report${new Date().toJSON().substr(0, 16)}`; // @TODO: changeme
 
@@ -37,13 +37,13 @@ const getAuditDoc = async (id) => get(getKey(auditKeyPath, id));
 
 const setAuditDoc = async (id, data) => set(getKey(auditKeyPath, id), data);
 
-const getReport = async (id) => get(getKey(reportKeyPath, id));
+const getReportDoc = async (id) => get(getKey(reportKeyPath, id));
 
-const setReport = async (id, data) => set(getKey(reportKeyPath, id), data);
+const setReportDoc = async (id, data) => set(getKey(reportKeyPath, id), data);
 
 module.exports = {
     getAuditDoc,
     setAuditDoc,
-    getReport,
-    setReport,
+    getReportDoc,
+    setReportDoc,
 };

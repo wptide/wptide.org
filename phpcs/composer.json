@@ -1,8 +1,9 @@
 {
-    "name": "ivankruchkoff/phpcs",
-    "require": {
+    "name": "xwp/phpcs",
+    "require": {},
+    "require-dev": {
+        "dealerdirect/phpcodesniffer-composer-installer": "*",
         "wp-coding-standards/wpcs": "^2.3",
-        "phpcompatibility/phpcompatibility-wp": "^2.1",
-        "google/cloud-pubsub": "^1.29.1"
+        "phpcompatibility/phpcompatibility-wp": "^2.1"
     }
 }

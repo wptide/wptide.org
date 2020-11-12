@@ -1,5 +1,5 @@
 const {
-    getAuditDoc, setAuditDoc, setReport,
+    getAuditDoc, setAuditDoc, setReportDoc,
 } = require('../../integrations/datastore');
 const { dateTime } = require('../../util/time');
 const { getHash } = require('../../util/identifiers');
@@ -16,16 +16,17 @@ exports.auditResponse = async (data, context) => {
         const reportId = getHash(`${message.id}${message.type}`);
         const report = message.audit;
         updatedAudit.reports.lighthouse = { report_id: reportId };
-        await setReport(reportId, report);
-    } else if (message.type === 'phpcs_phpcompatibilitywp') {
+        await setReportDoc(reportId, report);
+    } else if (message.type === 'phpcs') {
         const reportId = getHash(`${message.id}${message.type}`);
-        const report = message.audit;
+        const report = message.audit.raw;
         updatedAudit.reports.phpcs_phpcompatibilitywp = {
             report_id: reportId,
-            // @TODO add compatible/incompatible versions.
+            compatible_versions: message.audit.compatibleVersions,
+            incompatible_versions: message.audit.incompatibleVersions,
         };
 
-        await setReport(reportId, report);
+        await setReportDoc(reportId, report);
     }
 
     updatedAudit.last_modified_datetime = timeNow;

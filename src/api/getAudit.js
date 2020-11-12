@@ -3,7 +3,7 @@ const fetch = require('node-fetch');
 const { dateTime } = require('../util/time');
 
 const { getAuditId, getProjectId } = require('../util/identifiers');
-const { getAuditDoc, setAuditDoc, getReport } = require('../integrations/datastore');
+const { getAuditDoc, setAuditDoc, getReportDoc } = require('../integrations/datastore');
 const { publish, messageTypes } = require('../integrations/pubsub');
 
 const checkValidProject = async (url) => {
@@ -82,7 +82,7 @@ const addReports = async (audit, reportTypes) => {
         const reportId = updatedAudit.reports[reportType]
             ? updatedAudit.reports[reportType].report_id : null;
         if (reportId) {
-            const report = await getReport(reportId);
+            const report = await getReportDoc(reportId);
             if (report) {
                 // Attach the audit report to the doc.
                 updatedAudit.reports[reportType] = { ...report, report_id: reportId };

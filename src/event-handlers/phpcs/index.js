@@ -19,7 +19,7 @@ const notifyAuditResults = async (id, audit) => {
 exports.phpcsAudit = async (data, context) => {
     const message = JSON.parse(Buffer.from(context.message.data, 'base64').toString('ascii'));
     if (!!message.id && !!message.slug) {
-        const audit = runAudit(message);
+        const audit = await runAudit(message);
         await notifyAuditResults(message.id, audit);
     }
 };
