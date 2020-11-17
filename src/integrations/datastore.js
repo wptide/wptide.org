@@ -2,14 +2,16 @@ const { Datastore } = require('@google-cloud/datastore');
 
 let datastoreInstance;
 
-const auditKeyPath = 'Audit129';
-const reportKeyPath = 'Report129';
-// const auditKeyPath = `Audit${new Date().toJSON().substr(0, 16)}`; // @TODO: changeme
-// const reportKeyPath = `Report${new Date().toJSON().substr(0, 16)}`; // @TODO: changeme
+const auditKeyPath = process.env.DATASTORE_KEY_AUDIT || 'Audit';
+const reportKeyPath = process.env.DATASTORE_KEY_REPORT || 'Report';
 
 const getDatastore = () => {
     if (!datastoreInstance) {
-        datastoreInstance = new Datastore({ apiEndpoint: 'localhost:8081' });
+        const options = {};
+        if (process.env.NODE_ENV !== 'production') {
+            options.apiEndpoint = process.env.ENDPOINT_DATASTORE || 'localhost:8081';
+        }
+        datastoreInstance = new Datastore(options);
     }
     return datastoreInstance;
 };
