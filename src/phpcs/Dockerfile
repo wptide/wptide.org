@@ -3,7 +3,15 @@ MAINTAINER XWP <engage@xwp.co>
 ENV VENDOR /app/vendor
 ENV NODE_VERSION 12.19.0
 RUN apk add --no-cache composer
-COPY . /app
+# Build from the parent directory with the following command docker build -f phpcs/Dockerfile .
+COPY phpcs /app/
+COPY api /app/api/
+COPY audits /app/audits/
+COPY event-handlers /app/event-handlers/
+COPY integrations /app/integrations/
+COPY util /app/util/
+COPY global.js /app/
+
 WORKDIR /app
 # Composer
 RUN composer install \
@@ -82,8 +90,7 @@ RUN addgroup -g 1000 node \
   # smoke tests
   && node --version \
   && npm --version \
-  && npm install --only=production \
-  && rm index.js
+  && npm install --only=production
 
 EXPOSE 8080
 
