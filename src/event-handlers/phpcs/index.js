@@ -1,3 +1,5 @@
+require('../../global');
+
 const phpcsAudit = require('../../audits/phpcs');
 const { publish, messageTypes } = require('../../integrations/pubsub');
 

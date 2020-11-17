@@ -1,3 +1,4 @@
+require('../global');
 const { messageTypes, subscribe } = require('../integrations/pubsub');
 
 const {

@@ -15,7 +15,8 @@ const download = async (url, path) => {
 };
 
 const runAudits = async () => {
-    const path = '/Users/ivan/projects/ofm/tide-faas/phpcs/vendor/bin/'; // Remove me
+    // const path = '/Users/ivan/projects/ofm/tide-faas/phpcs/vendor/bin/'; // Remove me
+    const path = '/app/vendor/bin/'; // Remove me
     const phpcsPermutataions = [
         { testVersion: '5.2', filename: 'php5.2.json', report: 'version' }, // Remove me after testing
         { testVersion: '5.6', filename: 'php5.6.json', report: 'version' },

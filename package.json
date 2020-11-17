@@ -37,9 +37,9 @@
   "author": "XWP",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ivankruchkoff/tide-faas/issues"
+    "url": "https://github.com/xwp/tide-faas/issues"
   },
-  "homepage": "https://github.com/ivankruchkoff/tide-faas#readme",
+  "homepage": "https://github.com/xwp/tide-faas#readme",
   "dependencies": {
     "@google-cloud/datastore": "^6.2.0",
     "@google-cloud/functions-framework": "^1.7.1",

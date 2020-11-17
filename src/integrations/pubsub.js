@@ -13,8 +13,15 @@ const messageTypes = {
 let pubsubInstance;
 
 const getPubsub = async () => {
+    const options = {};
+    if (process.env.NODE_ENV !== 'production') {
+        options.apiEndpoint = process.env.ENDPOINT_PUBSUB || 'localhost:8085';
+    }
+    if (process.env.GOOGLE_CLOUD_PROJECT) {
+        options.projectId = process.env.GOOGLE_CLOUD_PROJECT;
+    }
     if (!pubsubInstance) {
-        pubsubInstance = new PubSub({ apiEndpoint: 'localhost:8085' });
+        pubsubInstance = new PubSub(options);
 
         // eslint-disable-next-line no-restricted-syntax
         for (const topicName of Object.keys(messageTypes)) {

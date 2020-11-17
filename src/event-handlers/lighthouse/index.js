@@ -1,3 +1,4 @@
+require('../../global');
 const lighthouse = require('../../audits/lighthouse');
 const { publish, messageTypes } = require('../../integrations/pubsub');
 

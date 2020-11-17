@@ -2,8 +2,8 @@ const { Datastore } = require('@google-cloud/datastore');
 
 let datastoreInstance;
 
-const auditKeyPath = 'Audit122';
-const reportKeyPath = 'Report122';
+const auditKeyPath = 'Audit129';
+const reportKeyPath = 'Report129';
 // const auditKeyPath = `Audit${new Date().toJSON().substr(0, 16)}`; // @TODO: changeme
 // const reportKeyPath = `Report${new Date().toJSON().substr(0, 16)}`; // @TODO: changeme
 

@@ -1,3 +1,4 @@
+require('../../global');
 const {
     getAuditDoc, setAuditDoc, setReportDoc,
 } = require('../../integrations/datastore');

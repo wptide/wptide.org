@@ -1,7 +1,9 @@
 const { connector } = require('swagger-routes-express');
 const YAML = require('yamljs');
 const express = require('express');
+
 const api = require('./api');
+require('./global');
 
 const apiSpec = YAML.load('tideapi.yml');
 const app = express();

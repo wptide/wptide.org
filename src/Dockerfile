@@ -2,7 +2,7 @@ FROM php:7.4-cli-alpine
 MAINTAINER XWP <engage@xwp.co>
 ENV VENDOR /app/vendor
 ENV NODE_VERSION 12.19.0
-RUN apk add --no-cache composer jq
+RUN apk add --no-cache composer
 COPY . /app
 WORKDIR /app
 # Composer
@@ -81,6 +81,10 @@ RUN addgroup -g 1000 node \
   && apk del .build-deps \
   # smoke tests
   && node --version \
-  && npm --version
+  && npm --version \
+  && npm install --only=production \
+  && rm index.js
 
-ENTRYPOINT ["/bin/sh", "/app/docker-entrypoint.sh"]
+EXPOSE 8080
+
+ENTRYPOINT ["npm", "start"]
