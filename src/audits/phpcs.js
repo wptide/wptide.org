@@ -5,18 +5,14 @@ const util = require('util');
 const fs = require('fs');
 const streamPipeline = util.promisify(require('stream').pipeline);
 
-const auditDir = '/tmp/audit/';
-const downloadFilename = 'project.zip';
-
 const download = async (url, path) => {
     const response = await fetch(url);
     if (!response.ok) throw new Error(`unexpected response ${response.statusText}`);
     await streamPipeline(response.body, fs.createWriteStream(path));
 };
 
-const runAudits = async () => {
-    // const path = '/Users/ivan/projects/ofm/tide-faas/phpcs/vendor/bin/'; // Remove me
-    const path = '/app/vendor/bin/'; // Remove me
+const runAudits = async (auditDir) => {
+    const path = '/app/vendor/bin/';
     const phpcsPermutataions = [
         { testVersion: '5.2', filename: 'php5.2.json', report: 'version' }, // Remove me after testing
         { testVersion: '5.6', filename: 'php5.6.json', report: 'version' },
@@ -54,11 +50,13 @@ const runAudits = async () => {
 };
 
 const phpcsAudit = async (settings) => {
+    const auditDir = `/tmp/${settings.project_type}-${settings.slug}-${settings.version}/`;
+    const downloadFilename = 'project.zip';
     const url = `https://downloads.wordpress.org/${settings.project_type}/${settings.slug}.${settings.version}.zip`;
     fs.mkdirSync(auditDir, { recursive: true });
     await download(url, `${auditDir}${downloadFilename}`);
     execSync(`unzip ${downloadFilename}`, { cwd: auditDir });
-    const audit = await runAudits();
+    const audit = await runAudits(auditDir);
     fs.rmdirSync(auditDir, { recursive: true });
     return audit;
 };
