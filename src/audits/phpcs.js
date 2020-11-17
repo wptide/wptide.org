@@ -14,7 +14,6 @@ const download = async (url, path) => {
 const runAudits = async (auditDir) => {
     const path = '/app/vendor/bin/';
     const phpcsPermutataions = [
-        { testVersion: '5.2', filename: 'php5.2.json', report: 'version' }, // Remove me after testing
         { testVersion: '5.6', filename: 'php5.6.json', report: 'version' },
         { testVersion: '7.0', filename: 'php7.0.json', report: 'version' },
         { testVersion: '7.1', filename: 'php7.1.json', report: 'version' },
