@@ -8,17 +8,9 @@ const fetch = require('node-fetch');
  * Internal Dependencies.
  */
 const { dateTime } = require('../util/time');
-const { getAuditId, getProjectId } = require('../util/identifiers');
+const { getSourceUrl, getAuditId, getProjectId } = require('../util/identifiers');
 const { getAuditDoc, setAuditDoc, getReportDoc } = require('../integrations/datastore');
 const { publish, messageTypes } = require('../integrations/pubsub');
-
-const checkValidProject = async (url) => {
-    const response = await fetch(url, {
-        method: 'HEAD',
-    });
-
-    return response.ok;
-};
 
 const shouldLighthouseAudit = async (auditData) => {
     const url = `https://api.wordpress.org/themes/info/1.1/?action=theme_information&request[slug]=${auditData.project_slug}`;
@@ -48,24 +40,30 @@ const sendAuditMessages = async (auditData) => {
 
 const createNewAudit = async (auditData, params) => {
     const audit = { ...auditData };
-    const url = `https://downloads.wordpress.org/${params.project_type}/${params.project_slug}.${params.version}.zip`;
-    if (await checkValidProject(url)) {
+    const sourceUrl = await getSourceUrl(params.project_type, params.project_slug, params.version);
+
+    if (sourceUrl) {
         const timeNow = dateTime();
+
         audit.created_datetime = timeNow;
         audit.last_modified_datetime = timeNow;
-        audit.version = params.version;
         audit.project_type = params.project_type;
         audit.project_slug = params.project_slug;
-        audit.source_url = url;
         audit.reports = {};
+        audit.source_url = sourceUrl;
+        audit.version = params.version;
+
         if (audit.project_type === 'theme' && await shouldLighthouseAudit(auditData)) {
             audit.reports.lighthouse = null;
         }
         audit.reports.phpcs_phpcompatibilitywp = null;
+
         await setAuditDoc(audit.id, audit);
         await sendAuditMessages(audit);
+
         return getAuditDoc(audit.id);
     }
+
     return null; // Project not found
 };
 
