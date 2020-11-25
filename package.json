@@ -11,8 +11,8 @@
     "start:emulator:pubsub": "gcloud beta emulators pubsub start",
     "start:audit-response": "cd src/event-handlers/audit-response && functions-framework --target=auditResponse --signature-type=event --port 8100",
     "start:phpcs": "cd src/event-handlers/phpcs && functions-framework --target=phpcsAudit --signature-type=event --port 8110",
-    "lint": "eslint src",
-    "lint:fix": "eslint src --fix",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
     "test": "NODE_ENV=test jest --detectOpenHandles --forceExit --verbose",
     "test:watch": "NODE_ENV=test jest --watch",
     "test:coverage": "NODE_ENV=test jest --detectOpenHandles --forceExit --coverage"
