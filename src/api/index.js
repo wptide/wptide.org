@@ -1,14 +1,18 @@
+/**
+ * Internal Dependencies.
+ */
 const schema = require('./schema');
 const getAudit = require('./getAudit');
 const getReport = require('./getReport');
 
 /**
- * Build your API by adding handlers to this index file,
- * the handlers correspond to operationId in your OpenApi paths:
+ * Implements handlers for the API endpoints.
  *
- * @link https://swagger.io/specification/#operationObject
+ * The handlers correspond to an `operationId` defined in `paths`
+ * for each endpoint, which is found in the `tideapi.yml` file.
+ *
+ * @see https://swagger.io/specification/#operationObject
  */
-
 module.exports = {
     schema,
     getReport,

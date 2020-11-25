@@ -1,7 +1,13 @@
+/**
+ * External Dependencies.
+ */
 const invariant = require('invariant');
 const fetch = require('node-fetch');
-const { dateTime } = require('../util/time');
 
+/**
+ * Internal Dependencies.
+ */
+const { dateTime } = require('../util/time');
 const { getAuditId, getProjectId } = require('../util/identifiers');
 const { getAuditDoc, setAuditDoc, getReportDoc } = require('../integrations/datastore');
 const { publish, messageTypes } = require('../integrations/pubsub');
@@ -94,10 +100,10 @@ const addReports = async (audit, reportTypes) => {
 };
 
 /**
- * Gets an existing Audit
+ * Gets an existing Audit.
  *
- * @param req
- * @param res
+ * @param {object} req The HTTP request.
+ * @param {object} res The HTTP response.
  */
 const getAudit = async (req, res) => {
     invariant(req.params.project_type, 'Project type missing');
@@ -131,8 +137,6 @@ const getAudit = async (req, res) => {
     } else {
         res.json(existingAuditData);
     }
-    // res.json({ action: 'getAudit', params: req.params, setbar, getbar });
-    // res.json({ action: 'getAudit', params: req.params, audit: await lh('https://wp-themes.com/twentytwenty/') });
 };
 
 module.exports = getAudit;
