@@ -5,6 +5,7 @@
         "plugin:jsdoc/recommended"
     ],
     "rules": {
+        "no-console": "off",
         "indent": ["error", 4]
     }
 }
