@@ -2,7 +2,7 @@
   "name": "tide-faas",
   "version": "1.0.0",
   "description": "Node setup for the Tide Cloud Functions API",
-  "main": "src/index.js",
+  "main": "index.js",
   "scripts": {
     "start": "functions-framework --target=TideAPI --signature-type=http",
     "start:emulator:datastore": "gcloud beta emulators datastore start --no-store-on-disk",

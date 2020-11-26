@@ -2,14 +2,13 @@ const { connector } = require('swagger-routes-express');
 const YAML = require('yamljs');
 const express = require('express');
 
-const api = require('./api');
+const api = require('./src/api');
 
-const apiSpec = YAML.load('tideapi.yml');
+const apiSpec = YAML.load('openapi.yml');
 const app = express();
 
 const bootstrap = () => {
-    const apiDefinition = apiSpec;
-    const connect = connector(api, apiDefinition, {}); // make the connector
+    const connect = connector(api, apiSpec, {}); // make the connector
 
     // do any other app stuff, such as wire in passport, use cors etc
     connect(app); // attach the routes

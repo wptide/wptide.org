@@ -9,7 +9,7 @@ const getReport = require('./getReport');
  * Implements handlers for the API endpoints.
  *
  * The handlers correspond to an `operationId` defined in `paths`
- * for each endpoint, which is found in the `tideapi.yml` file.
+ * for each endpoint, which is found in the `openeapi.yml` file.
  *
  * @see https://swagger.io/specification/#operationObject
  */
