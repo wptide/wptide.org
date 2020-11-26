@@ -1,14 +1,14 @@
 {
-  "name": "tide-faas-phpcs",
-  "version": "0.0.1",
-  "description": "Implementation of Tide API using OCF",
-  "main": "event-handlers/phpcs/index.js",
+  "name": "phpcs-server",
+  "version": "1.0.0",
+  "description": "Node setup for the Tide PHPCS Cloud Run server.",
+  "main": "index.js",
   "scripts": {
-    "start": "functions-framework --target=phpcsAudit --signature-type=event --port 8080"
+    "start": "functions-framework --target=phpcsAudit --signature-type=event --port 8110"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ivankruchkoff/tide-faas.git"
+    "url": "git+https://github.com/xwp/tide-faas.git"
   },
   "author": "XWP",
   "license": "MIT",

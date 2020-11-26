@@ -49,8 +49,8 @@ const runAudits = async (auditDir) => {
 };
 
 const phpcsAudit = async (settings) => {
-    const auditDir = `/tmp/${settings.project_type}-${settings.slug}-${settings.version}/`;
-    const downloadFilename = 'project.zip';
+    const auditDir = `/tmp/${settings.project_type}/`;
+    const downloadFilename = `${settings.slug}.${settings.version}.zip`;
     const url = `https://downloads.wordpress.org/${settings.project_type}/${settings.slug}.${settings.version}.zip`;
     fs.mkdirSync(auditDir, { recursive: true });
     await download(url, `${auditDir}${downloadFilename}`);

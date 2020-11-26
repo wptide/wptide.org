@@ -9,14 +9,18 @@ OpenAPI Tide Implementation
 
 # Local Testing Setup
 
-* Build phpcs docker container from src directory: `docker build --tag tidephpcs:0.36 -f phpcs/Dockerfile .`
+## Build Images
+* Build PHPCS Cloud Run image from src directory: `docker build --no-cache -t tidephpcs:latest -f docker/phpcs/Dockerfile .`
+
+## Start Emulators
 * Start datastore: `npm run start:emulator:datastore`
 * Start pubsub: `npm run start:emulator:pubsub`
-* Start local event proxy: `npm run start:local-proxy`
-* Start API handler: `npm start`
+
+## Start Services
+* Start Cloud Functions API: `npm start`
+* Start PHPCS Cloud Run container: `docker run -p 8110:8110 --env-file .env --env ENDPOINT_PUBSUB=host.docker.internal:8085 tidephpcs:latest`
 * Start lighthouse: `npm run start:lighthouse`
 * Start audit response handler: `npm run start:audit-response`
-* Start phpcs docker container: `docker run -p 8110:8080 tidephpcs:0.36`
 
 # Testing the API
 

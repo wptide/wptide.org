@@ -1,7 +1,7 @@
 {
-    "name": "xwp/phpcs",
-    "require": {},
-    "require-dev": {
+    "name": "wptide/phpcs-server",
+    "description": "Composer setup for the Tide PHPCS Cloud Run server.",
+    "require": {
         "dealerdirect/phpcodesniffer-composer-installer": "*",
         "wp-coding-standards/wpcs": "^2.3",
         "phpcompatibility/phpcompatibility-wp": "^2.1"
