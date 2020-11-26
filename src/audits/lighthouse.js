@@ -12,7 +12,10 @@ const lighthouseAudit = async (url) => {
         output: 'json',
     };
 
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({
+        executablePath: process.env.CHROMIUM_PATH,
+        args: options.chromeFlags,
+    });
     options.port = (new URL(browser.wsEndpoint())).port;
 
     const runnerResult = await lighthouse(url, options);
@@ -20,9 +23,8 @@ const lighthouseAudit = async (url) => {
     const reportJson = runnerResult.report;
     const report = JSON.parse(reportJson);
     await browser.close();
-    return {
-        report,
-    };
+
+    return report;
 };
 
 module.exports = lighthouseAudit;

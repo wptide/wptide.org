@@ -1,0 +1,35 @@
+{
+  "name": "audit-server",
+  "description": "Node setup for the Tide Audit Cloud Run server.",
+  "main": "src/run/audit-server.js",
+  "scripts": {
+    "start": "functions-framework --target=auditServer --signature-type=event"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xwp/tide-faas.git"
+  },
+  "author": "XWP",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/xwp/tide-faas/issues"
+  },
+  "homepage": "https://github.com/xwp/tide-faas#readme",
+  "dependencies": {
+    "@google-cloud/datastore": "^6.2.0",
+    "@google-cloud/functions-framework": "^1.7.1",
+    "@google-cloud/pubsub": "^2.6.0",
+    "node-fetch": "^2.6.1",
+    "dotenv-flow": "^3.2.0"
+  },
+  "devDependencies": {
+    "@wordpress/npm-package-json-lint-config": "^3.1.0",
+    "npm-package-json-lint": "^5.1.0"
+  },
+  "npmPackageJsonLintConfig": {
+    "extends": "@wordpress/npm-package-json-lint-config",
+    "rules": {
+      "require-version": "off"
+    }
+  }
+}

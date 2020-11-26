@@ -75,14 +75,14 @@ paths:
                 $ref: '#/components/schemas/Audit'
         404:
           description: Audit not found.
-  '/report/{report_id}':
+  '/report/{id}':
     get:
       summary: Get report by id.
       description: Get an audit report, e.g. lighthouse or phpcompatibilitywp for a specified report id listed in the audit info for a project.
       operationId: getReport
       parameters:
         - in: path
-          name: report_id
+          name: id
           description: Report id.
           required: true
           schema:

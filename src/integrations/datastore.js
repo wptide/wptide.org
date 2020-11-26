@@ -10,6 +10,7 @@ const getDatastore = () => {
         const options = {};
         if (process.env.NODE_ENV !== 'production') {
             options.apiEndpoint = process.env.ENDPOINT_DATASTORE || 'localhost:8081';
+            options.projectId = process.env.GOOGLE_CLOUD_PROJECT || 'tide-staging';
         }
         datastoreInstance = new Datastore(options);
     }

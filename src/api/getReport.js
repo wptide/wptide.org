@@ -2,12 +2,12 @@ const invariant = require('invariant');
 const { getReportDoc } = require('../integrations/datastore');
 
 const getReport = async (req, res) => {
-    invariant(req.params.report_id, 'Report id missing');
-    const reportId = req.params.report_id.replace(/[^\w.-]+/g, '');
+    invariant(req.params.id, 'Report id missing');
+    const reportId = req.params.id.replace(/[^\w.-]+/g, '');
     const report = await getReportDoc(reportId);
     if (report) {
         res.json({
-            report_id: reportId,
+            id: reportId,
             report,
         });
     } else {

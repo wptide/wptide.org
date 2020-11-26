@@ -26,14 +26,13 @@ const sendAuditMessages = async (auditData) => {
     const messageBody = {
         id: auditData.id,
         slug: auditData.project_slug,
+        project_type: auditData.project_type,
+        version: auditData.version,
     };
 
-    if (auditData.reports && auditData.reports.lighthouse === null) {
+    if (auditData.reports && auditData.reports.lighthouse === 'pending') {
         await publish(messageBody, messageTypes.MESSAGE_TYPE_LIGHTHOUSE_REQUEST);
     }
-
-    messageBody.project_type = auditData.project_type;
-    messageBody.version = auditData.version;
 
     await publish(messageBody, messageTypes.MESSAGE_TYPE_CODE_SNIFFER_REQUEST);
 };
@@ -54,9 +53,9 @@ const createNewAudit = async (auditData, params) => {
         audit.version = params.version;
 
         if (audit.project_type === 'theme' && await shouldLighthouseAudit(auditData)) {
-            audit.reports.lighthouse = null;
+            audit.reports.lighthouse = 'pending';
         }
-        audit.reports.phpcs_phpcompatibilitywp = null;
+        audit.reports.phpcs_phpcompatibilitywp = 'pending';
 
         await setAuditDoc(audit.id, audit);
         await sendAuditMessages(audit);
@@ -84,12 +83,12 @@ const addReports = async (audit, reportTypes) => {
 
     await Promise.all(fetchReportTypes.map(async (reportType) => {
         const reportId = updatedAudit.reports[reportType]
-            ? updatedAudit.reports[reportType].report_id : null;
+            ? updatedAudit.reports[reportType].id : null;
         if (reportId) {
             const report = await getReportDoc(reportId);
             if (report) {
                 // Attach the audit report to the doc.
-                updatedAudit.reports[reportType] = { ...report, report_id: reportId };
+                updatedAudit.reports[reportType] = { ...report, id: reportId };
             }
         }
     }));

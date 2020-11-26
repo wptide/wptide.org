@@ -31,14 +31,14 @@
         "lighthouse": {
             // We generate these deterministically so they can be updated / overwritten
             // shasum256 of audit id and report key. ( id, lighthouse )
-            "report_id": "d6c59eef9bb2cfbad4d173c04e4e70777a101451d5a462c6b08e0f16d5291e66"
+            "id": "d6c59eef9bb2cfbad4d173c04e4e70777a101451d5a462c6b08e0f16d5291e66"
         },
         "phpcs_themeaudit": null, // this audit type is not finalised, but a null value indicates report is pending
         "phpcs_phpcompatibilitywp": {
             // We know that 5.6-7.3 are tested, 8.0 is not tested
             "compatible_versions": ["7.0","7.1", "7.2", "7.3"],
             "incompatible_versions": ["5.6"],
-            "report_id": "2206530cdc28e4749ff746606b108726cef0a1f86f0070386dd40a344df08af2"
+            "id": "2206530cdc28e4749ff746606b108726cef0a1f86f0070386dd40a344df08af2"
         }
     }
 }

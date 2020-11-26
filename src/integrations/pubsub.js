@@ -16,10 +16,9 @@ const getPubsub = async () => {
     const options = {};
     if (process.env.NODE_ENV !== 'production') {
         options.apiEndpoint = process.env.ENDPOINT_PUBSUB || 'localhost:8085';
+        options.projectId = process.env.GOOGLE_CLOUD_PROJECT || 'tide-staging';
     }
-    if (process.env.GOOGLE_CLOUD_PROJECT) {
-        options.projectId = process.env.GOOGLE_CLOUD_PROJECT;
-    }
+
     if (!pubsubInstance) {
         pubsubInstance = new PubSub(options);
 
@@ -45,7 +44,7 @@ const publish = async (message, topicName) => {
     const messageId = await pubsub.topic(topicName).publish(buffer);
     let debugMessage = JSON.stringify(message);
     debugMessage = debugMessage.length > 200 ? Object.keys(message) : debugMessage;
-    console.debug(`Message ${messageId} published to ${topicName} with ${debugMessage}`); // eslint-disable-line no-console
+    console.debug(`Message ${messageId} published to ${topicName} with ${debugMessage}`);
 };
 
 const subscribe = async (subscriptionName, options) => {
@@ -74,6 +73,7 @@ const subscribe = async (subscriptionName, options) => {
 
 module.exports = {
     messageTypes,
+    getPubsub,
     subscribe,
     publish,
 };
