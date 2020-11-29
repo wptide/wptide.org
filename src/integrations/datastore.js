@@ -45,6 +45,7 @@ const getReportDoc = async (id) => get(getKey(reportKeyPath, id));
 const setReportDoc = async (id, data) => set(getKey(reportKeyPath, id), data);
 
 module.exports = {
+    getDatastore,
     getAuditDoc,
     setAuditDoc,
     getReportDoc,

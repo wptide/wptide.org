@@ -30,11 +30,20 @@ const sendAuditMessages = async (auditData) => {
         version: auditData.version,
     };
 
-    if (auditData.reports && auditData.reports.lighthouse === 'pending') {
-        await publish(messageBody, messageTypes.MESSAGE_TYPE_LIGHTHOUSE_REQUEST);
-    }
+    // Add delays to avoid race condition during Datastore update.
+    if (auditData.reports) {
+        setTimeout(async () => {
+            if (auditData.reports.phpcs_phpcompatibilitywp === null) {
+                await publish(messageBody, messageTypes.MESSAGE_TYPE_PHPCS_REQUEST);
+            }
+        }, 2000);
 
-    await publish(messageBody, messageTypes.MESSAGE_TYPE_CODE_SNIFFER_REQUEST);
+        setTimeout(async () => {
+            if (auditData.reports.lighthouse === null) {
+                await publish(messageBody, messageTypes.MESSAGE_TYPE_LIGHTHOUSE_REQUEST);
+            }
+        }, 4000);
+    }
 };
 
 const createNewAudit = async (auditData, params) => {
@@ -53,9 +62,9 @@ const createNewAudit = async (auditData, params) => {
         audit.version = params.version;
 
         if (audit.project_type === 'theme' && await shouldLighthouseAudit(auditData)) {
-            audit.reports.lighthouse = 'pending';
+            audit.reports.lighthouse = null;
         }
-        audit.reports.phpcs_phpcompatibilitywp = 'pending';
+        audit.reports.phpcs_phpcompatibilitywp = null;
 
         await setAuditDoc(audit.id, audit);
         await sendAuditMessages(audit);
@@ -88,7 +97,7 @@ const addReports = async (audit, reportTypes) => {
             const report = await getReportDoc(reportId);
             if (report) {
                 // Attach the audit report to the doc.
-                updatedAudit.reports[reportType] = { ...report, id: reportId };
+                updatedAudit.reports[reportType].report = report.raw || report;
             }
         }
     }));

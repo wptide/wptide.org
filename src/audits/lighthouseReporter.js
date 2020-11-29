@@ -1,7 +1,10 @@
+/**
+ * External Dependencies.
+ */
 const lighthouse = require('lighthouse');
 const puppeteer = require('puppeteer');
 
-const lighthouseAudit = async (url) => {
+const lighthouseReporter = async (message) => {
     const options = {
         chromeFlags: [
             '--disable-gpu',
@@ -11,6 +14,7 @@ const lighthouseAudit = async (url) => {
         logLevel: 'error',
         output: 'json',
     };
+    const url = `https://wp-themes.com/${message.slug.replace(/[^\w.-]+/g, '')}/`;
 
     const browser = await puppeteer.launch({
         executablePath: process.env.CHROMIUM_PATH,
@@ -27,4 +31,4 @@ const lighthouseAudit = async (url) => {
     return report;
 };
 
-module.exports = lighthouseAudit;
+module.exports = lighthouseReporter;

@@ -1,9 +1,9 @@
 {
   "name": "lighthouse-server",
   "description": "Node setup for the Tide Lighthouse Cloud Run server.",
-  "main": "src/run/lighthouse-server.js",
+  "main": "src/run/lighthouseServer.js",
   "scripts": {
-    "start": "functions-framework --target=lighthouseServer --signature-type=event"
+    "start": "functions-framework --target=lighthouseServer --signature-type=http"
   },
   "repository": {
     "type": "git",

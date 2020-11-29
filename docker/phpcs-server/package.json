@@ -1,9 +1,9 @@
 {
   "name": "phpcs-server",
   "description": "Node setup for the Tide PHPCS Cloud Run server.",
-  "main": "src/run/phpcs-server.js",
+  "main": "src/run/phpcsServer.js",
   "scripts": {
-    "start": "functions-framework --target=phpcsServer --signature-type=event"
+    "start": "functions-framework --target=phpcsServer --signature-type=http"
   },
   "repository": {
     "type": "git",
