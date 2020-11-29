@@ -3,7 +3,6 @@
     "description": "Composer setup for the Tide PHPCS Cloud Run server.",
     "require": {
         "dealerdirect/phpcodesniffer-composer-installer": "*",
-        "wp-coding-standards/wpcs": "^2.3",
-        "phpcompatibility/phpcompatibility-wp": "^2.1"
+        "phpcompatibility/phpcompatibility-wp": "2.1.0"
     }
 }
