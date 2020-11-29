@@ -63,7 +63,6 @@ const phpcsReporter = async (settings) => {
     await download(url, `${auditDir}${downloadFilename}`);
     execSync(`unzip ${downloadFilename}`, { cwd: auditDir });
     const audit = await runAudits(`${auditDir}${settings.slug}${sep}`);
-    // fs.unlinkSync(`${auditDir}${downloadFilename}`);
     fs.rmdirSync(`${auditDir}${settings.slug}`, { recursive: true });
 
     return audit;
