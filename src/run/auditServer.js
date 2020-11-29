@@ -22,24 +22,24 @@ exports.auditServer = async (req, res, reporter, type, name) => {
         res.status(400).send();
     };
 
-    if (!req.body) {
-        return sendError('No Pub/Sub message received');
-    }
-
-    if (!req.body.message) {
-        return sendError('Invalid Pub/Sub message format');
-    }
-
-    const pubSubMessage = req.body.message;
-    const message = pubSubMessage.data
-        ? JSON.parse(Buffer.from(pubSubMessage.data, 'base64').toString('ascii').trim())
-        : null;
-
-    if (Object.prototype.toString.call(message) !== '[object Object]') {
-        return sendError('Invalid Pub/Sub message format');
-    }
-
     try {
+        if (!req.body) {
+            throw new Error('No Pub/Sub message received');
+        }
+
+        if (!req.body.message) {
+            throw new Error('Invalid Pub/Sub message format');
+        }
+
+        const pubSubMessage = req.body.message;
+        const message = pubSubMessage.data
+            ? JSON.parse(Buffer.from(pubSubMessage.data, 'base64').toString('ascii').trim())
+            : null;
+
+        if (Object.prototype.toString.call(message) !== '[object Object]') {
+            throw new Error('Invalid Pub/Sub message format');
+        }
+
         if (!!message.id && !!message.slug && !!message.version) {
             const reportId = getHash(`${message.id}-${type}`);
             let audit = await getAuditDoc(message.id);
