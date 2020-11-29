@@ -12,6 +12,8 @@ RUN composer install
 # PHP
 FROM php:7.4-cli-alpine3.12 as backend
 
+RUN echo 'memory_limit = -1' >> /usr/local/etc/php/conf.d/memory-limit.ini
+
 # Node
 FROM node:12-alpine3.12
 
