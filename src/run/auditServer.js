@@ -51,12 +51,13 @@ exports.auditServer = async (req, res, reporter, type, name) => {
 
             // Don't update an existing Audit.
             if (Object.prototype.toString.call(audit.reports[type]) === '[object Object]' && Object.prototype.hasOwnProperty.call(audit.reports[type], 'id')) {
+                console.log(`Skipping: Audit for ${message.slug} v${message.version} already exists`);
                 return res.status(200).send();
             }
 
-            // Audits are locked for 60 seconds.
-            if (Number.isInteger(audit.reports[type]) && dateTime() - audit.reports[type] < 60) {
-                throw new Error(`${name} audit for ${message.slug} v${message.version} is already running`);
+            // Audits are locked for 5 minutes.
+            if (Number.isInteger(audit.reports[type]) && dateTime() - audit.reports[type] < 300) {
+                throw new Error(`${name} audit for ${message.slug} v${message.version} is locked for ${dateTime() - audit.reports[type]}s`);
             }
 
             // Save the Audit Report lock.
@@ -66,7 +67,7 @@ exports.auditServer = async (req, res, reporter, type, name) => {
             console.log(`${name} audit for ${message.slug} v${message.version} started`);
 
             // Get the Audit Report.
-            const report = await reporter(message); // @todo handle error.
+            const report = await reporter(message); // @todo handle error, remove lock.
 
             // Get a fresh copy of the Audit.
             audit = await getAuditDoc(message.id);
@@ -74,6 +75,12 @@ exports.auditServer = async (req, res, reporter, type, name) => {
             // Don't update a missing Audit (failure to read Datastore).
             if (Object.prototype.toString.call(audit) !== '[object Object]') {
                 throw new Error(`Audit for ${message.slug} v${message.version} is missing`);
+            }
+
+            // Don't update an existing Audit.
+            if (Object.prototype.toString.call(audit.reports[type]) === '[object Object]' && Object.prototype.hasOwnProperty.call(audit.reports[type], 'id')) {
+                console.log(`Warning: Audit for ${message.slug} v${message.version} was already completed`);
+                return res.status(200).send();
             }
 
             // Don't update an unlocked Audit.
