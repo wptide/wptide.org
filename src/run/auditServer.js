@@ -102,7 +102,7 @@ exports.auditServer = async (req, res, reporter, type, name) => {
         }
 
         // Missing message values.
-        return sendError(`Could not perform ${name} audit: ${message}`);
+        throw new Error(`Could not perform ${name} audit: ${message}`);
 
     // Catch and log all errors.
     } catch (error) {
