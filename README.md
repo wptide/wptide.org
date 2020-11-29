@@ -25,4 +25,4 @@ OpenAPI Tide Implementation
 
 ### Example API Requests
 * Browse to this URL: http://localhost:8080/api/v1/audit/wporg/theme/twentytwenty/1.5
-* Browse to this URL: http://localhost:8080/api/v1/audit/wporg/plugin/stream/3.6.0
+* Browse to this URL: http://localhost:8080/api/v1/audit/wporg/plugin/pwa/0.5.0
