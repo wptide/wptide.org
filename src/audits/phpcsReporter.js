@@ -11,9 +11,20 @@ const os = require('os');
  */
 const { download } = require('../util/download');
 
-const runAudits = async (auditDir) => {
-    const path = '/app/vendor/bin/';
-    const phpcsPermutataions = [
+/**
+ * Generates a PHPCS PHPCompatibilityWP audit report.
+ *
+ * @param {object} message The Pub/Sub message.
+ * @returns {object} The audit report.
+ */
+const phpcsReporter = async (message) => {
+    // @todo handle missing message params.
+    const parentDir = `${os.tmpdir()}${sep}${message.project_type}${sep}`;
+    const auditDir = `${parentDir}${message.slug}${sep}`;
+    const downloadFilename = `${message.slug}.${message.version}.zip`;
+    const url = `https://downloads.wordpress.org/${message.project_type}/${message.slug}.${message.version}.zip`;
+
+    const phpcsPermutations = [
         { testVersion: '5.6', filename: 'php5.6.json', report: 'version' },
         { testVersion: '7.0', filename: 'php7.0.json', report: 'version' },
         { testVersion: '7.1', filename: 'php7.1.json', report: 'version' },
@@ -30,8 +41,14 @@ const runAudits = async (auditDir) => {
         raw: null,
     };
 
-    phpcsPermutataions.forEach((phpcsParams) => {
-        const output = execSync(`${path}phpcs -q -p . --standard=PHPCompatibilityWP --extensions=php --runtime-set testVersion ${phpcsParams.testVersion} --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1 --report=json`, { cwd: auditDir }).toString();
+    // Download & unzip the archive.
+    fs.mkdirSync(parentDir, { recursive: true });
+    await download(url, `${parentDir}${downloadFilename}`);
+    execSync(`unzip ${downloadFilename}`, { cwd: parentDir });
+
+    // Generate & store PHPCS reports.
+    phpcsPermutations.forEach((phpcsParams) => {
+        const output = execSync(`/app/vendor/bin/phpcs -q -p . --standard=PHPCompatibilityWP --extensions=php --runtime-set testVersion ${phpcsParams.testVersion} --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1 --report=json`, { cwd: auditDir }).toString();
         const parsedOutput = JSON.parse(output);
         if (phpcsParams.report === 'version') {
             if (parsedOutput.totals.errors === 0) {
@@ -50,20 +67,8 @@ const runAudits = async (auditDir) => {
         }
     });
 
-    return audit;
-};
-
-const phpcsReporter = async (settings) => {
-    const tmpDir = os.tmpdir();
-    const auditDir = `${tmpDir}${sep}${settings.project_type}${sep}`;
-    const downloadFilename = `${settings.slug}.${settings.version}.zip`;
-    const url = `https://downloads.wordpress.org/${settings.project_type}/${settings.slug}.${settings.version}.zip`;
-
-    fs.mkdirSync(auditDir, { recursive: true });
-    await download(url, `${auditDir}${downloadFilename}`);
-    execSync(`unzip ${downloadFilename}`, { cwd: auditDir });
-    const audit = await runAudits(`${auditDir}${settings.slug}${sep}`);
-    fs.rmdirSync(`${auditDir}${settings.slug}`, { recursive: true });
+    // Remove directory.
+    fs.rmdirSync(auditDir, { recursive: true });
 
     return audit;
 };
