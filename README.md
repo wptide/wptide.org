@@ -32,20 +32,12 @@ make setup.api
 
 _The `.env` is for the Cloud Functions API and `.env.server` for the Cloud Run Servers. Both are only used locally._
 
-Alternatively, you can run the following commands separately to create those files and install NPM:
+Setup the `.firebaserc` file (optional):
 
 ```
-cp .env.dist .env
+make setup.firebase
 ```
-
-```
-cp .env.server.dist .env.server
-```
-
-```
-cd app && npm install
-```
-
+	
 ### Docs Generator
 * Build front-end: `npm run build`
 * Serve front-end: `npm run dev`
@@ -58,9 +50,10 @@ _**Note**: The front-end dev server runs on port `8000`_
 
 ### Start Emulators
 * Start Datastore: `make start.emulator.datastore`
+* Start Firebase (optional): `make start.emulator.firebase`
 * Start Pub/Sub: `make start.emulator.pubsub`
 
-_**Note**: Datastore runs on port `8081` and Pub/Sub runs on port `8085`_
+_**Note**: Datastore runs on port `8081`, Firestore run on port `5000`, and Pub/Sub runs on port `8085`_
 
 ### Start Servers
 * Start Cloud Functions API: `make start.api`
