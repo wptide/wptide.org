@@ -1,5 +1,5 @@
-# tide-faas
-OpenAPI Tide Implementation
+# wptide.org
+Firebase hosted Vuepress documentation site for [wptide.org](https://wptide.org). Along with an implementation of Tide using the OpenAPI Specification v3 deployed to Cloud Functions and Cloud Run.
 
 ## Prerequisites
 * Install gcloud https://cloud.google.com/sdk/docs/install
@@ -12,11 +12,25 @@ To test and deploy the Firebase hosting environment you will also need to instal
 
 ## Local Setup
 
-To get the API setup we need to install the NPM packages and create the `.env` and `.env.server` files used in local development **only**. The `.env` is for the Cloud Functions API and `.env.server` for the Cloud Run Servers.
+Clone the repository:
+
+```
+git clone git@github.com:wptide/wptide.org.git
+```
+
+Install dependencies:
+
+```
+npm install
+```
+
+Setup the API by installing the dependencies and creating the `.env` and `.env.server` files.
 
 ```
 make setup.api
 ```
+
+_The `.env` is for the Cloud Functions API and `.env.server` for the Cloud Run Servers. Both are only used locally._
 
 Alternatively, you can run the following commands separately to create those files and install NPM:
 
