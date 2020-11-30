@@ -1,5 +1,5 @@
 # wptide.org
-Firebase hosted Vuepress documentation site for [wptide.org](https://wptide.org). Along with an implementation of Tide using the OpenAPI Specification v3 deployed to Cloud Functions and Cloud Run.
+Firebase hosted VuePress documentation site for [wptide.org](https://wptide.org). Along with an implementation of Tide using the OpenAPI Specification v3 deployed to Cloud Functions and Cloud Run.
 
 ## Prerequisites
 * Install [Node](https://nodejs.org/en/download/)
