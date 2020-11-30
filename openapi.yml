@@ -30,12 +30,12 @@ paths:
   '/audit/wordpress/{type}/{slug}/{version}':
     get:
       summary: Get Audit
-      description: Get a WordPress.org theme or plugin audit with a project type, slug and version.
+      description: Get a WordPress.org theme or plugin audit with a project type, slug and version
       operationId: getAudit
       parameters:
         - in: path
           name: type
-          description: The WordPress.org project type. Valid options are theme or plugin.
+          description: The WordPress.org project type. Valid options are theme or plugin
           required: true
           schema:
             type: string
@@ -44,19 +44,19 @@ paths:
               - theme
         - in: path
           name: slug
-          description: The WordPress.org project slug.
+          description: The WordPress.org project slug
           required: true
           schema:
             type: string
         - in: path
           name: version
-          description: The WordPress.org project version.
+          description: The WordPress.org project version
           required: true
           schema:
             type: string
         - in: query
           name: reports
-          description: Include audit reports in the response. Valid options are all, lighthouse, or phpcs_phpcompatibilitywp.
+          description: Include audit reports in the response. Valid options are all, lighthouse, or phpcs_phpcompatibilitywp
           required: false
           schema:
             type: array
@@ -78,12 +78,12 @@ paths:
   '/report/{id}':
     get:
       summary: Get Report
-      description: Get an Audit Report by id.
+      description: Get an Audit Report by id
       operationId: getReport
       parameters:
         - in: path
           name: id
-          description: The Report id.
+          description: The Report id
           required: true
           schema:
             type: string
@@ -95,7 +95,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Report'
         404:
-          description: Report not found.
+          description: Report not found
 components:
   schemas:
     Audit:

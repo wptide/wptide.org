@@ -44,9 +44,11 @@ const getAuditDoc = async (id) => {
         // Forces sort order in response.
         return Object.assign({
             id: audit.id,
+            type: audit.type,
+            slug: audit.slug,
+            version: audit.version,
             created_datetime: audit.created_datetime,
             last_modified_datetime: audit.last_modified_datetime,
-            project: audit.project,
         }, audit);
     }
 
@@ -67,7 +69,7 @@ const getReportDoc = async (id) => {
             source_url: report.source_url,
             created_datetime: report.created_datetime,
             milliseconds: report.milliseconds,
-            project: report.project,
+            audit: report.audit,
         }, report);
     }
 

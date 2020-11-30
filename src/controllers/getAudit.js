@@ -7,65 +7,60 @@ const fetch = require('node-fetch');
 /**
  * Internal Dependencies.
  */
+const { getSourceUrl, getAuditId } = require('../util/identifiers');
+const { sleep } = require('../util/sleep');
 const { dateTime } = require('../util/time');
-const { getSourceUrl, getAuditId, getProjectId } = require('../util/identifiers');
 const { getAuditDoc, setAuditDoc, getReportDoc } = require('../integrations/datastore');
 const { publish, messageTypes } = require('../integrations/pubsub');
 
 const shouldLighthouseAudit = async (audit) => {
-    const url = `https://api.wordpress.org/themes/info/1.1/?action=theme_information&request[slug]=${audit.project.slug}`;
+    const url = `https://api.wordpress.org/themes/info/1.1/?action=theme_information&request[slug]=${audit.slug}`;
     const response = await fetch(url, {
         method: 'GET',
     });
     const themeInfo = await response.json();
     // Checks whether the version supplied is equivalent to the version from themes api.
-    return themeInfo.version === audit.project.version && themeInfo.slug === audit.project.slug;
+    return themeInfo.version === audit.version && themeInfo.slug === audit.slug;
 };
 
-const sendAuditMessages = async (auditData) => {
+const sendAuditMessages = async (audit) => {
     const messageBody = {
-        id: auditData.id,
-        slug: auditData.project.slug,
-        type: auditData.project.type,
-        version: auditData.project.version,
+        id: audit.id,
+        slug: audit.slug,
+        type: audit.type,
+        version: audit.version,
     };
 
     // Add delays to avoid race condition during Datastore update.
-    if (auditData.reports) {
-        setTimeout(async () => {
-            if (auditData.reports.phpcs_phpcompatibilitywp === null) {
-                await publish(messageBody, messageTypes.MESSAGE_TYPE_PHPCS_REQUEST);
-            }
-        }, 2000);
+    if (audit.reports) {
+        if (audit.reports.phpcs_phpcompatibilitywp === null) {
+            await sleep(1000);
+            await publish(messageBody, messageTypes.MESSAGE_TYPE_LIGHTHOUSE_REQUEST);
+        }
 
-        setTimeout(async () => {
-            if (auditData.reports.lighthouse === null) {
-                await publish(messageBody, messageTypes.MESSAGE_TYPE_LIGHTHOUSE_REQUEST);
-            }
-        }, 4000);
+        if (audit.reports.lighthouse === null) {
+            await sleep(1000);
+            await publish(messageBody, messageTypes.MESSAGE_TYPE_LIGHTHOUSE_REQUEST);
+        }
     }
 };
 
 const createNewAudit = async (id, params) => {
-    const projectId = getProjectId(params);
     const sourceUrl = await getSourceUrl(params.type, params.slug, params.version);
 
     if (sourceUrl) {
         const timeNow = dateTime();
         const audit = {
             id,
+            type: params.type,
+            slug: params.slug,
+            version: params.version,
             created_datetime: timeNow,
             last_modified_datetime: timeNow,
-            project: {
-                id: projectId,
-                type: params.type,
-                version: params.version,
-                slug: params.slug,
-            },
             reports: {},
         };
 
-        if (audit.project.type === 'theme' && await shouldLighthouseAudit(audit)) {
+        if (audit.type === 'theme' && await shouldLighthouseAudit(audit)) {
             audit.reports.lighthouse = null;
         }
         audit.reports.phpcs_phpcompatibilitywp = null;
@@ -137,10 +132,15 @@ const getAudit = async (req, res) => {
         existingAuditData = await addReports(existingAuditData, req.query.reports.split(','));
     }
 
-    if (!existingAuditData) {
-        res.json('not found');
-    } else {
+    if (existingAuditData) {
         res.json(existingAuditData);
+    } else {
+        res.status(404).json({
+            error: {
+                code: 404,
+                message: 'Audit not found',
+            },
+        });
     }
 };
 

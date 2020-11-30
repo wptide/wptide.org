@@ -8,7 +8,7 @@ const util = require('util');
  */
 const { getAuditDoc, setAuditDoc, setReportDoc } = require('../integrations/datastore');
 const { dateTime } = require('../util/time');
-const { getHash, getProjectId } = require('../util/identifiers');
+const { getHash } = require('../util/identifiers');
 
 /**
  * Audit Server helper to handle Pub/Sub HTTP requests.
@@ -99,8 +99,8 @@ exports.auditServer = async (req, res, reporter, type, name) => {
             const report = {
                 id: reportId,
                 type,
-                project: {
-                    id: getProjectId(req.params),
+                audit: {
+                    id: message.id,
                     type: message.type,
                     version: message.version,
                     slug: message.slug,

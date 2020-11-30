@@ -9,7 +9,12 @@ const getReport = async (req, res) => {
     if (report) {
         res.json(report);
     } else {
-        res.json('not found');
+        res.status(404).json({
+            error: {
+                code: 404,
+                message: 'Report not found',
+            },
+        });
     }
 };
 
