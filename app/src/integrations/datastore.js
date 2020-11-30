@@ -1,7 +1,7 @@
 const { Datastore } = require('@google-cloud/datastore');
 const dotenv = require('dotenv');
 
-dotenv.config();
+dotenv.config({ path: `${process.cwd()}/../.env` });
 
 const auditKeyPath = process.env.DATASTORE_KEY_AUDIT || 'Audit';
 const reportKeyPath = process.env.DATASTORE_KEY_REPORT || 'Report';

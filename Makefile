@@ -24,10 +24,10 @@ start.api:
 	@cd app && npm start
 
 start.lighthouse-server:
-	@docker run -v $(pwd)/app/src:/app/src --rm -p 8090:8080 --env-file .env.server lighthouse-server:latest
+	@docker run -v $(PWD)/app/src:/app/src --rm -p 8090:8080 --env-file .env.server lighthouse-server:latest
 
 start.phpcs-server:
-	@docker run -v $(pwd)/app/src:/app/src --rm -p 8110:8080 --env-file .env.server phpcs-server:latest
+	@docker run -v $(PWD)/app/src:/app/src --rm -p 8110:8080 --env-file .env.server phpcs-server:latest
 
 start.proxy-server:
 	@node app/src/run/proxyServer.js

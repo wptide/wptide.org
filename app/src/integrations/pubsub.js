@@ -1,7 +1,7 @@
 const { PubSub } = require('@google-cloud/pubsub');
 const dotenv = require('dotenv');
 
-dotenv.config();
+dotenv.config({ path: `${process.cwd()}/../.env` });
 
 const MESSAGE_TYPE_LIGHTHOUSE_REQUEST = 'MESSAGE_TYPE_LIGHTHOUSE_REQUEST';
 const MESSAGE_TYPE_PHPCS_REQUEST = 'MESSAGE_TYPE_PHPCS_REQUEST';
