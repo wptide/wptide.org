@@ -11,6 +11,11 @@ module.exports = {
   description: description,
 
   /**
+   * Ref: https://v1.vuepress.vuejs.org/config/#port
+   */
+  port: 8000,
+
+  /**
    * Extra tags to be injected to the page HTML `<head>`
    *
    * ref：https://v1.vuepress.vuejs.org/config/#head
