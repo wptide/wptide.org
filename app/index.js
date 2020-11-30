@@ -25,4 +25,4 @@ const bootstrap = () => {
 
 bootstrap();
 
-exports.TideAPI = app;
+exports.tide = app;

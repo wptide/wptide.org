@@ -1,17 +1,10 @@
 {
-  "name": "tide-faas",
+  "name": "tide-api",
   "version": "1.0.0",
   "description": "Node setup for the Tide Cloud Functions API",
   "main": "index.js",
   "scripts": {
-    "start": "functions-framework --target=TideAPI --signature-type=http",
-    "start:emulator:datastore": "gcloud beta emulators datastore start --no-store-on-disk",
-    "start:emulator:pubsub": "gcloud beta emulators pubsub start",
-    "start:lighthouse-server": "docker run -v $(pwd)/src:/app/src --rm -p 8090:8080 --env-file .env.server lighthouse-server:latest",
-    "start:phpcs-server": "docker run -v $(pwd)/src:/app/src --rm -p 8110:8080 --env-file .env.server phpcs-server:latest",
-    "start:proxy-server": "node src/run/proxyServer.js",
-    "build:lighthouse-server": "docker build --no-cache -t lighthouse-server:latest -f docker/lighthouse-server/Dockerfile .",
-    "build:phpcs-server": "docker build --no-cache -t phpcs-server:latest -f docker/phpcs-server/Dockerfile .",
+    "start": "functions-framework --target=tide --signature-type=http",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test": "NODE_ENV=test jest --detectOpenHandles --forceExit --verbose",
@@ -24,16 +17,8 @@
       "pre-push": "npm run test"
     }
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/xwp/tide-faas.git"
-  },
   "author": "XWP",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/xwp/tide-faas/issues"
-  },
-  "homepage": "https://github.com/xwp/tide-faas#readme",
   "dependencies": {
     "@google-cloud/datastore": "^6.2.0",
     "@google-cloud/functions-framework": "^1.7.1",
@@ -41,9 +26,7 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "invariant": "^2.2.4",
-    "lighthouse": "^6.4.1",
     "node-fetch": "^2.6.1",
-    "puppeteer": "^5.4.1",
     "swagger-routes-express": "^3.2.1",
     "yamljs": "^0.3.0"
   },

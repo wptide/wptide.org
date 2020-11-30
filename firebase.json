@@ -1,0 +1,16 @@
+{
+  "hosting": {
+    "public": "web/docs/.vuepress/dist",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "/api/v1",
+        "function": "tide"
+      }
+    ]
+  }
+}

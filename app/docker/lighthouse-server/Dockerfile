@@ -5,8 +5,8 @@ MAINTAINER XWP <engage@xwp.co>
 
 WORKDIR /app
 
-COPY docker/lighthouse-server/ .
-COPY src/ ./src/
+COPY app/docker/lighthouse-server/ .
+COPY app/src/ ./src/
 
 RUN apk add --no-cache chromium
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true

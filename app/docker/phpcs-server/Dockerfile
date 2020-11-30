@@ -5,7 +5,7 @@ MAINTAINER XWP <engage@xwp.co>
 
 WORKDIR /app
 
-COPY docker/phpcs-server/ .
+COPY app/docker/phpcs-server/ .
 
 RUN composer install
 
@@ -19,8 +19,8 @@ FROM node:12-alpine3.12
 
 WORKDIR /app
 
-COPY docker/phpcs-server/ .
-COPY src/ ./src/
+COPY app/docker/phpcs-server/ .
+COPY app/src/ ./src/
 COPY --from=backend /usr/ /usr/
 COPY --from=vendor /app/vendor/ ./vendor/
 
