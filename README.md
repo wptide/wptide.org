@@ -9,6 +9,16 @@ OpenAPI Tide Implementation
 
 ## Local Setup
 
+Create the `.env` and `.env.server` files used in local development **only**. The `.env` is for the Node API and `.env.server` for the Cloud Run servers.
+
+```
+cp .env.dist .env
+```
+
+```
+cp .env.server.dist .env.server
+```
+
 ### Build Images
 * Build Lighthouse Cloud Run image: `npm run build:lighthouse-server`
 * Build PHPCS Cloud Run image: `npm run build:phpcs-server`

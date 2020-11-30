@@ -18,9 +18,8 @@
   "dependencies": {
     "@google-cloud/datastore": "^6.2.0",
     "@google-cloud/functions-framework": "^1.7.1",
-    "@google-cloud/pubsub": "^2.6.0",
-    "node-fetch": "^2.6.1",
-    "dotenv-flow": "^3.2.0"
+    "dotenv": "^8.2.0",
+    "node-fetch": "^2.6.1"
   },
   "devDependencies": {
     "@wordpress/npm-package-json-lint-config": "^3.1.0",

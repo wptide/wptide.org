@@ -1,4 +1,7 @@
 const { PubSub } = require('@google-cloud/pubsub');
+const dotenv = require('dotenv');
+
+dotenv.config();
 
 const MESSAGE_TYPE_LIGHTHOUSE_REQUEST = 'MESSAGE_TYPE_LIGHTHOUSE_REQUEST';
 const MESSAGE_TYPE_PHPCS_REQUEST = 'MESSAGE_TYPE_PHPCS_REQUEST';
@@ -13,8 +16,8 @@ let pubsubInstance;
 const getPubsub = async () => {
     const options = {};
     if (process.env.NODE_ENV !== 'production') {
-        options.apiEndpoint = process.env.ENDPOINT_PUBSUB || 'localhost:8085';
-        options.projectId = process.env.GOOGLE_CLOUD_PROJECT || 'tide-staging';
+        options.apiEndpoint = process.env.ENDPOINT_PUBSUB;
+        options.projectId = process.env.GOOGLE_CLOUD_PROJECT;
     }
 
     if (!pubsubInstance) {

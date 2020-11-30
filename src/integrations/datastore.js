@@ -1,16 +1,19 @@
 const { Datastore } = require('@google-cloud/datastore');
+const dotenv = require('dotenv');
 
-let datastoreInstance;
+dotenv.config();
 
 const auditKeyPath = process.env.DATASTORE_KEY_AUDIT || 'Audit';
 const reportKeyPath = process.env.DATASTORE_KEY_REPORT || 'Report';
+
+let datastoreInstance;
 
 const getDatastore = () => {
     if (!datastoreInstance) {
         const options = {};
         if (process.env.NODE_ENV !== 'production') {
-            options.apiEndpoint = process.env.ENDPOINT_DATASTORE || 'localhost:8081';
-            options.projectId = process.env.GOOGLE_CLOUD_PROJECT || 'tide-staging';
+            options.apiEndpoint = process.env.ENDPOINT_DATASTORE;
+            options.projectId = process.env.GOOGLE_CLOUD_PROJECT;
         }
         datastoreInstance = new Datastore(options);
     }
