@@ -35,7 +35,7 @@ const sendAuditMessages = async (audit) => {
     if (audit.reports) {
         if (audit.reports.phpcs_phpcompatibilitywp === null) {
             await sleep(1000);
-            await publish(messageBody, messageTypes.MESSAGE_TYPE_LIGHTHOUSE_REQUEST);
+            await publish(messageBody, messageTypes.MESSAGE_TYPE_PHPCS_REQUEST);
         }
 
         if (audit.reports.lighthouse === null) {
