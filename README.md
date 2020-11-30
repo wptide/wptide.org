@@ -24,5 +24,5 @@ OpenAPI Tide Implementation
 * Start local Pub/Sub Proxy: `npm run start:proxy-server`
 
 ### Example API Requests
-* Browse to this URL: http://localhost:8080/api/v1/audit/wporg/theme/twentytwenty/1.5
-* Browse to this URL: http://localhost:8080/api/v1/audit/wporg/plugin/pwa/0.5.0
+* Browse to this URL: http://localhost:8080/api/v1/audit/wordpress/theme/twentytwenty/1.5
+* Browse to this URL: http://localhost:8080/api/v1/audit/wordpress/plugin/pwa/0.5.0

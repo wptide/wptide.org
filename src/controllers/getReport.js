@@ -5,11 +5,9 @@ const getReport = async (req, res) => {
     invariant(req.params.id, 'Report id missing');
     const reportId = req.params.id.replace(/[^\w.-]+/g, '');
     const report = await getReportDoc(reportId);
+
     if (report) {
-        res.json({
-            id: reportId,
-            report,
-        });
+        res.json(report);
     } else {
         res.json('not found');
     }

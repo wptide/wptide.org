@@ -1,6 +1,7 @@
 /**
  * External Dependencies.
  */
+const { execSync } = require('child_process');
 const lighthouse = require('lighthouse');
 const puppeteer = require('puppeteer');
 
@@ -28,7 +29,19 @@ const lighthouseReporter = async (message) => {
     const report = JSON.parse(reportJson);
     await browser.close();
 
-    return report;
+    return {
+        source_url: url,
+        server: {
+            node: execSync('node --version').toString().match(/\d+(\.\d+)+/g)[0],
+            dependencies: [
+                {
+                    vendor: 'GoogleChrome/lighthouse',
+                    version: '6.4.1',
+                },
+            ],
+        },
+        report,
+    };
 };
 
 module.exports = lighthouseReporter;

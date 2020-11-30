@@ -3,7 +3,7 @@ info:
   version: 1.0.0
   title: Tide API
   description: >-
-    Check [Tide](http://wptide.org) audit reports for plugins and themes
+    Generates [Tide](http://wptide.org) audit reports for WordPress.org plugins and themes.
   contact:
     email: technology@xwp.co
   license:
@@ -14,7 +14,7 @@ servers:
 paths:
   /:
     get:
-      summary: Schema summary
+      summary: API Schema
       description: >-
         Returns the API schema in the [OpenAPI
         v3](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md)
@@ -27,15 +27,15 @@ paths:
             application/json:
               schema:
                 type: object
-  '/audit/wporg/{project_type}/{project_slug}/{version}':
+  '/audit/wordpress/{type}/{slug}/{version}':
     get:
-      summary: Get audit info for a project
-      description: Get a theme or plugin audit for a project client, slug and version.
+      summary: Get Audit
+      description: Get a WordPress.org theme or plugin audit with a project type, slug and version.
       operationId: getAudit
       parameters:
         - in: path
-          name: project_type
-          description: The project type.
+          name: type
+          description: The WordPress.org project type. Valid options are theme or plugin.
           required: true
           schema:
             type: string
@@ -43,20 +43,20 @@ paths:
               - plugin
               - theme
         - in: path
-          name: project_slug
-          description: The taxonomy term representing the project slug.
+          name: slug
+          description: The WordPress.org project slug.
           required: true
           schema:
             type: string
         - in: path
           name: version
-          description: The project version number.
+          description: The WordPress.org project version.
           required: true
           schema:
             type: string
         - in: query
           name: reports
-          description: Whether or not we include audit reports in the response.
+          description: Include audit reports in the response. Valid options are all, lighthouse, or phpcs_phpcompatibilitywp.
           required: false
           schema:
             type: array
@@ -77,13 +77,13 @@ paths:
           description: Audit not found.
   '/report/{id}':
     get:
-      summary: Get report by id.
-      description: Get an audit report, e.g. lighthouse or phpcompatibilitywp for a specified report id listed in the audit info for a project.
+      summary: Get Report
+      description: Get an Audit Report by id.
       operationId: getReport
       parameters:
         - in: path
           name: id
-          description: Report id.
+          description: The Report id.
           required: true
           schema:
             type: string
@@ -95,7 +95,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Report'
         404:
-          description: Audit not found.
+          description: Report not found.
 components:
   schemas:
     Audit:

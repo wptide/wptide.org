@@ -1,9 +1,14 @@
 /**
+ * External Dependencies.
+ */
+const util = require('util');
+
+/**
  * Internal Dependencies.
  */
 const { getAuditDoc, setAuditDoc, setReportDoc } = require('../integrations/datastore');
 const { dateTime } = require('../util/time');
-const { getHash } = require('../util/identifiers');
+const { getHash, getProjectId } = require('../util/identifiers');
 
 /**
  * Audit Server helper to handle Pub/Sub HTTP requests.
@@ -57,6 +62,7 @@ exports.auditServer = async (req, res, reporter, type, name) => {
 
             // Audits are locked for 5 minutes.
             if (Number.isInteger(audit.reports[type]) && dateTime() - audit.reports[type] < 300) {
+                await util.promisify(setTimeout)(5000);
                 throw new Error(`${name} audit for ${message.slug} v${message.version} is locked for ${dateTime() - audit.reports[type]}s`);
             }
 
@@ -67,7 +73,7 @@ exports.auditServer = async (req, res, reporter, type, name) => {
             console.log(`${name} audit for ${message.slug} v${message.version} started`);
 
             // Get the Audit Report.
-            const report = await reporter(message); // @todo handle error, remove lock.
+            const reportData = await reporter(message); // @todo handle error, remove lock.
 
             // Get a fresh copy of the Audit.
             audit = await getAuditDoc(message.id);
@@ -88,23 +94,33 @@ exports.auditServer = async (req, res, reporter, type, name) => {
                 throw new Error(`${name} audit for ${message.slug} v${message.version} is not locked`);
             }
 
+            const createdDate = dateTime();
+            const processTime = Date.now() - now;
+            const report = {
+                id: reportId,
+                type,
+                project: {
+                    id: getProjectId(req.params),
+                    type: message.type,
+                    version: message.version,
+                    slug: message.slug,
+                },
+                created_datetime: createdDate,
+                milliseconds: processTime,
+                ...reportData,
+            };
+
             // Save the Audit.
-            audit.last_modified_datetime = dateTime();
+            audit.last_modified_datetime = createdDate;
             audit.reports[type] = {
                 id: reportId,
             };
-            if (report.compatibleVersions) {
-                audit.reports[type].compatible_versions = report.compatibleVersions;
-            }
-            if (report.incompatibleVersions) {
-                audit.reports[type].incompatible_versions = report.incompatibleVersions;
-            }
             await setAuditDoc(message.id, audit);
 
             // Save the Report.
-            await setReportDoc(reportId, report.raw || report); // @todo handle error.
+            await setReportDoc(reportId, report); // @todo handle error.
 
-            console.log(`${name} audit for ${message.slug} v${message.version} completed successfully in ${Date.now() - now}ms`);
+            console.log(`${name} audit for ${message.slug} v${message.version} completed successfully in ${processTime}ms`);
             return res.status(200).send();
         }
 

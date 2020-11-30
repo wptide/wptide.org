@@ -1,4 +1,4 @@
-const getAudit = require('../../../src/api/getAudit');
+const getAudit = require('../../../src/controllers/getAudit');
 
 describe('Main index entry point', () => {
     const res = {
@@ -15,7 +15,7 @@ describe('Main index entry point', () => {
             expect(() => {
                 getAudit({
                     params: {
-                        project_type: 'foo',
+                        type: 'foo',
 
                     },
                 });
@@ -23,8 +23,8 @@ describe('Main index entry point', () => {
             expect(() => {
                 getAudit({
                     params: {
-                        project_type: 'theme',
-                        project_slug: 'fooslug',
+                        type: 'theme',
+                        slug: 'fooslug',
                         version: '1',
                     },
                 }, res);

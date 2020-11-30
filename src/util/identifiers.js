@@ -38,12 +38,12 @@ const getHash = (input) => {
 };
 
 const getAuditId = (params) => {
-    const plainText = `${params.project_type}${params.project_slug}${params.version}`;
+    const plainText = `${params.type}${params.slug}${params.version}`;
     return getHash(plainText);
 };
 
 const getProjectId = (params) => {
-    const plainText = `${params.project_type}${params.project_slug}`;
+    const plainText = `${params.type}${params.slug}`;
     return getHash(plainText);
 };
 

@@ -1,14 +1,20 @@
+/**
+ * External Dependencies.
+ */
 const { connector } = require('swagger-routes-express');
 const YAML = require('yamljs');
 const express = require('express');
 
-const api = require('./src/api');
+/**
+ * Internal Dependencies.
+ */
+const controllers = require('./src/controllers');
 
 const apiSpec = YAML.load('openapi.yml');
 const app = express();
 
 const bootstrap = () => {
-    const connect = connector(api, apiSpec, {}); // make the connector
+    const connect = connector(controllers, apiSpec, {}); // make the connector
 
     // do any other app stuff, such as wire in passport, use cors etc
     connect(app); // attach the routes

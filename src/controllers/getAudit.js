@@ -12,22 +12,22 @@ const { getSourceUrl, getAuditId, getProjectId } = require('../util/identifiers'
 const { getAuditDoc, setAuditDoc, getReportDoc } = require('../integrations/datastore');
 const { publish, messageTypes } = require('../integrations/pubsub');
 
-const shouldLighthouseAudit = async (auditData) => {
-    const url = `https://api.wordpress.org/themes/info/1.1/?action=theme_information&request[slug]=${auditData.project_slug}`;
+const shouldLighthouseAudit = async (audit) => {
+    const url = `https://api.wordpress.org/themes/info/1.1/?action=theme_information&request[slug]=${audit.project.slug}`;
     const response = await fetch(url, {
         method: 'GET',
     });
     const themeInfo = await response.json();
     // Checks whether the version supplied is equivalent to the version from themes api.
-    return themeInfo.version === auditData.version && themeInfo.slug === auditData.project_slug;
+    return themeInfo.version === audit.project.version && themeInfo.slug === audit.project.slug;
 };
 
 const sendAuditMessages = async (auditData) => {
     const messageBody = {
         id: auditData.id,
-        slug: auditData.project_slug,
-        project_type: auditData.project_type,
-        version: auditData.version,
+        slug: auditData.project.slug,
+        type: auditData.project.type,
+        version: auditData.project.version,
     };
 
     // Add delays to avoid race condition during Datastore update.
@@ -46,22 +46,26 @@ const sendAuditMessages = async (auditData) => {
     }
 };
 
-const createNewAudit = async (auditData, params) => {
-    const audit = { ...auditData };
-    const sourceUrl = await getSourceUrl(params.project_type, params.project_slug, params.version);
+const createNewAudit = async (id, params) => {
+    const projectId = getProjectId(params);
+    const sourceUrl = await getSourceUrl(params.type, params.slug, params.version);
 
     if (sourceUrl) {
         const timeNow = dateTime();
+        const audit = {
+            id,
+            created_datetime: timeNow,
+            last_modified_datetime: timeNow,
+            project: {
+                id: projectId,
+                type: params.type,
+                version: params.version,
+                slug: params.slug,
+            },
+            reports: {},
+        };
 
-        audit.created_datetime = timeNow;
-        audit.last_modified_datetime = timeNow;
-        audit.project_type = params.project_type;
-        audit.project_slug = params.project_slug;
-        audit.reports = {};
-        audit.source_url = sourceUrl;
-        audit.version = params.version;
-
-        if (audit.project_type === 'theme' && await shouldLighthouseAudit(auditData)) {
+        if (audit.project.type === 'theme' && await shouldLighthouseAudit(audit)) {
             audit.reports.lighthouse = null;
         }
         audit.reports.phpcs_phpcompatibilitywp = null;
@@ -97,7 +101,7 @@ const addReports = async (audit, reportTypes) => {
             const report = await getReportDoc(reportId);
             if (report) {
                 // Attach the audit report to the doc.
-                updatedAudit.reports[reportType].report = report.raw || report;
+                updatedAudit.reports[reportType] = report;
             }
         }
     }));
@@ -112,26 +116,21 @@ const addReports = async (audit, reportTypes) => {
  * @param {object} res The HTTP response.
  */
 const getAudit = async (req, res) => {
-    invariant(req.params.project_type, 'Project type missing');
-    invariant(['theme', 'plugin'].includes(req.params.project_type), 'Project type should be theme or plugin');
-    invariant(req.params.project_slug, 'Project slug missing');
+    invariant(req.params.type, 'Project type missing');
+    invariant(['theme', 'plugin'].includes(req.params.type), 'Project type should be theme or plugin');
+    invariant(req.params.slug, 'Project slug missing');
     invariant(req.params.version, 'Version missing');
     invariant(req.params.length !== 3, 'Only type, slug and version required');
-    req.params.project_type = req.params.project_type.replace(/[^\w.-]+/g, '');
-    req.params.project_slug = req.params.project_slug.replace(/[^\w.-]+/g, '');
+    req.params.type = req.params.type.replace(/[^\w.-]+/g, '');
+    req.params.slug = req.params.slug.replace(/[^\w.-]+/g, '');
     req.params.version = req.params.version.replace(/[^\d.]+/g, '');
 
     const id = getAuditId(req.params);
-    const projectId = getProjectId(req.params);
-    const auditData = {
-        id,
-        project_id: projectId,
-    };
 
     let existingAuditData = await getAuditDoc(id);
 
     if (!existingAuditData) {
-        existingAuditData = await createNewAudit(auditData, req.params);
+        existingAuditData = await createNewAudit(id, req.params);
     }
 
     if (existingAuditData && req.query && req.query.reports) {

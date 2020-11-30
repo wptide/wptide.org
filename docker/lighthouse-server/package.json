@@ -19,7 +19,7 @@
     "@google-cloud/datastore": "^6.2.0",
     "@google-cloud/functions-framework": "^1.7.1",
     "@google-cloud/pubsub": "^2.6.0",
-    "lighthouse": "^6.4.1",
+    "lighthouse": "6.4.1",
     "node-fetch": "^2.6.1",
     "puppeteer": "^5.4.1"
   },

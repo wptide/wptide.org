@@ -36,11 +36,43 @@ const set = async (key, data) => {
 
 const getKey = (keyPath, id) => getDatastore().key([keyPath, id]);
 
-const getAuditDoc = async (id) => get(getKey(auditKeyPath, id));
+const getAuditDoc = async (id) => {
+    const audit = await get(getKey(auditKeyPath, id));
+
+    /* eslint-disable prefer-object-spread */
+    if (audit) {
+        // Forces sort order in response.
+        return Object.assign({
+            id: audit.id,
+            created_datetime: audit.created_datetime,
+            last_modified_datetime: audit.last_modified_datetime,
+            project: audit.project,
+        }, audit);
+    }
+
+    return null;
+};
 
 const setAuditDoc = async (id, data) => set(getKey(auditKeyPath, id), data);
 
-const getReportDoc = async (id) => get(getKey(reportKeyPath, id));
+const getReportDoc = async (id) => {
+    const report = await get(getKey(reportKeyPath, id));
+
+    /* eslint-disable prefer-object-spread */
+    if (report) {
+        // Forces sort order in response.
+        return Object.assign({
+            id: report.id,
+            type: report.type,
+            source_url: report.source_url,
+            created_datetime: report.created_datetime,
+            milliseconds: report.milliseconds,
+            project: report.project,
+        }, report);
+    }
+
+    return null;
+};
 
 const setReportDoc = async (id, data) => set(getKey(reportKeyPath, id), data);
 
