@@ -63,7 +63,8 @@ exports.auditServer = async (req, res, reporter, type, name) => {
             // Audits are locked for 5 minutes.
             if (Number.isInteger(audit.reports[type]) && dateTime() - audit.reports[type] < 300) {
                 await util.promisify(setTimeout)(5000);
-                throw new Error(`${name} audit for ${message.slug} v${message.version} is locked for ${dateTime() - audit.reports[type]}s`);
+                const locked = 300 - (dateTime() - audit.reports[type]);
+                throw new Error(`${name} audit for ${message.slug} v${message.version} is currently locked for ${locked}s`);
             }
 
             // Save the Audit Report lock.
