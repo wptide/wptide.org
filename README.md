@@ -7,7 +7,7 @@ Firebase hosted VuePress documentation site for [wptide.org](https://wptide.org)
 * Install [Google Cloud SDK](https://cloud.google.com/sdk/docs/install)
 * Install [Pub/Sub emulator](https://cloud.google.com/pubsub/docs/emulator)
 * Install [Datastore emulator](https://cloud.google.com/datastore/docs/tools/datastore-emulator)
-* Install [Firebase CLI](https://firebase.google.com/docs/cli)
+* Install [Firebase CLI](https://firebase.google.com/docs/cli) (optional)
 * Install [Make for Windows](http://gnuwin32.sourceforge.net/packages/make.htm) (Windows only)
 
 ## Local Setup
