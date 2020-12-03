@@ -1,62 +1,32 @@
 {
-  "name": "tide-faas",
-  "version": "0.0.1",
-  "description": "Implementation of Tide API using OCF",
-  "main": "src/index.js",
+  "name": "wptide.org",
+  "version": "1.0.0",
+  "description": "Firebase hosted Node project for wptide.org",
   "scripts": {
-    "start": "functions-framework --target=TideAPI --signature-type=http",
-    "lint": "eslint src",
-    "lint:fix": "eslint src --fix",
-    "test": "NODE_ENV=test jest",
+    "dev": "vuepress dev web",
+    "build": "vuepress build web",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "test": "NODE_ENV=test jest --detectOpenHandles --forceExit --verbose",
     "test:watch": "NODE_ENV=test jest --watch",
-    "test:coverage": "NODE_ENV=test jest --coverage"
+    "test:coverage": "NODE_ENV=test jest --detectOpenHandles --forceExit --coverage"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": "npm run lint",
+      "pre-push": "npm run test"
     }
-  },
-  "lint-staged": {
-    "*.css": [
-      "stylelint"
-    ],
-    "*.js": [
-      "eslint"
-    ]
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ivankruchkoff/tide-faas.git"
   },
   "author": "XWP",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/ivankruchkoff/tide-faas/issues"
-  },
-  "homepage": "https://github.com/ivankruchkoff/tide-faas#readme",
-  "dependencies": {
-    "@google-cloud/datastore": "^6.2.0",
-    "@google-cloud/functions-framework": "^1.7.1",
-    "@google-cloud/pubsub": "^2.6.0",
-    "chrome-launcher": "^0.13.4",
-    "crypto-js": "^4.0.0",
-    "dotenv-flow": "^3.2.0",
-    "express": "^4.17.1",
-    "invariant": "^2.2.4",
-    "lighthouse": "^6.4.1",
-    "node-fetch": "^2.6.1",
-    "puppeteer": "^5.4.1",
-    "swagger-routes-express": "^3.2.1",
-    "yamljs": "^0.3.0"
-  },
   "devDependencies": {
-    "eslint": "^7.2.0",
-    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint": "^7.14.0",
+    "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-jest": "^24.1.0",
+    "eslint-plugin-jest": "^24.1.3",
+    "eslint-plugin-jsdoc": "^30.7.8",
     "husky": "^4.3.0",
-    "jest": "^26.6.1",
-    "lint-staged": "^10.4.2",
-    "stylelint": "^13.7.2"
+    "jest": "^26.6.3",
+    "vuepress": "^1.7.1"
   }
 }

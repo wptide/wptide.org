@@ -1,0 +1,24 @@
+{
+  "name": "tide-api",
+  "version": "1.0.0",
+  "description": "Node setup for the Tide Cloud Functions API",
+  "main": "index.js",
+  "scripts": {
+    "start": "functions-framework --target=tide --signature-type=http"
+  },
+  "author": "XWP",
+  "license": "MIT",
+  "dependencies": {
+    "@google-cloud/datastore": "^6.2.0",
+    "@google-cloud/functions-framework": "^1.7.1",
+    "@google-cloud/pubsub": "^2.6.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "invariant": "^2.2.4",
+    "lighthouse": "6.4.1",
+    "node-fetch": "^2.6.1",
+    "puppeteer": "^5.4.1",
+    "swagger-routes-express": "^3.2.1",
+    "yamljs": "^0.3.0"
+  }
+}

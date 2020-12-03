@@ -1,0 +1,7 @@
+.gcloudignore
+.git
+.gitignore
+.eslintrc.json
+node_modules
+docker
+tests
