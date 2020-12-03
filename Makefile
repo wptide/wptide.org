@@ -92,7 +92,7 @@ start.phpcs-server:
 	@docker run -v $(PWD)/app/src:/app/src --rm -p 8110:8080 --env-file .env.server phpcs-server:latest
 
 start.proxy-server:
-	@node app/src/run/proxyServer.js
+	@cd app && node src/run/proxyServer.js
 
 start.emulator.datastore:
 	@gcloud beta emulators datastore start --no-store-on-disk
