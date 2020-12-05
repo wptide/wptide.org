@@ -1,7 +1,7 @@
 /**
  * External Dependencies.
  */
-const util = require('util');
+const invariant = require('invariant');
 
 /**
  * Internal Dependencies.
@@ -9,6 +9,7 @@ const util = require('util');
 const { getAuditDoc, setAuditDoc, setReportDoc } = require('../integrations/datastore');
 const { dateTime } = require('../util/time');
 const { getHash } = require('../util/identifiers');
+const { canProceed } = require('../util/canProceed');
 
 /**
  * Audit Server helper to handle Pub/Sub HTTP requests.
@@ -28,31 +29,20 @@ exports.auditServer = async (req, res, reporter, type, name) => {
     };
 
     try {
-        if (!req.body) {
-            throw new Error('No Pub/Sub message received');
-        }
-
-        if (!req.body.message) {
-            throw new Error('Invalid Pub/Sub message format');
-        }
+        invariant(req.body, 'No Pub/Sub message received');
+        invariant(req.body.message, 'Invalid Pub/Sub message format');
 
         const pubSubMessage = req.body.message;
         const message = pubSubMessage.data
             ? JSON.parse(Buffer.from(pubSubMessage.data, 'base64').toString('ascii').trim())
             : null;
 
-        if (Object.prototype.toString.call(message) !== '[object Object]') {
-            throw new Error('Invalid Pub/Sub message format');
-        }
-
         if (!!message.id && !!message.slug && !!message.version) {
             const reportId = getHash(`${message.id}-${type}`);
             let audit = await getAuditDoc(message.id);
 
             // Don't update a missing Audit.
-            if (Object.prototype.toString.call(audit) !== '[object Object]') {
-                throw new Error(`Audit for ${message.slug} v${message.version} is missing`);
-            }
+            invariant(audit, `Audit for ${message.slug} v${message.version} is missing`);
 
             // Don't update an existing Audit.
             if (Object.prototype.toString.call(audit.reports[type]) === '[object Object]' && Object.prototype.hasOwnProperty.call(audit.reports[type], 'id')) {
@@ -60,16 +50,9 @@ exports.auditServer = async (req, res, reporter, type, name) => {
                 return res.status(200).send();
             }
 
-            // Audits are locked for 5 minutes.
-            if (Number.isInteger(audit.reports[type]) && dateTime() - audit.reports[type] < 300) {
-                await util.promisify(setTimeout)(5000);
-                const locked = 300 - (dateTime() - audit.reports[type]);
-                throw new Error(`${name} audit for ${message.slug} v${message.version} is currently locked for ${locked}s`);
+            if (!await canProceed(type, { slug: message.slug, version: message.version })) {
+                throw new Error(`${name} audit for ${message.slug} v${message.version} is currently locked for until expiry`);
             }
-
-            // Save the Audit Report lock.
-            audit.reports[type] = dateTime();
-            await setAuditDoc(message.id, audit); // @todo handle error.
 
             console.log(`${name} audit for ${message.slug} v${message.version} started`);
 
@@ -80,19 +63,12 @@ exports.auditServer = async (req, res, reporter, type, name) => {
             audit = await getAuditDoc(message.id);
 
             // Don't update a missing Audit (failure to read Datastore).
-            if (Object.prototype.toString.call(audit) !== '[object Object]') {
-                throw new Error(`Audit for ${message.slug} v${message.version} is missing`);
-            }
+            invariant(audit, `Audit for ${message.slug} v${message.version} is missing`);
 
             // Don't update an existing Audit.
             if (Object.prototype.toString.call(audit.reports[type]) === '[object Object]' && Object.prototype.hasOwnProperty.call(audit.reports[type], 'id')) {
                 console.log(`Warning: Audit for ${message.slug} v${message.version} was already completed`);
                 return res.status(200).send();
-            }
-
-            // Don't update an unlocked Audit.
-            if (Object.prototype.toString.call(audit.reports[type]) === '[object Null]') {
-                throw new Error(`${name} audit for ${message.slug} v${message.version} is not locked`);
             }
 
             const createdDate = dateTime();

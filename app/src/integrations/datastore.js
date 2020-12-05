@@ -61,6 +61,10 @@ const getAuditDoc = async (id) => {
 
 const setAuditDoc = async (id, data) => set(getKey(auditKeyPath, id), data);
 
+const setStatusDoc = async (id, data) => set(getKey(statusKeyPath, id), data);
+
+const getStatusDoc = async (id) => get(getKey(statusKeyPath, id));
+
 const getReportDoc = async (id) => {
     const report = await get(getKey(reportKeyPath, id));
 
@@ -85,6 +89,8 @@ const setReportDoc = async (id, data) => set(getKey(reportKeyPath, id), data);
 module.exports = {
     getAuditDoc,
     setAuditDoc,
+    getStatusDoc,
+    setStatusDoc,
     getReportDoc,
     setReportDoc,
 };

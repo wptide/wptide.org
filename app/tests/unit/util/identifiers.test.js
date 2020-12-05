@@ -6,7 +6,7 @@ const { getSourceUrl } = require('../../../src/util/identifiers');
 /**
  * Tests for getSourceUrl.
  */
-describe('getSourceUrl:', () => {
+describe('getSourceUrl', () => {
     it('Returns a valid source URL for the PWA plugin v0.5.0', async () => {
         expect(await getSourceUrl('plugin', 'pwa', '0.5.0')).toBe('https://downloads.wordpress.org/plugin/pwa.0.5.0.zip');
     });

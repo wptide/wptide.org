@@ -19,6 +19,7 @@
     "@google-cloud/datastore": "^6.2.0",
     "@google-cloud/functions-framework": "^1.7.1",
     "dotenv": "^8.2.0",
+    "invariant": "^2.2.4",
     "lighthouse": "6.4.1",
     "node-fetch": "^2.6.1",
     "puppeteer": "^5.4.1"
