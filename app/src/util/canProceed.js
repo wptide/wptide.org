@@ -1,9 +1,4 @@
 /**
- * External Dependencies.
- */
-const invariant = require('invariant');
-
-/**
  * Internal Dependencies.
  */
 const { dateTime } = require('./time');
@@ -20,9 +15,15 @@ const MAX_RETRIES = 3; // Max number of times we can attempt to redo the same au
  * @returns {boolean} Whether or not we can proceed with an audit.
  */
 const canProceed = async (type, item) => {
-    invariant(type, 'type param missing');
-    invariant(item && item.slug, 'item.slug param missing');
-    invariant(item && item.version, 'item.version param missing');
+    if (!type) {
+        throw new Error('type param missing');
+    }
+    if (!item || !item.slug) {
+        throw new Error('item.slug param missing');
+    }
+    if (!item || !item.version) {
+        throw new Error('item.version param missing');
+    }
     const timeNow = dateTime();
     const { slug, version } = item;
     const key = `${type}-${slug}-${version}`;
