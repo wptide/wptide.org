@@ -46,15 +46,11 @@ const canProceed = async (type, item) => {
         // eslint-disable-next-line no-console
         console.log(`running too long incrementing retries ${JSON.stringify(statusDoc)}`);
     } else {
-        // eslint-disable-next-line no-console
-        console.log(`audit still in progress ${JSON.stringify(statusDoc)}`);
-        return false; // Still in progress and within the threshold
+        throw new Error(`audit still in progress ${JSON.stringify(statusDoc)}`);
     }
 
     if (statusDoc.retries > MAX_RETRIES) {
-        // eslint-disable-next-line no-console
-        console.log(`too many retries not proceeding ${JSON.stringify(statusDoc)}`);
-        return false; // We've already retried too many times
+        throw new Error(`too many retries not proceeding ${JSON.stringify(statusDoc)}`);
     }
 
     // eslint-disable-next-line no-console
