@@ -1,9 +1,4 @@
 /**
- * External Dependencies.
- */
-const invariant = require('invariant');
-
-/**
  * Internal Dependencies.
  */
 const { getAuditDoc, setAuditDoc, setReportDoc } = require('../integrations/datastore');
@@ -29,20 +24,31 @@ exports.auditServer = async (req, res, reporter, type, name) => {
     };
 
     try {
-        invariant(req.body, 'No Pub/Sub message received');
-        invariant(req.body.message, 'Invalid Pub/Sub message format');
+        if (!req.body) {
+            throw new Error('No Pub/Sub message received');
+        }
+
+        if (!req.body.message) {
+            throw new Error('Invalid Pub/Sub message format');
+        }
 
         const pubSubMessage = req.body.message;
         const message = pubSubMessage.data
             ? JSON.parse(Buffer.from(pubSubMessage.data, 'base64').toString('ascii').trim())
             : null;
 
+        if (Object.prototype.toString.call(message) !== '[object Object]') {
+            throw new Error('Invalid Pub/Sub message format');
+        }
+
         if (!!message.id && !!message.slug && !!message.version) {
             const reportId = getHash(`${message.id}-${type}`);
             let audit = await getAuditDoc(message.id);
 
             // Don't update a missing Audit.
-            invariant(audit, `Audit for ${message.slug} v${message.version} is missing`);
+            if (Object.prototype.toString.call(audit) !== '[object Object]') {
+                throw new Error(`Audit for ${message.slug} v${message.version} is missing`);
+            }
 
             // Don't update an existing Audit.
             if (Object.prototype.toString.call(audit.reports[type]) === '[object Object]' && Object.prototype.hasOwnProperty.call(audit.reports[type], 'id')) {
@@ -63,7 +69,9 @@ exports.auditServer = async (req, res, reporter, type, name) => {
             audit = await getAuditDoc(message.id);
 
             // Don't update a missing Audit (failure to read Datastore).
-            invariant(audit, `Audit for ${message.slug} v${message.version} is missing`);
+            if (Object.prototype.toString.call(audit) !== '[object Object]') {
+                throw new Error(`Audit for ${message.slug} v${message.version} is missing`);
+            }
 
             // Don't update an existing Audit.
             if (Object.prototype.toString.call(audit.reports[type]) === '[object Object]' && Object.prototype.hasOwnProperty.call(audit.reports[type], 'id')) {
