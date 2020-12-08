@@ -5,7 +5,7 @@ const { dateTime } = require('./time');
 const { getStatusDoc, setStatusDoc } = require('../integrations/datastore');
 
 const MAX_DURATION = 300; // Max audit duration in seconds.
-const MAX_RETRIES = 3; // Max number of times we can attempt to redo the same audit.
+const MAX_RETRIES = 2; // Max number of times we can attempt to redo the same audit.
 
 /**
  * A gatekeeper for whether or not we can proceed with an audit
