@@ -43,7 +43,6 @@ const canProceed = async (type, item) => {
     if (statusDoc.startTime < minTime) {
         statusDoc.retries += 1;
         statusDoc.startTime = timeNow;
-        // eslint-disable-next-line no-console
         console.log(`running too long incrementing retries ${JSON.stringify(statusDoc)}`);
     } else {
         throw new Error(`audit still in progress ${JSON.stringify(statusDoc)}`);
