@@ -52,7 +52,6 @@ const canProceed = async (type, item) => {
         throw new Error(`too many retries not proceeding ${JSON.stringify(statusDoc)}`);
     }
 
-    // eslint-disable-next-line no-console
     console.log(`setting status doc ${JSON.stringify(statusDoc)}`);
     await setStatusDoc(key, statusDoc);
     return true;
