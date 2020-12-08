@@ -54,7 +54,6 @@ describe('canProceed', () => {
     const retryCounts = [
         0,
         1,
-        2,
     ];
 
     it.each(retryCounts)('can retry after %s retries', async (retryCount) => {
@@ -82,6 +81,22 @@ describe('canProceed', () => {
             console.log(error);
         }
         expect(datastoreSet).toHaveBeenCalledWith(`${type}-${audit.slug}-${audit.version}`, { retries: 0, startTime: timeNow });
+    });
+
+    it('throws an error when we want to run an audit while one is in progress', async () => {
+        let errorMessage;
+        const statusDoc = { retries: 0, startTime: 1 };
+        const audit = { slug: 'foo', version: 1 };
+        const type = 'lighthouse';
+        const timeNow = 5;
+        dateTime.mockReturnValue(timeNow);
+        datastoreGet.mockResolvedValue(statusDoc);
+        try {
+            await canProceed(type, audit);
+        } catch (error) {
+            errorMessage = error.message;
+        }
+        expect(errorMessage).toEqual('audit still in progress {"retries":0,"startTime":1}');
     });
 
     it('throws an error when we try and run an audit a fourth time', async () => {
