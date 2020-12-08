@@ -56,9 +56,7 @@ exports.auditServer = async (req, res, reporter, type, name) => {
                 return res.status(200).send();
             }
 
-            if (!await canProceed(type, { slug: message.slug, version: message.version })) {
-                throw new Error(`${name} audit for ${message.slug} v${message.version} is currently locked for until expiry`);
-            }
+            await canProceed(type, { slug: message.slug, version: message.version });
 
             console.log(`${name} audit for ${message.slug} v${message.version} started`);
 
