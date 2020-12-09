@@ -75,12 +75,9 @@ describe('canProceed', () => {
         const timeNow = 1000;
         dateTime.mockReturnValue(timeNow);
         datastoreGet.mockResolvedValue(statusDoc);
-        try {
-            await canProceed(type, audit);
-        } catch (error) {
-            console.log(error);
-        }
+        const returnStatus = await canProceed(type, audit);
         expect(datastoreSet).toHaveBeenCalledWith(`${type}-${audit.slug}-${audit.version}`, { retries: 0, startTime: timeNow });
+        expect(returnStatus).toEqual(true);
     });
 
     it('throws an error when we want to run an audit while one is in progress', async () => {
@@ -99,8 +96,7 @@ describe('canProceed', () => {
         expect(errorMessage).toEqual('audit still in progress {"retries":0,"startTime":1}');
     });
 
-    it('throws an error when we try and run an audit a fourth time', async () => {
-        let errorMessage;
+    it('returns false when we try and run an audit a fourth time', async () => {
         const currentTime = 1000;
         dateTime.mockReturnValue(currentTime);
         const statusDoc = { retries: 3, startTime: 1 };
@@ -108,11 +104,7 @@ describe('canProceed', () => {
         const type = 'lighthouse';
 
         datastoreGet.mockResolvedValue(statusDoc);
-        try {
-            await canProceed(type, audit);
-        } catch (error) {
-            errorMessage = error.message;
-        }
-        expect(errorMessage).toEqual('too many retries not proceeding {"retries":4,"startTime":1000}');
+        const returnStatus = await canProceed(type, audit);
+        expect(returnStatus).toEqual(false);
     });
 });
