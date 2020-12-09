@@ -43,16 +43,19 @@ const canProceed = async (type, item) => {
     if (statusDoc.startTime < minTime) {
         statusDoc.retries += 1;
         statusDoc.startTime = timeNow;
-        console.log(`running too long incrementing retries ${JSON.stringify(statusDoc)}`);
+        if (statusDoc.retries <= MAX_RETRIES) {
+            console.debug(`running too long incrementing retries ${JSON.stringify(statusDoc)}`);
+        }
     } else {
         throw new Error(`audit still in progress ${JSON.stringify(statusDoc)}`);
     }
 
     if (statusDoc.retries > MAX_RETRIES) {
-        throw new Error(`too many retries not proceeding ${JSON.stringify(statusDoc)}`);
+        console.error(`too many retries not proceeding ${JSON.stringify(statusDoc)}`);
+        return false;
     }
 
-    console.log(`setting status doc ${JSON.stringify(statusDoc)}`);
+    console.debug(`setting status doc ${JSON.stringify(statusDoc)}`);
     await setStatusDoc(key, statusDoc);
     return true;
 };

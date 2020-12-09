@@ -56,7 +56,10 @@ exports.auditServer = async (req, res, reporter, type, name) => {
                 return res.status(200).send();
             }
 
-            await canProceed(type, { slug: message.slug, version: message.version });
+            if (!await canProceed(type, { slug: message.slug, version: message.version })) {
+                // We can't proceed with this audit, ack the message so it's no longer pending.
+                return res.status(200).send();
+            }
 
             console.log(`${name} audit for ${message.slug} v${message.version} started`);
 
