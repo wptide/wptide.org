@@ -1,43 +1,18 @@
-const { Datastore } = require('@google-cloud/datastore');
+/**
+ * External Dependencies.
+ */
 const dotenv = require('dotenv');
+
+/**
+ * Internal Dependencies.
+ */
+const { get, set, getKey } = require('../services/datastore');
 
 dotenv.config({ path: `${process.cwd()}/../.env` });
 
 const auditKeyPath = process.env.DATASTORE_KEY_AUDIT || 'Audit';
 const reportKeyPath = process.env.DATASTORE_KEY_REPORT || 'Report';
-
-let datastoreInstance;
-
-const getDatastore = () => {
-    if (!datastoreInstance) {
-        const options = {};
-        if (process.env.NODE_ENV !== 'production') {
-            options.apiEndpoint = process.env.ENDPOINT_DATASTORE;
-            options.projectId = process.env.GOOGLE_CLOUD_PROJECT;
-        }
-        datastoreInstance = new Datastore(options);
-    }
-    return datastoreInstance;
-};
-
-const get = async (key) => {
-    const datastore = getDatastore();
-    const entities = await datastore.get(key);
-    return entities.length ? entities[0] : null;
-};
-
-const set = async (key, data) => {
-    const datastore = getDatastore();
-    await datastore.save({
-        method: 'upsert',
-        excludeLargeProperties: true,
-        key,
-        data,
-    });
-    return key;
-};
-
-const getKey = (keyPath, id) => getDatastore().key([keyPath, id]);
+const statusKeyPath = process.env.DATASTORE_KEY_STATUS || 'Status';
 
 const getAuditDoc = async (id) => {
     const audit = await get(getKey(auditKeyPath, id));
@@ -59,6 +34,10 @@ const getAuditDoc = async (id) => {
 };
 
 const setAuditDoc = async (id, data) => set(getKey(auditKeyPath, id), data);
+
+const setStatusDoc = async (id, data) => set(getKey(statusKeyPath, id), data);
+
+const getStatusDoc = async (id) => get(getKey(statusKeyPath, id));
 
 const getReportDoc = async (id) => {
     const report = await get(getKey(reportKeyPath, id));
@@ -82,9 +61,10 @@ const getReportDoc = async (id) => {
 const setReportDoc = async (id, data) => set(getKey(reportKeyPath, id), data);
 
 module.exports = {
-    getDatastore,
     getAuditDoc,
     setAuditDoc,
+    getStatusDoc,
+    setStatusDoc,
     getReportDoc,
     setReportDoc,
 };
