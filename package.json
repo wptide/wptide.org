@@ -1,7 +1,7 @@
 {
   "name": "wptide.org",
   "version": "1.0.0-beta",
-  "description": "Infrastructure as Code (IaC) repository leveraging Pub/Sub and Datastore, with a Firebase hosted static documentation site and shared Node setup for the Cloud Functions API and Lighthouse & PHPCS Cloud Run servers.",
+  "description": "Infrastructure as Code (IaC) monorepo for wptide.org.",
   "main": "index.js",
   "author": "XWP",
   "license": "MIT",
