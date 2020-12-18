@@ -1,7 +1,7 @@
 {
   "name": "wptide.org",
   "version": "1.0.0-beta",
-  "description": "Infrastructure as Code (IaC) monorepo for wptide.org.",
+  "description": "Infrastructure as Code monorepo for wptide.org.",
   "main": "index.js",
   "author": "XWP",
   "license": "MIT",
