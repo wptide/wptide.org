@@ -1,7 +1,8 @@
 .gcloudignore
-.git
-.gitignore
-.eslintrc.json
 node_modules
-docker
 tests
+vendor
+composer.json
+composer.lock
+lighthouseServer.js
+phpcsServer.js
