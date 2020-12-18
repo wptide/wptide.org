@@ -1,7 +1,7 @@
 /**
  * Internal Dependencies.
  */
-const { getSourceUrl } = require('../../../src/util/identifiers');
+const { getSourceUrl } = require('../../../src/util/getSourceUrl');
 
 /**
  * Tests for getSourceUrl.

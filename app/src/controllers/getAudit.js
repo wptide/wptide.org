@@ -2,26 +2,17 @@
  * External Dependencies.
  */
 const invariant = require('invariant');
-const fetch = require('node-fetch');
 
 /**
  * Internal Dependencies.
  */
-const { getSourceUrl, getAuditId } = require('../util/identifiers');
+const { getAuditId } = require('../util/identifiers');
+const { getSourceUrl } = require('../util/getSourceUrl');
 const { sleep } = require('../util/sleep');
 const { dateTime } = require('../util/time');
 const { getAuditDoc, setAuditDoc, getReportDoc } = require('../integrations/datastore');
 const { publish, messageTypes } = require('../integrations/pubsub');
-
-const shouldLighthouseAudit = async (audit) => {
-    const url = `https://api.wordpress.org/themes/info/1.1/?action=theme_information&request[slug]=${audit.slug}`;
-    const response = await fetch(url, {
-        method: 'GET',
-    });
-    const themeInfo = await response.json();
-    // Checks whether the version supplied is equivalent to the version from themes api.
-    return themeInfo.version === audit.version && themeInfo.slug === audit.slug;
-};
+const { shouldLighthouseAudit } = require('../util/shouldLighthouseAudit');
 
 const sendAuditMessages = async (audit) => {
     const messageBody = {
