@@ -21,7 +21,6 @@ const sendAuditMessages = async (audit) => {
         version: audit.version,
     };
 
-    // Add delays to avoid race condition during Datastore update.
     if (audit.reports) {
         if (audit.reports.phpcs_phpcompatibilitywp === null) {
             await publish(messageBody, messageTypes.MESSAGE_TYPE_PHPCS_REQUEST);
