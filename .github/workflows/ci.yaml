@@ -148,4 +148,4 @@ jobs:
           args: deploy --only hosting
         env:
           PROJECT_ID: ${{ secrets.GOOGLE_CLOUD_PROJECT_STAGING }}
-          GCP_SA_KEY: ${{ secrets.GCR_JSON_KEY_STAGING }}
+          GCP_SA_KEY: ${{ secrets.GCR_JSON_KEY_STAGING }} | base64

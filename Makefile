@@ -48,12 +48,10 @@ deploy.firebase:
 	@firebase deploy --only hosting
 
 deploy.lighthouse: setup
-	@gcloud run deploy lighthouse-server --no-allow-unauthenticated --image gcr.io/${GOOGLE_CLOUD_PROJECT}/lighthouse:${VERSION} --memory ${GOOGLE_CLOUD_RUN_LIGHTHOUSE_MEMORY}
-	@gcloud run services update lighthouse-server --concurrency 1
+	@gcloud run deploy lighthouse-server --no-allow-unauthenticated --image gcr.io/${GOOGLE_CLOUD_PROJECT}/lighthouse:${VERSION} --memory ${GOOGLE_CLOUD_RUN_LIGHTHOUSE_MEMORY} --concurrency 1
 
 deploy.phpcs: setup
-	@gcloud run deploy phpcs-server --no-allow-unauthenticated --image gcr.io/${GOOGLE_CLOUD_PROJECT}/phpcs:${VERSION} --memory ${GOOGLE_CLOUD_RUN_PHPCS_MEMORY}
-	@gcloud run services update phpcs-server --concurrency 1
+	@gcloud run deploy phpcs-server --no-allow-unauthenticated --image gcr.io/${GOOGLE_CLOUD_PROJECT}/phpcs:${VERSION} --memory ${GOOGLE_CLOUD_RUN_PHPCS_MEMORY} --concurrency 1
 
 deploy.iam: setup
 	@gcloud run services add-iam-policy-binding lighthouse-server \
