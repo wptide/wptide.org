@@ -34,7 +34,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-npm-
       - name: Install Node dependencies
-        run: npm ci
+        run: npm ci && cd app && npm ci && cd -
         env:
           CI: true
 
@@ -60,7 +60,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-npm-
       - name: Install Node dependencies
-        run: npm ci
+        run: npm ci && cd app && npm ci && cd -
         env:
           CI: true
 
