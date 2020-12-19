@@ -1,7 +1,4 @@
-const { PubSub } = require('@google-cloud/pubsub');
-const dotenv = require('dotenv');
-
-dotenv.config({ path: `${process.cwd()}/../.env` });
+const { createTopics, subscribeTopic, publishMessage } = require('../services/pubsub');
 
 const MESSAGE_TYPE_LIGHTHOUSE_REQUEST = 'MESSAGE_TYPE_LIGHTHOUSE_REQUEST';
 const MESSAGE_TYPE_PHPCS_REQUEST = 'MESSAGE_TYPE_PHPCS_REQUEST';
@@ -11,70 +8,25 @@ const messageTypes = {
     MESSAGE_TYPE_PHPCS_REQUEST,
 };
 
-let pubsubInstance;
-
-const getPubsub = async () => {
-    const options = {};
-    if (process.env.NODE_ENV !== 'production') {
-        options.apiEndpoint = process.env.ENDPOINT_PUBSUB;
-        options.projectId = process.env.GOOGLE_CLOUD_PROJECT;
-    }
-
-    if (!pubsubInstance) {
-        pubsubInstance = new PubSub(options);
-
-        // eslint-disable-next-line no-restricted-syntax
-        for (const topicName of Object.keys(messageTypes)) {
-            // eslint-disable-next-line no-await-in-loop
-            const topic = await pubsubInstance.topic(topicName);
-
-            // eslint-disable-next-line no-await-in-loop
-            const [topicExists] = await topic.exists();
-            if (!topicExists) {
-                // eslint-disable-next-line no-await-in-loop
-                await topic.create();
-            }
-        }
-    }
-    return pubsubInstance;
-};
+const topicsExist = false;
 
 const publish = async (message, topicName) => {
-    const buffer = Buffer.from(JSON.stringify(message));
-    const pubsub = await getPubsub();
-    const messageId = await pubsub.topic(topicName).publish(buffer);
-    let debugMessage = JSON.stringify(message);
-    debugMessage = debugMessage.length > 200 ? Object.keys(message) : debugMessage;
-    console.debug(`Message ${messageId} published to ${topicName} with ${debugMessage}`);
+    if (!topicsExist) {
+        createTopics(Object.keys(messageTypes));
+    }
+    await publishMessage(message, topicName);
 };
 
 const subscribe = async (subscriptionName, options) => {
-    const pubsub = await getPubsub();
-    const topic = await pubsub.topic(subscriptionName);
-    let subscription = await topic.subscription(subscriptionName);
-    if (subscription) {
-        try {
-            await subscription.delete();
-            // eslint-disable-next-line no-console
-            console.debug(
-                `Subscription ${subscriptionName} successfully deleted`,
-            );
-        } catch (error) {
-            // eslint-disable-next-line no-console
-            console.error(
-                `Subscription ${subscriptionName} could not be deleted: `,
-                error.details,
-            );
-        }
+    if (!topicsExist) {
+        createTopics(Object.keys(messageTypes));
     }
-    subscription = await topic.createSubscription(subscriptionName, options);
-
+    const subscription = await subscribeTopic(subscriptionName, options);
     return subscription;
 };
 
 module.exports = {
     messageTypes,
-    getPubsub,
     subscribe,
     publish,
 };

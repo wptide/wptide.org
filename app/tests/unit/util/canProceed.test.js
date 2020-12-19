@@ -23,7 +23,7 @@ beforeEach(() => {
 });
 
 /**
- * Tests for getSourceUrl.
+ * Tests for canProceed.
  */
 describe('canProceed', () => {
     it('requires the correct parameters for invocation', async () => {
