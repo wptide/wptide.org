@@ -60,4 +60,4 @@ jobs:
           CI: true
 
       - name: Run unit tests
-          run: npm run test
+        run: npm run test
