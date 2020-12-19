@@ -70,4 +70,5 @@ jobs:
       - name: Run unit tests (with coverage)
         run: npm run test:coveralls
         env:
-          repo_token: ${COVERALLS_REPO_TOKEN}
+          COVERALLS_REPO_TOKEN: "${{ secrets.COVERALLS_REPO_TOKEN }}"
+          COVERALLS_GIT_BRANCH: "${{ github.ref }}"
