@@ -144,8 +144,8 @@ jobs:
 
       - name: Deploy to Firebase
         uses: FirebaseExtended/action-hosting-deploy@v0
-          with:
-            repoToken: "${{ secrets.GITHUB_TOKEN }}"
-            firebaseServiceAccount: "${{ secrets.GCR_JSON_KEY_STAGING }}"
-            projectId: ${{ secrets.GOOGLE_CLOUD_PROJECT_STAGING }}
-            channelId: live
+        with:
+          repoToken: "${{ secrets.GITHUB_TOKEN }}"
+          firebaseServiceAccount: "${{ secrets.GCR_JSON_KEY_STAGING }}"
+          projectId: ${{ secrets.GOOGLE_CLOUD_PROJECT_STAGING }}
+          channelId: live
