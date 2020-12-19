@@ -46,5 +46,12 @@
       "pre-commit": "npm run lint",
       "pre-push": "npm run test"
     }
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "**/app/src/**/*.js",
+      "!**/node_modules/**",
+      "!**/vendor/**"
+    ]
   }
 }
