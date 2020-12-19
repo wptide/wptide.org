@@ -36,7 +36,7 @@ const lighthouseReporter = async (message) => {
             dependencies: [
                 {
                     vendor: 'GoogleChrome/lighthouse',
-                    version: '6.4.1',
+                    version: execSync('npm info lighthouse version').toString().match(/\d+(\.\d+)+/g)[0],
                 },
             ],
         },
