@@ -143,10 +143,9 @@ jobs:
 #          make deploy.phpcs
 
       - name: Deploy to Firebase
-        uses: w9jds/firebase-action@master
-        with:
-          args: deploy --only hosting
-        env:
-          PROJECT_ID: ${{ secrets.GOOGLE_CLOUD_PROJECT_STAGING }}
-          GCP_SA_KEY: ${{ secrets.GCR_JSON_KEY_STAGING }} | base64
-        run: firebase login:ci
+        uses: FirebaseExtended/action-hosting-deploy@v0
+          with:
+            repoToken: "${{ secrets.GITHUB_TOKEN }}"
+            firebaseServiceAccount: "${{ secrets.GCR_JSON_KEY_STAGING }}"
+            projectId: ${{ secrets.GOOGLE_CLOUD_PROJECT_STAGING }}
+            channelId: live
