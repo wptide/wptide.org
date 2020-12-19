@@ -22,8 +22,8 @@
     "start:server:proxy": "cd app && node src/run/proxyServer.js",
     "test": "NODE_ENV=test jest --detectOpenHandles --forceExit --verbose",
     "test:watch": "NODE_ENV=test jest --watch",
-    "test:coverage": "NODE_ENV=test jest --detectOpenHandles --forceExit --coverage",
-    "test:coveralls": "npm run test:coverage && coveralls < coverage/lcov.info"
+    "test:coverage": "NODE_ENV=test jest --detectOpenHandles --forceExit --coverage --coverageDirectory ./app/tests/coverage",
+    "test:coveralls": "npm run test:coverage && coveralls < ./app/tests/coverage/lcov.info"
   },
   "dependencies": {
     "dotenv": "^8.2.0"

@@ -61,6 +61,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-npm-
 
+      - name: Setup Jest cache
+        uses: actions/cache@v2
+        with:
+          path: ~/.jest-cache
+          key: ${{ runner.os }}-jest
+
       - name: Install Node dependencies
         run: npm ci && cd app && npm ci && cd -
         env:
@@ -68,7 +74,7 @@ jobs:
           CI: true
 
       - name: Run unit tests (with coverage)
-        run: npm run test:coveralls
+        run: npm run test:coveralls -- --cacheDirectory="$HOME/.jest-cache"
         env:
           COVERALLS_REPO_TOKEN: "${{ secrets.COVERALLS_REPO_TOKEN }}"
           COVERALLS_GIT_BRANCH: "${{ github.ref }}"
