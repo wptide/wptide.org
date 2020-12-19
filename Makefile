@@ -48,11 +48,11 @@ deploy.firebase:
 	@firebase deploy --only hosting
 
 deploy.lighthouse: setup
-	@gcloud run deploy lighthouse-server --no-allow-unauthenticated --image gcr.io/${GOOGLE_CLOUD_PROJECT}/lighthouse-server:${VERSION} --memory ${GOOGLE_CLOUD_RUN_LIGHTHOUSE_MEMORY}
+	@gcloud run deploy lighthouse-server --no-allow-unauthenticated --image gcr.io/${GOOGLE_CLOUD_PROJECT}/lighthouse:${VERSION} --memory ${GOOGLE_CLOUD_RUN_LIGHTHOUSE_MEMORY}
 	@gcloud run services update lighthouse-server --concurrency 1
 
 deploy.phpcs: setup
-	@gcloud run deploy phpcs-server --no-allow-unauthenticated --image gcr.io/${GOOGLE_CLOUD_PROJECT}/phpcs-server:${VERSION} --memory ${GOOGLE_CLOUD_RUN_PHPCS_MEMORY}
+	@gcloud run deploy phpcs-server --no-allow-unauthenticated --image gcr.io/${GOOGLE_CLOUD_PROJECT}/phpcs:${VERSION} --memory ${GOOGLE_CLOUD_RUN_PHPCS_MEMORY}
 	@gcloud run services update phpcs-server --concurrency 1
 
 deploy.iam: setup
@@ -81,3 +81,9 @@ deploy.pubsub: setup.iam deploy.iam deploy.topics
 		--ack-deadline 300 \
 		--enable-message-ordering \
 		--push-auth-service-account=tide-run-server@${GOOGLE_CLOUD_PROJECT}.iam.gserviceaccount.com
+
+describe.lighthouse: setup
+	@gcloud run services describe lighthouse-server --format 'value(status.url)'
+
+describe.phpcs: setup
+	@gcloud run services describe phpcs-server --format 'value(status.url)'
