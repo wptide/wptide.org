@@ -8,7 +8,6 @@ const invariant = require('invariant');
  */
 const { getAuditId } = require('../util/identifiers');
 const { getSourceUrl } = require('../util/getSourceUrl');
-const { sleep } = require('../util/sleep');
 const { dateTime } = require('../util/time');
 const { getAuditDoc, setAuditDoc, getReportDoc } = require('../integrations/datastore');
 const { publish, messageTypes } = require('../integrations/pubsub');
@@ -25,12 +24,10 @@ const sendAuditMessages = async (audit) => {
     // Add delays to avoid race condition during Datastore update.
     if (audit.reports) {
         if (audit.reports.phpcs_phpcompatibilitywp === null) {
-            await sleep(1000);
             await publish(messageBody, messageTypes.MESSAGE_TYPE_PHPCS_REQUEST);
         }
 
         if (audit.reports.lighthouse === null) {
-            await sleep(1000);
             await publish(messageBody, messageTypes.MESSAGE_TYPE_LIGHTHOUSE_REQUEST);
         }
     }

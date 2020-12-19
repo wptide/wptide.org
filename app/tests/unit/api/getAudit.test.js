@@ -11,7 +11,6 @@ jest.mock('../../../src/services/datastore',
     }));
 
 jest.mock('../../../src/services/pubsub');
-jest.mock('../../../src/util/sleep');
 
 jest.mock('../../../src/util/getSourceUrl',
     () => ({
