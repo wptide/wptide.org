@@ -4,6 +4,7 @@
         "plugin:jest/recommended",
         "plugin:jsdoc/recommended"
     ],
+    "ignorePatterns": ["**/vendor/**"],
     "rules": {
         "no-console": "off",
         "indent": ["error", 4]

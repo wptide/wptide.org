@@ -8,9 +8,6 @@ setup:
 	@gcloud config set run/region us-central1
 	@gcloud config set run/platform managed
 
-setup.api:
-	@cp .env.dist .env && cp .env.server.dist .env.server && cd app && npm install
-
 setup.cloud: setup
 	@gcloud components update
 	@gcloud auth login
@@ -19,23 +16,26 @@ setup.cloud: setup
 	@gcloud services enable run.googleapis.com
 	@gcloud datastore databases create
 
-setup.firebase:
-	@cp .firebaserc.dist .firebaserc
-
 setup.iam: setup
 	@gcloud iam service-accounts create tide-run-server --display-name "Tide Cloud Run Server"
 
-build.lighthouse-server:
-	@docker build --no-cache -t gcr.io/${GOOGLE_CLOUD_PROJECT}/lighthouse-server:latest -t lighthouse-server:latest -f app/docker/lighthouse-server/Dockerfile .
+build.lighthouse:
+	@docker build --no-cache -t gcr.io/${GOOGLE_CLOUD_PROJECT}/lighthouse:${VERSION} -f docker/Dockerfile.lighthouse .
 
-build.phpcs-server:
-	@docker build --no-cache -t gcr.io/${GOOGLE_CLOUD_PROJECT}/phpcs-server:latest -t phpcs-server:latest -f app/docker/phpcs-server/Dockerfile .
+build.phpcs:
+	@docker build --no-cache -t gcr.io/${GOOGLE_CLOUD_PROJECT}/phpcs:${VERSION} -f docker/Dockerfile.phpcs .
 
-push.lighthouse-server:
-	@docker push gcr.io/${GOOGLE_CLOUD_PROJECT}/lighthouse-server:latest
+push.lighthouse:
+	@docker push gcr.io/${GOOGLE_CLOUD_PROJECT}/lighthouse:${VERSION}
 
-push.phpcs-server:
-	@docker push gcr.io/${GOOGLE_CLOUD_PROJECT}/phpcs-server:latest
+push.phpcs:
+	@docker push gcr.io/${GOOGLE_CLOUD_PROJECT}/phpcs:${VERSION}
+
+start.lighthouse:
+	@docker run -v $(PWD)/app/src:/app/src --rm -p 8090:8080 --env-file .env.server gcr.io/${GOOGLE_CLOUD_PROJECT}/lighthouse:${VERSION}
+
+start.phpcs:
+	@docker run -v $(PWD)/app/src:/app/src --rm -p 8110:8080 --env-file .env.server gcr.io/${GOOGLE_CLOUD_PROJECT}/phpcs:${VERSION}
 
 deploy.api: setup
 	@gcloud functions deploy tide --source app --allow-unauthenticated --runtime nodejs12 --trigger-http
@@ -47,13 +47,11 @@ deploy.datastore: setup
 deploy.firebase:
 	@firebase deploy --only hosting
 
-deploy.lighthouse-server: setup
-	@gcloud run deploy lighthouse-server --no-allow-unauthenticated --image gcr.io/${GOOGLE_CLOUD_PROJECT}/lighthouse-server:latest --memory 1024
-	@gcloud run services update lighthouse-server --concurrency 1
+deploy.lighthouse: setup
+	@gcloud run deploy lighthouse-server --no-allow-unauthenticated --image gcr.io/${GOOGLE_CLOUD_PROJECT}/lighthouse:${VERSION} --memory ${GOOGLE_CLOUD_RUN_LIGHTHOUSE_MEMORY} --concurrency 1
 
-deploy.phpcs-server: setup
-	@gcloud run deploy phpcs-server --no-allow-unauthenticated --image gcr.io/${GOOGLE_CLOUD_PROJECT}/phpcs-server:latest --memory 1024
-	@gcloud run services update phpcs-server --concurrency 1
+deploy.phpcs: setup
+	@gcloud run deploy phpcs-server --no-allow-unauthenticated --image gcr.io/${GOOGLE_CLOUD_PROJECT}/phpcs:${VERSION} --memory ${GOOGLE_CLOUD_RUN_PHPCS_MEMORY} --concurrency 1
 
 deploy.iam: setup
 	@gcloud run services add-iam-policy-binding lighthouse-server \
@@ -82,23 +80,8 @@ deploy.pubsub: setup.iam deploy.iam deploy.topics
 		--enable-message-ordering \
 		--push-auth-service-account=tide-run-server@${GOOGLE_CLOUD_PROJECT}.iam.gserviceaccount.com
 
-start.api:
-	@cd app && npm start
+describe.lighthouse: setup
+	@gcloud run services describe lighthouse-server --format 'value(status.url)'
 
-start.lighthouse-server:
-	@docker run -v $(PWD)/app/src:/app/src --rm -p 8090:8080 --env-file .env.server lighthouse-server:latest
-
-start.phpcs-server:
-	@docker run -v $(PWD)/app/src:/app/src --rm -p 8110:8080 --env-file .env.server phpcs-server:latest
-
-start.proxy-server:
-	@cd app && node src/run/proxyServer.js
-
-start.emulator.datastore:
-	@gcloud beta emulators datastore start --no-store-on-disk
-
-start.emulator.firebase:
-	@firebase emulators:start
-
-start.emulator.pubsub:
-	@gcloud beta emulators pubsub start
+describe.phpcs: setup
+	@gcloud run services describe phpcs-server --format 'value(status.url)'
