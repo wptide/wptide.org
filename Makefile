@@ -20,10 +20,10 @@ setup.iam: setup
 	@gcloud iam service-accounts create tide-run-server --display-name "Tide Cloud Run Server"
 
 build.lighthouse:
-	@docker build --no-cache -t gcr.io/${GOOGLE_CLOUD_PROJECT}/lighthouse:${VERSION} -f docker/Dockerfile.lighthouse .
+	@docker build --no-cache -t gcr.io/${GOOGLE_CLOUD_PROJECT}/lighthouse:${VERSION} -f ./app/docker/Dockerfile.lighthouse ./app
 
 build.phpcs:
-	@docker build --no-cache -t gcr.io/${GOOGLE_CLOUD_PROJECT}/phpcs:${VERSION} -f docker/Dockerfile.phpcs .
+	@docker build --no-cache -t gcr.io/${GOOGLE_CLOUD_PROJECT}/phpcs:${VERSION} -f ./app/docker/Dockerfile.phpcs ./app
 
 push.lighthouse:
 	@docker push gcr.io/${GOOGLE_CLOUD_PROJECT}/lighthouse:${VERSION}

@@ -5,8 +5,8 @@ MAINTAINER XWP <technology@xwp.co>
 
 WORKDIR /app
 
-COPY app/composer.json composer.json
-COPY app/composer.lock composer.lock
+COPY composer.json composer.json
+COPY composer.lock composer.lock
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
 RUN echo 'memory_limit = -1' >> /usr/local/etc/php/conf.d/memory-limit.ini
@@ -17,10 +17,10 @@ FROM node:12-alpine3.12
 
 WORKDIR /app
 
-COPY app/src src
-COPY app/package.json package.json
-COPY app/package-lock.json package-lock.json
-COPY app/phpcsServer.js index.js
+COPY src src
+COPY package.json package.json
+COPY package-lock.json package-lock.json
+COPY phpcsServer.js index.js
 COPY --from=backend /usr/ /usr/
 COPY --from=backend /app/vendor/ ./vendor/
 

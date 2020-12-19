@@ -5,10 +5,10 @@ MAINTAINER XWP <technology@xwp.co>
 
 WORKDIR /app
 
-COPY app/src src
-COPY app/package.json package.json
-COPY app/package-lock.json package-lock.json
-COPY app/lighthouseServer.js index.js
+COPY src src
+COPY package.json package.json
+COPY package-lock.json package-lock.json
+COPY lighthouseServer.js index.js
 
 RUN apk add --no-cache chromium
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
