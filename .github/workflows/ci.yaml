@@ -36,6 +36,7 @@ jobs:
       - name: Install Node dependencies
         run: npm ci && cd app && npm ci && cd -
         env:
+          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: true
           CI: true
 
       - name: Detect coding standard violations
@@ -62,6 +63,7 @@ jobs:
       - name: Install Node dependencies
         run: npm ci && cd app && npm ci && cd -
         env:
+          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: true
           CI: true
 
       - name: Run unit tests
