@@ -5,7 +5,6 @@ on:
     branches:
       - develop
       - main
-      - update/workflow
   pull_request:
     # Run workflow whenever a PR is opened, updated (synchronized), or marked ready for review.
     types: [ opened, synchronize, ready_for_review ]
@@ -79,7 +78,7 @@ jobs:
 
   deploy-staging:
     name: "Deploy: Staging"
-    if: github.ref == 'refs/heads/update/workflow'
+    if: github.ref == 'refs/heads/develop'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
