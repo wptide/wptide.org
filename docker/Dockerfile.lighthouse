@@ -1,18 +1,20 @@
 # Node
 FROM node:12-alpine3.12
 
-MAINTAINER XWP <engage@xwp.co>
+MAINTAINER XWP <technology@xwp.co>
 
 WORKDIR /app
 
-COPY app/docker/lighthouse-server/ .
-COPY app/src/ ./src/
+COPY app/src src
+COPY app/package.json package.json
+COPY app/package-lock.json package-lock.json
+COPY app/lighthouseServer.js index.js
 
 RUN apk add --no-cache chromium
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 ENV CHROMIUM_PATH /usr/bin/chromium-browser
 
-RUN npm install
+RUN npm install --production
 
 EXPOSE 8080
 
