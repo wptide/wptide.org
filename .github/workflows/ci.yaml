@@ -118,7 +118,7 @@ jobs:
         uses: google-github-actions/setup-gcloud@master
         with:
           project_id: ${{ secrets.GOOGLE_CLOUD_PROJECT_STAGING }}
-          service_account_key: ${{ secrets.GCR_JSON_KEY_STAGING }}
+          service_account_key: ${{ secrets.GOOGLE_CLOUD_SA_STAGING }}
           export_default_credentials: true
 
       - name: Login to GCR
@@ -126,7 +126,7 @@ jobs:
         with:
           registry: gcr.io
           username: _json_key
-          password: ${{ secrets.GCR_JSON_KEY_STAGING }}
+          password: ${{ secrets.GOOGLE_CLOUD_SA_STAGING }}
 
       - name: Set image version
         id: package-version
@@ -167,6 +167,6 @@ jobs:
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: "${{ secrets.GITHUB_TOKEN }}"
-          firebaseServiceAccount: "${{ secrets.GCR_JSON_KEY_STAGING }}"
+          firebaseServiceAccount: "${{ secrets.GOOGLE_CLOUD_SA_STAGING }}"
           projectId: ${{ secrets.GOOGLE_CLOUD_PROJECT_STAGING }}
           channelId: live
