@@ -10,7 +10,7 @@ function Waves (canvas) {
   var fov = 1024
   var zRows = width / 60
   var xRows = width / 25
-  var yBase = 960
+  var yBase = 800
   var spacing = width / xRows
   var dotSize = 1.25
   var tickDiv = 25

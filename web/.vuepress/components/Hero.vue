@@ -16,6 +16,7 @@
         <use xlink:href="#path3_fill" transform="translate(435 22)"></use>
         <use xlink:href="#path4_fill" transform="translate(576 70)"></use>
       </svg>
+      <span class="hero__version">{{ version }}</span>
     </div>
     <hr/>
     <div class="hero__content">
@@ -32,8 +33,14 @@
 
 <script>
 import Waves from '../util/waves';
+import { version } from '../../../package';
 
 export default {
+  data() {
+    return {
+      version: version
+    }
+  },
   mounted () {
     import('../util/waves').then(module => {
       let el = document.getElementsByTagName("canvas")[0];
@@ -65,7 +72,7 @@ export default {
 
 .hero__logo
   width 500px
-  max-width 50%
+  max-width 100%
 
 .hero__title
   font-size 40px
@@ -94,6 +101,15 @@ export default {
   z-index 0
   transform translateX(-50%)
   display none
+
+.hero__brand
+  position relative
+
+.hero__version
+  font-weight 300
+  position absolute
+  left 0
+  top -1.5rem
 
 @media (min-width: 960px)
   .hero
