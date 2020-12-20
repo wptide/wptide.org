@@ -37,13 +37,13 @@ As outlined in [the announcement post](https://make.wordpress.org/tide/2019/06/2
 
 ### Tide Team
 
-![](/assets/img/Tide-Team.png)
+![](../../.vuepress/public/assets/img/Tide-Team.png)
 
 The Tide Team badge will be manually assigned to all active Tide maintainers – i.e those who are listed as “Maintainers” on [this page](../README.md#maintainers).
 
 ### Tide Contributor
 
-![](/assets/img/Tide-Contributor.png)
+![](../../.vuepress/public/assets/img/Tide-Contributor.png)
 
 The Tide Contributor badge will be manually assigned to those who provide valuable contributions to Tide -- i.e. those who are listed as “Contributors” on [this page](../README.md#contributors)).
 
