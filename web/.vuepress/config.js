@@ -39,9 +39,11 @@ module.exports = {
     ['meta', { name: 'theme-color', content: '#ffffff' }],
     ['meta', { name: 'apple-mobile-web-app-capable', content: 'yes' }],
     ['meta', { name: 'apple-mobile-web-app-status-bar-style', content: 'black' }],
-    ['link', { rel: 'mask-icon', href: '/icons/safari-pinned-tab.svg', color: '#ffffff' }],
+    ['link', { rel: 'mask-icon', href: '/assets/img/logo.svg', color: '#ffffff' }],
     ['meta', { name: 'msapplication-TileImage', content: '/assets/favicons/ms-icon-144x144.png' }],
-    ['meta', { name: 'msapplication-TileColor', content: '#000000' }]
+    ['meta', { name: 'msapplication-TileColor', content: '#000000' }],
+    ['meta', { name: 'viewport', content: 'width=device-width, initial-scale=1'}],
+    ['meta', { property: 'og:image', content: '/assets/img/tide-wp.png'}]
   ],
 
   /**
