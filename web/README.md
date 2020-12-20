@@ -1,0 +1,4 @@
+---
+pageClass: home
+---
+<Hero/>
