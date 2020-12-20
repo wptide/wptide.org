@@ -50,7 +50,7 @@ function Waves (canvas) {
   Point.prototype.drawDot = function () {
     ctx.beginPath()
     ctx.arc(this.x2d, this.y2d, this.dotSize, 0, 2 * Math.PI)
-    ctx.fillStyle = 'rgba(0,0,0,' + this.alpha + ')'
+    ctx.fillStyle = 'rgba(9,26,233,' + this.alpha + ')'
     ctx.fill()
   }
 
