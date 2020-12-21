@@ -6,9 +6,7 @@ Setting up Tide locally is fairly straight forward and consists of the following
 1. [Cloning](#cloning) the Tide repository.
 1. Finally, completing a handful of [setup](#setup) steps in the form of `npm` commands.
 
-::: tip
-If you run into issues while getting Tide installed please contact us, so we can address it and update the documentation for others.
-:::
+If you run into issues while getting Tide installed please [contact us](../README.md#contact-us), so we can address it and update the documentation for others.
 
 ## Prerequisites
 
@@ -22,10 +20,6 @@ There are several CLI tools that need to be installed on your system before you 
 * Install [Firebase CLI](https://firebase.google.com/docs/cli) (optional)
 * Install [Docker](https://docs.docker.com/get-docker/) (optional)
 * Install [Make for Windows](http://gnuwin32.sourceforge.net/packages/make.htm) (optional) (Windows only)
-
-::: danger
-If any of the `localhost` ports for the Tide services below are in use on your host machine there will be a port collision, and you will need to stop the running services on the required ports for everything to function correctly.
-:::
 
 ## Cloning
 
@@ -43,9 +37,13 @@ Change directories:
 
 After running these commands you should be able to build the documentation and setup all the various services that make up the Tide Component.
 
+::: warning
+If any of the `localhost` ports for the Tide services below are in use on your host machine there will be a port collision, and you will need to stop the running services on the required ports for everything to function correctly.
+:::
+
 Copy the hidden files:
 
-::: tip Important
+::: tip IMPORTANT
 This command should only be used once. The new `.env` is for the Cloud Functions API and the `.env.server` is for the Docker Cloud Run Servers. Both files are for local development only and likely do not require any changes.
 
     npm run copy
@@ -61,7 +59,7 @@ The local Datastore and Pub/Sub emulators must be running in order for Tide to p
 
 Start Datastore:
 
-::: tip Important
+::: tip IMPORTANT
 Datastore runs on `localhost` port `8081`.
 
     npm run start:emulator:datastore
@@ -69,7 +67,7 @@ Datastore runs on `localhost` port `8081`.
 
 Start Firebase (optional):
 
-::: tip Important
+::: tip IMPORTANT
 Firestore run on `localhost` port `5000`.
 
     npm run start:emulator:firebase
@@ -77,7 +75,7 @@ Firestore run on `localhost` port `5000`.
 
 Start Pub/Sub:
 
-::: tip Important
+::: tip IMPORTANT
 Pub/Sub runs on `localhost` port `8085`.
 
     npm run start:emulator:pubsub
@@ -89,7 +87,7 @@ When doing local development each server is running within an instance of the [F
 
 Start the API server:
 
-::: tip Important
+::: tip IMPORTANT
 The API server runs on `localhost` port `8080`.
 
     npm run start
@@ -97,7 +95,7 @@ The API server runs on `localhost` port `8080`.
 
 Start the Lighthouse server:
 
-::: tip Important
+::: tip IMPORTANT
 The Lighthouse server runs on `localhost` port `8090`.
 
     npm run start.server.lighthouse
@@ -105,7 +103,7 @@ The Lighthouse server runs on `localhost` port `8090`.
 
 Start the PHPCS server:
 
-::: tip Important
+::: tip IMPORTANT
 The PHPCS server runs on `localhost` port `8110`.
 
     npm run start.server.phpcs
@@ -127,7 +125,7 @@ Build the front-end:
 
 Serve the front-end:
 
-::: tip Important
+::: tip IMPORTANT
 The front-end dev server runs on `localhost` port `8000`.
 
     npm run docs:serve
