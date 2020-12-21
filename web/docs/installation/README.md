@@ -45,10 +45,10 @@ After running these commands you should be able to build the documentation and s
 
 Copy the hidden files:
 
-    npm run copy
+::: tip Important
+This command should only be used once. The new `.env` is for the Cloud Functions API and the `.env.server` is for the Docker Cloud Run Servers. Both files are for local development only and likely do not require any changes.
 
-::: warning
-This command should only be used once. The new `.env` is for the Cloud Functions API and the `.env.server` is for the Docker Cloud Run Servers. Both files are for local development only.
+    npm run copy
 :::
 
 Install `npm` and `composer` dependencies:
@@ -61,18 +61,26 @@ The local Datastore and Pub/Sub emulators must be running in order for Tide to p
 
 Start Datastore:
 
+::: tip Important
+Datastore runs on `localhost` port `8081`.
+
     npm run start:emulator:datastore
+:::
 
 Start Firebase (optional):
 
+::: tip Important
+Firestore run on `localhost` port `5000`.
+
     npm run start:emulator:firebase
+:::
 
 Start Pub/Sub:
 
-    npm run start:emulator:pubsub
+::: tip Important
+Pub/Sub runs on `localhost` port `8085`.
 
-::: warning
-Datastore runs on `localhost` port `8081`, Firestore run on port `5000`, and Pub/Sub runs on port `8085`.
+    npm run start:emulator:pubsub
 :::
 
 ## Servers
@@ -81,18 +89,26 @@ When doing local development each server is running within an instance of the [F
 
 Start the API server:
 
+::: tip Important
+The API server runs on `localhost` port `8080`.
+
     npm run start
+:::
 
 Start the Lighthouse server:
 
+::: tip Important
+The Lighthouse server runs on `localhost` port `8090`.
+
     npm run start.server.lighthouse
+:::
 
 Start the PHPCS server:
 
-    npm run start.server.phpcs
+::: tip Important
+The PHPCS server runs on `localhost` port `8110`.
 
-::: warning
-The API server runs on `localhost` port `8080`, the Lighthouse server runs on port `8090`, and the PHPCS server runs on port `8110`.
+    npm run start.server.phpcs
 :::
 
 ## Proxy
@@ -111,8 +127,8 @@ Build the front-end:
 
 Serve the front-end:
 
-    npm run docs:serve
-
-::: warning
+::: tip Important
 The front-end dev server runs on `localhost` port `8000`.
+
+    npm run docs:serve
 :::
