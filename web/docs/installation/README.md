@@ -98,7 +98,7 @@ Start the Lighthouse server:
 ::: tip IMPORTANT
 The Lighthouse server runs on `localhost` port `8090`.
 
-    npm run start.server.lighthouse
+    npm run start:server:lighthouse
 :::
 
 Start the PHPCS server:
@@ -106,14 +106,14 @@ Start the PHPCS server:
 ::: tip IMPORTANT
 The PHPCS server runs on `localhost` port `8110`.
 
-    npm run start.server.phpcs
+    npm run start:server:phpcs
 :::
 
 ## Proxy
 
 Start the local Pub/Sub Proxy: 
 
-    npm run start.server.proxy
+    npm run start:server:proxy
 
 ## Docs
 
