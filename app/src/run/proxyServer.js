@@ -12,6 +12,10 @@ const main = async () => {
         pushEndpoint: 'http://localhost:8090',
         ackDeadlineSeconds: 300,
     });
+    await subscribe(messageTypes.MESSAGE_TYPE_SYNC, {
+        pushEndpoint: 'http://localhost:8120',
+        ackDeadlineSeconds: 300,
+    });
 };
 
 main();

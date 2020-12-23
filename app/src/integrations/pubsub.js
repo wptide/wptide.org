@@ -2,10 +2,12 @@ const { createTopics, subscribeTopic, publishMessage } = require('../services/pu
 
 const MESSAGE_TYPE_LIGHTHOUSE_REQUEST = 'MESSAGE_TYPE_LIGHTHOUSE_REQUEST';
 const MESSAGE_TYPE_PHPCS_REQUEST = 'MESSAGE_TYPE_PHPCS_REQUEST';
+const MESSAGE_TYPE_SYNC = 'MESSAGE_TYPE_SYNC';
 
 const messageTypes = {
     MESSAGE_TYPE_LIGHTHOUSE_REQUEST,
     MESSAGE_TYPE_PHPCS_REQUEST,
+    MESSAGE_TYPE_SYNC,
 };
 
 const topicsExist = false;

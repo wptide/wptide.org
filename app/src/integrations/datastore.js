@@ -13,6 +13,7 @@ dotenv.config({ path: `${process.cwd()}/../.env` });
 const auditKeyPath = process.env.DATASTORE_KEY_AUDIT || 'Audit';
 const reportKeyPath = process.env.DATASTORE_KEY_REPORT || 'Report';
 const statusKeyPath = process.env.DATASTORE_KEY_STATUS || 'Status';
+const syncKeyPath = process.env.DATASTORE_KEY_SYNC || 'Sync';
 
 const getAuditDoc = async (id) => {
     const audit = await get(getKey(auditKeyPath, id));
@@ -38,6 +39,10 @@ const setAuditDoc = async (id, data) => set(getKey(auditKeyPath, id), data);
 const setStatusDoc = async (id, data) => set(getKey(statusKeyPath, id), data);
 
 const getStatusDoc = async (id) => get(getKey(statusKeyPath, id));
+
+const getSyncDoc = async (id) => get(getKey(syncKeyPath, id));
+
+const setSyncDoc = async (id, data) => set(getKey(syncKeyPath, id), data);
 
 const getReportDoc = async (id) => {
     const report = await get(getKey(reportKeyPath, id));
@@ -65,6 +70,8 @@ module.exports = {
     setAuditDoc,
     getStatusDoc,
     setStatusDoc,
+    getSyncDoc,
+    setSyncDoc,
     getReportDoc,
     setReportDoc,
 };

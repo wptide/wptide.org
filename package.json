@@ -21,6 +21,7 @@
     "start:server:lighthouse": "SERVER_PATH=./app/src/run/lighthouseServer SERVER_TARGET=lighthouseServer functions-framework --target=tide --signature-type=http --port=8090",
     "start:server:phpcs": "SERVER_PATH=./app/src/run/phpcsServer SERVER_TARGET=phpcsServer functions-framework --target=tide --signature-type=http --port=8110",
     "start:server:proxy": "cd app && node src/run/proxyServer.js",
+    "start:sync-server": "SERVER_PATH=./app/src/run/syncServer SERVER_TARGET=syncServer functions-framework --target=tide --signature-type=http --port=8120",
     "test": "NODE_ENV=test jest --detectOpenHandles --forceExit --verbose",
     "test:watch": "NODE_ENV=test jest --watch",
     "test:coverage": "NODE_ENV=test jest --detectOpenHandles --forceExit --coverage --coverageDirectory ./app/tests/coverage",

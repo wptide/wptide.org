@@ -24,13 +24,17 @@ const get = async (key) => {
 };
 
 const set = async (key, data) => {
-    const datastore = getDatastore();
-    await datastore.save({
-        method: 'upsert',
-        excludeLargeProperties: true,
-        key,
-        data,
-    });
+    try {
+        const datastore = getDatastore();
+        await datastore.save({
+            method: 'upsert',
+            excludeLargeProperties: true,
+            key,
+            data,
+        });
+    } catch (e) {
+        console.log(e);
+    }
     return key;
 };
 
