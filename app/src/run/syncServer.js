@@ -16,6 +16,9 @@ const TIME_TO_RECHECK = 5; // in seconds
 
 const TIME_TO_FAIL = 300; // in seconds
 
+const SYNC_STATE_INITIAL = 'initial';
+const SYNC_STATE_DELTA = 'delta';
+
 let initialState;
 
 const stateKeys = {
@@ -90,6 +93,7 @@ const getSyncList = async (urlParams) => {
     const syncList = {
         primaryQueue: [],
         secondaryQueue: [],
+        pages: {},
     };
 
     // eslint-disable-next-line no-restricted-syntax
@@ -97,6 +101,7 @@ const getSyncList = async (urlParams) => {
         const url = apiUrl(urlParams, type);
         const response = await fetch(url);
         let json = await response.json();
+        syncList.pages[type] = json.info.pages;
         json = cleanApiResponse(json);
         json.forEach((auditEntity) => {
             const auditParams = {
@@ -193,7 +198,7 @@ const doSync = async () => {
 
     // 1. Fetch into primary queue if we need to
     if (!Object.keys(state.syncState).length) {
-        state.syncState = { type: 'initial' };
+        state.syncState = { type: SYNC_STATE_INITIAL, page: 0 };
         const initialSyncList = await getSyncList({
             'request[browse]': 'popular',
             'request[per_page]': '100',
@@ -202,17 +207,92 @@ const doSync = async () => {
         state.primaryQueue = [...state.primaryQueue, ...initialSyncList.primaryQueue];
     }
 
-    // 2. Fetch into initial delta queue if we need to
+    // 2. Fetch into delta queue if we need to
     if (MAX_QUEUE_SIZE_FOR_DELTA_FETCH
         - state.primaryQueue.length
         - state.secondaryQueue.length
         > 0) {
-        // @TODO do delta syncs
-        const deltaSyncList = await getSyncList({
+        // If we're in initial sync mode, we fetch the next updated page.
+        if (state.syncState.type === SYNC_STATE_INITIAL) {
+            state.syncState.page += 1;
+
+            // Once we've visited every page, we go into delta fetch mode.
+            if (state.syncState.pages
+                && state.syncState.page > state.syncState.pages.plugin
+                && state.syncState.page > state.syncState.pages.theme
+            ) {
+                state.syncState.page = 1;
+                state.syncState.type = SYNC_STATE_DELTA;
+            }
+        }
+        const syncList = await getSyncList({
             'request[browse]': 'updated',
             'request[per_page]': '100',
             'request[fields][versions]': '1',
+            'request[page]': state.syncState.page,
         });
+
+        if (state.syncState.type === SYNC_STATE_INITIAL && !state.syncState.pages) {
+            state.syncState.pages = syncList.pages;
+        }
+
+        let deltaSyncList;
+
+        /**
+         * Used to tell that we've gone through all of the pending projects.
+         */
+        if (!state.syncState.stopVersions || state.syncState.type === SYNC_STATE_DELTA) {
+            // A stop theme is the first theme on this page of results that we use as a marker
+            // to indicate that on our next pass when we've reached where we currently are.
+            let stopTheme = null;
+            let stopPlugin = null;
+            let reachedStopTheme = false;
+            let reachedStopPlugin = false;
+            deltaSyncList = {
+                primaryQueue: [],
+            };
+            syncList.primaryQueue.forEach((project) => {
+                if (project.type === 'theme') {
+                    if (!reachedStopTheme) {
+                        deltaSyncList.primaryQueue.push(project);
+                    }
+                    if (stopTheme) {
+                        if (state.syncState.type === SYNC_STATE_DELTA) {
+                            // If we're in delta mode and we reach previous stop theme.
+                            if (JSON.stringify(project)
+                                === JSON.stringify(state.syncState.stopVersions.theme)) {
+                                reachedStopTheme = true;
+                            }
+                        }
+                        return;
+                    }
+                    stopTheme = project;
+                }
+                if (project.type === 'plugin') {
+                    if (!reachedStopPlugin) {
+                        deltaSyncList.primaryQueue.push(project);
+                    }
+                    if (stopPlugin) {
+                        // If we're in delta mode and we reach previous theme
+                        if (state.syncState.type === SYNC_STATE_DELTA) {
+                            if (JSON.stringify(project)
+                                === JSON.stringify(state.syncState.stopVersions.plugin)) {
+                                reachedStopPlugin = true;
+                            }
+                        }
+                        return;
+                    }
+                    stopPlugin = project;
+                }
+            });
+            state.syncState.stopVersions = {
+                theme: stopTheme,
+                plugin: stopPlugin,
+            };
+        } else {
+            deltaSyncList = syncList;
+        }
+
         state.primaryQueue = [...state.primaryQueue, ...deltaSyncList.primaryQueue];
     }
 
@@ -247,6 +327,7 @@ const doSync = async () => {
     }
 
     if (JSON.stringify(state) !== JSON.stringify(initialState)) {
+        console.log(state);
         await setState(state);
     }
 };
@@ -254,5 +335,6 @@ const doSync = async () => {
 exports.syncServer = async (req, res) => {
     console.log(req.body); // eslint-disable-line no-console
     await doSync();
-    res.json('complete');
+    const state = await getState();
+    res.json(state);
 };
