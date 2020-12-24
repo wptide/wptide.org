@@ -127,18 +127,28 @@ const getSyncList = async (urlParams) => {
     return syncList;
 };
 
-const getState = async () => ({
-    primaryQueue: await getSyncDoc(stateKeys.PRIMARY_QUEUE) || [],
-    secondaryQueue: await getSyncDoc(stateKeys.PRIMARY_QUEUE) || [],
-    syncState: await getSyncDoc(stateKeys.SYNC_STATE) || {},
-    inProgress: await getSyncDoc(stateKeys.IN_PROGRESS) || [],
-    completed: await getSyncDoc(stateKeys.COMPLETED) || {},
-});
+const getState = async () => {
+    const state = {
+        primaryQueue: await getSyncDoc(stateKeys.PRIMARY_QUEUE) || { k: [] },
+        secondaryQueue: await getSyncDoc(stateKeys.SECONDARY_QUEUE) || { k: [] },
+        syncState: await getSyncDoc(stateKeys.SYNC_STATE) || {},
+        inProgress: await getSyncDoc(stateKeys.IN_PROGRESS) || { k: [] },
+        completed: await getSyncDoc(stateKeys.COMPLETED) || {},
+    };
+
+    state.primaryQueue = state.primaryQueue.k;
+    state.secondaryQueue = state.secondaryQueue.k;
+    state.inProgress = state.inProgress.k;
+    return state;
+};
 
 const setState = async (state) => {
-    const {
-        primaryQueue, secondaryQueue, syncState, inProgress, completed,
-    } = state;
+    let { primaryQueue, secondaryQueue, inProgress } = state;
+    const { syncState, completed } = state;
+    primaryQueue = { k: primaryQueue };
+    secondaryQueue = { k: secondaryQueue };
+    inProgress = { k: inProgress };
+
     await setSyncDoc(stateKeys.PRIMARY_QUEUE, primaryQueue);
     await setSyncDoc(stateKeys.SECONDARY_QUEUE, secondaryQueue);
     await setSyncDoc(stateKeys.SYNC_STATE, syncState);
@@ -174,8 +184,11 @@ const makeAuditRequest = async (auditParams) => {
     const auditUrl = `${API_BASE}audit/wordpress/${auditParams.type}/${auditParams.slug}/${auditParams.version}`;
     const response = await fetch(auditUrl); // @TODO error handling
     const auditResponse = await response.json();
+    /*
     const isComplete = auditResponse && auditResponse.reports
         && !Object.values(auditResponse.reports).includes(null);
+     */
+    const isComplete = true;
     auditResponse.complete = isComplete;
     return auditResponse;
 };
@@ -327,13 +340,14 @@ const doSync = async () => {
     }
 
     if (JSON.stringify(state) !== JSON.stringify(initialState)) {
-        console.log(state);
         await setState(state);
     }
 };
 
 exports.syncServer = async (req, res) => {
-    console.log(req.body); // eslint-disable-line no-console
+    if (req.body) {
+        console.log(req.body); // eslint-disable-line no-console
+    }
     await doSync();
     const state = await getState();
     res.json(state);
