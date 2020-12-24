@@ -133,21 +133,25 @@ const getState = async () => {
         secondaryQueue: await getSyncDoc(stateKeys.SECONDARY_QUEUE) || { k: [] },
         syncState: await getSyncDoc(stateKeys.SYNC_STATE) || {},
         inProgress: await getSyncDoc(stateKeys.IN_PROGRESS) || { k: [] },
-        completed: await getSyncDoc(stateKeys.COMPLETED) || {},
+        completed: await getSyncDoc(stateKeys.COMPLETED) || { k: [] },
     };
 
     state.primaryQueue = state.primaryQueue.k;
     state.secondaryQueue = state.secondaryQueue.k;
     state.inProgress = state.inProgress.k;
+    state.completed = state.completed.k;
     return state;
 };
 
 const setState = async (state) => {
-    let { primaryQueue, secondaryQueue, inProgress } = state;
-    const { syncState, completed } = state;
+    let {
+        primaryQueue, secondaryQueue, inProgress, completed,
+    } = state;
+    const { syncState } = state;
     primaryQueue = { k: primaryQueue };
     secondaryQueue = { k: secondaryQueue };
     inProgress = { k: inProgress };
+    completed = { k: completed };
 
     await setSyncDoc(stateKeys.PRIMARY_QUEUE, primaryQueue);
     await setSyncDoc(stateKeys.SECONDARY_QUEUE, secondaryQueue);
@@ -309,6 +313,7 @@ const doSync = async () => {
         state.primaryQueue = [...state.primaryQueue, ...deltaSyncList.primaryQueue];
     }
 
+    const updatedInProgress = [];
     // 3. Check and move audits
     // eslint-disable-next-line no-restricted-syntax
     for await (const inProgressAudit of state.inProgress) {
@@ -316,12 +321,19 @@ const doSync = async () => {
         const minFailTime = Math.floor(Date.now() / 1000) - TIME_TO_FAIL;
         if (inProgressAudit.startTime < minTime) {
             const response = await makeAuditRequest(inProgressAudit);
-            console.log(response); // eslint-disable-line no-console
+            if (response.complete) {
+                // Audit finished move it to completed list
+                inProgressAudit.endTime = Math.floor(Date.now() / 1000);
+                state.completed.push(inProgressAudit);
+            } else {
+                updatedInProgress.push(inProgressAudit);
+            }
         }
         if (inProgressAudit.startTime < minFailTime) {
-            console.log(inProgressAudit); // eslint-disable-line no-console
+            console.log(`Audit took too long, giving up: ${JSON.stringify(inProgressAudit)}`); // eslint-disable-line no-console
         }
     }
+    state.inProgress = updatedInProgress;
 
     // 4. Fire off audit requests if we don't have enough of them already running
     if (state.inProgress.length < MAX_SIMULTANEOUS_REQUESTS) {
