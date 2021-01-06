@@ -3,8 +3,6 @@ const fetch = require('node-fetch');
 const { getSyncDoc, setSyncDoc } = require('../integrations/datastore');
 const { doAudit } = require('../controllers/getAudit');
 
-const API_BASE = process.env.API_BASE || 'http://localhost:8080/api/v1/';
-
 const MAX_QUEUE_SIZE_FOR_DELTA = process.env.SYNC_SERVER_MAX_QUEUE_SIZE_FOR_DELTA || 1000;
 
 const MAX_SIMULTANEOUS_REQUESTS = process.env.SYNC_SERVER_MAX_SIMULTANEOUS_REQUESTS || 50;
@@ -163,29 +161,12 @@ const makeAuditRequest = async (auditParams) => {
     const auditResponse = await doAudit(auditParams);
     // Non existent audits are null
     if (auditResponse) {
-        // const isComplete = auditResponse && auditResponse.reports
-        //    && !Object.values(auditResponse.reports).includes(null);
-        const isComplete = true;
-        console.log(auditResponse);
+        const isComplete = auditResponse && auditResponse.reports
+        && !Object.values(auditResponse.reports).includes(null);
         auditResponse.complete = isComplete;
     }
     return auditResponse;
 };
-
-/*
-const makeAuditRequest = async (auditParams) => {
-    const auditUrl = `${API_BASE}audit/wordpress/${auditParams.type}/${auditParams.slug}/${auditParams.version}`;
-    const response = await fetch(auditUrl); // @TODO error handling
-    const auditResponse = await response.json();
-    /*
-    const isComplete = auditResponse && auditResponse.reports
-        && !Object.values(auditResponse.reports).includes(null);
-     *//*
-    const isComplete = true;
-    auditResponse.complete = isComplete;
-    return auditResponse;
-};
-*/
 
 const makePendingRequests = async (audits) => {
     const pendingAudits = [...audits];
