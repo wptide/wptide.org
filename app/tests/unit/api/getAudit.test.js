@@ -1,4 +1,4 @@
-const getAudit = require('../../../src/controllers/getAudit');
+const { getAudit } = require('../../../src/controllers/getAudit');
 const { get, set } = require('../../../src/services/datastore');
 const { publishMessage } = require('../../../src/services/pubsub');
 const { dateTime } = require('../../../src/util/time');
