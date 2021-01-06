@@ -6,15 +6,15 @@ const { getSyncDoc, setSyncDoc } = require('../integrations/datastore');
 
 const API_BASE = process.env.API_BASE || 'http://localhost:8080/api/v1/';
 
-const MAX_QUEUE_SIZE_FOR_DELTA_FETCH = 100;
+const MAX_QUEUE_SIZE_FOR_DELTA = process.env.SYNC_SERVER_MAX_QUEUE_SIZE_FOR_DELTA || 1000;
 
-const MAX_SIMULTANEOUS_REQUESTS = 5;
+const MAX_SIMULTANEOUS_REQUESTS = process.env.SYNC_SERVER_MAX_SIMULTANEOUS_REQUESTS || 50;
 
-const TIME_BETWEEN_REQUESTS = 500; // in millis
+const TIME_BETWEEN_REQUESTS = process.env.SYNC_SERVER_TIME_BETWEEN_REQUESTS || 5; // in millis
 
-const TIME_TO_RECHECK = 5; // in seconds
+const TIME_TO_RECHECK = process.env.SYNC_SERVER_TIME_TO_RECHECK || 30; // in seconds
 
-const TIME_TO_FAIL = 300; // in seconds
+const TIME_TO_FAIL = process.env.SYNC_SERVER_TIME_TO_FAIL || 1000; // in seconds
 
 const SYNC_STATE_INITIAL = 'initial';
 const SYNC_STATE_DELTA = 'delta';
@@ -225,7 +225,7 @@ const doSync = async () => {
     }
 
     // 2. Fetch into delta queue if we need to
-    if (MAX_QUEUE_SIZE_FOR_DELTA_FETCH
+    if (MAX_QUEUE_SIZE_FOR_DELTA
         - state.primaryQueue.length
         - state.secondaryQueue.length
         > 0) {
