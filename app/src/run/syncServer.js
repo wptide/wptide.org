@@ -1,8 +1,7 @@
 const fetch = require('node-fetch');
 
-// require('../../global');
 const { getSyncDoc, setSyncDoc } = require('../integrations/datastore');
-// const getAudit = require('../controllers/getAudit');
+const { doAudit } = require('../controllers/getAudit');
 
 const API_BASE = process.env.API_BASE || 'http://localhost:8080/api/v1/';
 
@@ -160,30 +159,20 @@ const setState = async (state) => {
     await setSyncDoc(stateKeys.COMPLETED, completed);
 };
 
-/*
 const makeAuditRequest = async (auditParams) => {
-    const req = {
-        params: auditParams,
-    };
-
-    let auditResponse = undefined;
-    const res = {
-        json: ( content ) => auditResponse = content,
-        status(status) {
-            console.log(status);
-            return this; // Make it chainable
-        },
-    };
-    await getAudit( req, res );
-    console.log(auditParams);
-    console.log(auditResponse);
-    const isComplete = auditResponse && auditResponse.reports
-        && !Object.values(auditResponse.reports).includes(null);
-    auditResponse.complete = isComplete;
+    const auditResponse = await doAudit(auditParams);
+    // Non existent audits are null
+    if (auditResponse) {
+        // const isComplete = auditResponse && auditResponse.reports
+        //    && !Object.values(auditResponse.reports).includes(null);
+        const isComplete = true;
+        console.log(auditResponse);
+        auditResponse.complete = isComplete;
+    }
     return auditResponse;
 };
- */
 
+/*
 const makeAuditRequest = async (auditParams) => {
     const auditUrl = `${API_BASE}audit/wordpress/${auditParams.type}/${auditParams.slug}/${auditParams.version}`;
     const response = await fetch(auditUrl); // @TODO error handling
@@ -191,11 +180,12 @@ const makeAuditRequest = async (auditParams) => {
     /*
     const isComplete = auditResponse && auditResponse.reports
         && !Object.values(auditResponse.reports).includes(null);
-     */
+     *//*
     const isComplete = true;
     auditResponse.complete = isComplete;
     return auditResponse;
 };
+*/
 
 const makePendingRequests = async (audits) => {
     const pendingAudits = [...audits];
@@ -321,12 +311,18 @@ const doSync = async () => {
         const minFailTime = Math.floor(Date.now() / 1000) - TIME_TO_FAIL;
         if (inProgressAudit.startTime < minTime) {
             const response = await makeAuditRequest(inProgressAudit);
-            if (response.complete) {
-                // Audit finished move it to completed list
-                inProgressAudit.endTime = Math.floor(Date.now() / 1000);
-                state.completed.push(inProgressAudit);
+            if (response) {
+                if (response.complete) {
+                    // Audit finished move it to completed list
+                    inProgressAudit.endTime = Math.floor(Date.now() / 1000);
+                    state.completed.push(inProgressAudit);
+                } else {
+                    updatedInProgress.push(inProgressAudit);
+                }
             } else {
-                updatedInProgress.push(inProgressAudit);
+                // Invalid Audit
+                console.log('Invalid Audit');
+                console.log(inProgressAudit);
             }
         }
         if (inProgressAudit.startTime < minFailTime) {

@@ -92,6 +92,25 @@ const addReports = async (audit, reportTypes) => {
 };
 
 /**
+ * Fetches an existing audit doc, creating an audit if we don't yet have it.
+ *
+ * @param {object} auditParams Audit params for audit.
+ *
+ * @returns {object | null} Audit if one exists or null if the project doesn't exist.
+ */
+const doAudit = async (auditParams) => {
+    const id = getAuditId(auditParams);
+
+    let existingAuditData = await getAuditDoc(id);
+
+    if (!existingAuditData) {
+        existingAuditData = await createNewAudit(id, auditParams);
+    }
+
+    return existingAuditData;
+};
+
+/**
  * Gets an existing Audit.
  *
  * @param {object} req The HTTP request.
@@ -107,13 +126,7 @@ const getAudit = async (req, res) => {
     req.params.slug = req.params.slug.replace(/[^\w.-]+/g, '');
     req.params.version = req.params.version.replace(/[^\d.]+/g, '');
 
-    const id = getAuditId(req.params);
-
-    let existingAuditData = await getAuditDoc(id);
-
-    if (!existingAuditData) {
-        existingAuditData = await createNewAudit(id, req.params);
-    }
+    let existingAuditData = await doAudit(req.params);
 
     if (existingAuditData && req.query && req.query.reports) {
         existingAuditData = await addReports(existingAuditData, req.query.reports.split(','));
@@ -131,4 +144,7 @@ const getAudit = async (req, res) => {
     }
 };
 
-module.exports = getAudit;
+module.exports = {
+    getAudit,
+    doAudit,
+};
