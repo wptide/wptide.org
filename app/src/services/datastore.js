@@ -39,7 +39,7 @@ const get = async (key) => {
 };
 
 /**
- * Gets entity for a given key.
+ * Sets entity for a given key.
  *
  * @param {string} key  Key to set.
  * @param {object} data Data to set for the given key.
