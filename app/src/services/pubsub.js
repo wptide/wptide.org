@@ -1,3 +1,6 @@
+/**
+ * External Dependencies.
+ */
 const { PubSub } = require('@google-cloud/pubsub');
 const dotenv = require('dotenv');
 
