@@ -1,5 +1,11 @@
+/**
+ * External Dependencies.
+ */
 const fetch = require('node-fetch');
 
+/**
+ * Internal Dependencies.
+ */
 const { getSyncDoc, setSyncDoc } = require('../integrations/datastore');
 const { doAudit } = require('../controllers/getAudit');
 
@@ -60,6 +66,12 @@ const apiUrl = (params, type) => {
     return url;
 };
 
+/**
+ * Cleans an input array of themes or plugins by filtering out unused parameters.
+ *
+ * @param {object} input Object containing API responses in an array in the themes or plugins keys.
+ * @returns {Array} Array of API responses keeping only the properties specified.
+ */
 const cleanApiResponse = (input) => {
     const keepKeys = [
         // Keep only these properties
@@ -86,6 +98,12 @@ const cleanApiResponse = (input) => {
     return output;
 };
 
+/**
+ * Gets the list of projects to sync for a given set of url parameters.
+ *
+ * @param {object} urlParams URL Params to fetch from.
+ * @returns {object} Sync list to process.
+ */
 const getSyncList = async (urlParams) => {
     const syncList = {
         primaryQueue: [],
@@ -124,6 +142,11 @@ const getSyncList = async (urlParams) => {
     return syncList;
 };
 
+/**
+ * Get the current sync state for our sync server.
+ *
+ * @returns {object} Sync state.
+ */
 const getState = async () => {
     const state = {
         primaryQueue: await getSyncDoc(stateKeys.PRIMARY_QUEUE) || { k: [] },
@@ -140,6 +163,11 @@ const getState = async () => {
     return state;
 };
 
+/**
+ * Set the sync state for  our sync server.
+ *
+ * @param {object} state State to sync.
+ */
 const setState = async (state) => {
     let {
         primaryQueue, secondaryQueue, inProgress, completed,
@@ -157,6 +185,12 @@ const setState = async (state) => {
     await setSyncDoc(stateKeys.COMPLETED, completed);
 };
 
+/**
+ * Make an audit request for a given project.
+ *
+ * @param {object} auditParams Params for project to audit.
+ * @returns {object | null} Audit response.
+ */
 const makeAuditRequest = async (auditParams) => {
     const auditResponse = await doAudit(auditParams);
     // Non existent audits are null
@@ -168,6 +202,11 @@ const makeAuditRequest = async (auditParams) => {
     return auditResponse;
 };
 
+/**
+ * Start off our pending sync requests, with a small delay between each.
+ *
+ * @param {Array} audits A collection of audits to perform.
+ */
 const makePendingRequests = async (audits) => {
     const pendingAudits = [...audits];
     const delay = (ms) => new Promise((res) => setTimeout(res, ms));
@@ -180,6 +219,9 @@ const makePendingRequests = async (audits) => {
     }
 };
 
+/**
+ * Perform the sync.
+ */
 const doSync = async () => {
     const state = await getState();
     initialState = JSON.parse(JSON.stringify(state));
@@ -333,6 +375,12 @@ const doSync = async () => {
     }
 };
 
+/**
+ * Sync server http handler.
+ *
+ * @param {object} req The HTTP request.
+ * @param {object} res The HTTP response.
+ */
 exports.syncServer = async (req, res) => {
     if (req.body) {
         console.log(req.body); // eslint-disable-line no-console

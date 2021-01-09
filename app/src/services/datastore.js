@@ -62,6 +62,7 @@ const set = async (key, data) => {
 };
 
 /**
+ * Get the key for a given ID and key path.
  *
  * @param {string} keyPath Key Path for Key
  * @param {string} id      ID for Key
