@@ -18,9 +18,9 @@ const getHash = (input) => {
 /**
  * Get an audit ID for a project at a particular version.
  *
- * @param {object} params Audit Project params
- * @param {string} params.type  Type of project theme or plugin.
- * @param {string} params.slug  Project slug per WordPress.org.
+ * @param {object} params      Audit Project params
+ * @param {string} params.type Type of project theme or plugin.
+ * @param {string} params.slug Project slug per WordPress.org.
  *
  * @returns {string} Audit ID, a hash of type, slug and version concatenated.
  */
@@ -32,9 +32,9 @@ const getAuditId = (params) => {
 /**
  * Get a project ID, independent of the version.
  *
- * @param {object} params Audit Project params
- * @param {string} params.type  Type of project theme or plugin.
- * @param {string} params.slug  Project slug per WordPress.org.
+ * @param {object} params      Audit Project params
+ * @param {string} params.type Type of project theme or plugin.
+ * @param {string} params.slug Project slug per WordPress.org.
  *
  * @returns {string} Project ID, a hash of type and slug concatenated.
  */
