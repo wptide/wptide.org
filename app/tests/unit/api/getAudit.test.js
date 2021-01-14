@@ -133,6 +133,33 @@ describe('Main index entry point getAudit', () => {
             expect(publishMessage).toHaveBeenCalledWith(expectedMessage, 'MESSAGE_TYPE_PHPCS_REQUEST');
         });
 
+        it('Returns null trying to createAudit for nonexistent project', async () => {
+            jest.mock('../../../src/util/getSourceUrl',
+                () => ({
+                    getSourceUrl: null,
+                }));
+
+            const auditParams = {
+                type: 'theme',
+                slug: 'fooslug',
+                version: '2.0.1',
+            };
+            const currentTime = 1000;
+            dateTime.mockReturnValue(currentTime);
+            datastoreGet.mockResolvedValueOnce(null);
+
+            await getAudit({
+                params: auditParams,
+            }, res);
+
+            expect(res.json).toBeCalledWith({
+                error: {
+                    code: 404,
+                    message: 'Audit not found',
+                },
+            });
+        });
+
         it('Publishes a phpcs and lighthouse audit message when we have the latest valid theme', async () => {
             const auditParams = {
                 type: 'theme',
