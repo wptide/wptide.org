@@ -14,7 +14,7 @@ jest.mock('../../../src/services/pubsub');
 
 jest.mock('../../../src/util/getSourceUrl',
     () => ({
-        getSourceUrl: async (type, slug, version) => `https://downloads.wordpress.org/${type}/${slug}.${version}.zip`,
+        getSourceUrl: async (type, slug, version) => (slug === 'non-existent' ? null : `https://downloads.wordpress.org/${type}/${slug}.${version}.zip`),
     }));
 
 jest.mock('../../../src/util/shouldLighthouseAudit',
@@ -134,15 +134,10 @@ describe('Main index entry point getAudit', () => {
         });
 
         it('Returns null trying to createAudit for nonexistent project', async () => {
-            jest.mock('../../../src/util/getSourceUrl',
-                () => ({
-                    getSourceUrl: null,
-                }));
-
             const auditParams = {
                 type: 'theme',
-                slug: 'fooslug',
-                version: '2.0.1',
+                slug: 'non-existent',
+                version: '2.0.2',
             };
             const currentTime = 1000;
             dateTime.mockReturnValue(currentTime);
