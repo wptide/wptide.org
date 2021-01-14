@@ -10,11 +10,12 @@ const messageTypes = {
     MESSAGE_TYPE_SYNC,
 };
 
-const topicsExist = false;
+let topicsExist = false;
 
 const publish = async (message, topicName) => {
     if (!topicsExist) {
         createTopics(Object.keys(messageTypes));
+        topicsExist = true;
     }
     await publishMessage(message, topicName);
 };
@@ -22,6 +23,7 @@ const publish = async (message, topicName) => {
 const subscribe = async (subscriptionName, options) => {
     if (!topicsExist) {
         createTopics(Object.keys(messageTypes));
+        topicsExist = true;
     }
     const subscription = await subscribeTopic(subscriptionName, options);
     return subscription;
