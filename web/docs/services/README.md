@@ -18,7 +18,3 @@ The API is the public endpoint of the service, and can be used to fetch audits f
 ## PHPCS Server
 
 ...
-
-## Sync Server
-
-...

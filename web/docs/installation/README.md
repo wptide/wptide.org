@@ -122,12 +122,6 @@ Start the local Pub/Sub Proxy:
 
     npm run start:server:proxy
 
-## Sync Server
-
-Start the local Sync Server (optional): 
-
-    npm run start:sync-server    
-
 ## Docs
 
 These docs are generated with [VuePress](https://vuepress.vuejs.org/), which is a Vue-powered Static Site Generator that converts several Markdown files into a searchable static site.
