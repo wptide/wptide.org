@@ -14,7 +14,7 @@ jest.mock('../../../src/services/pubsub');
 
 jest.mock('../../../src/util/getSourceUrl',
     () => ({
-        getSourceUrl: async (type, slug, version) => `https://downloads.wordpress.org/${type}/${slug}.${version}.zip`,
+        getSourceUrl: async (type, slug, version) => (slug === 'non-existent' ? null : `https://downloads.wordpress.org/${type}/${slug}.${version}.zip`),
     }));
 
 jest.mock('../../../src/util/shouldLighthouseAudit',
@@ -100,6 +100,59 @@ describe('Main index entry point getAudit', () => {
             expect(res.json).toBeCalledWith(mockAudit);
         });
 
+        it('Returns completed audit with reports if requested.', async () => {
+            const auditParams = {
+                type: 'plugin',
+                slug: 'fooslug',
+                version: '2',
+            };
+            const currentTime = 1000;
+            dateTime.mockReturnValue(currentTime);
+
+            const mockAudit = {
+                id: 'fb8fd6304dd6a5f2fc4f281a8c7c8e53be9b5d1a5286c0f6ad2eebf78b5838c3',
+                type: 'plugin',
+                slug: 'fooslug',
+                version: '2',
+                created_datetime: 1600000000,
+                last_modified_datetime: 1600000001,
+                reports: {
+                    phpcs_phpcompatibilitywp: {
+                        id: 'e5085200b1a1db56c82af70ee206947aa449ed9512e524e06085b03a25f599fd',
+                    },
+                },
+            };
+
+            const mockReport = {
+                id: 'fb8fd6304dd6a5f2fc4f281a8c7c8e53be9b5d1a5286c0f6ad2eebf78b5838c3',
+                type: 'phpcs_phpcompatibilitywp',
+                source_url: 'https://downloads.wordpress.org/plugin/fooslug.3.zip',
+                created_datetime: 1600000001,
+                milliseconds: 10000,
+                audit: {
+                    id: 'e5085200b1a1db56c82af70ee206947aa449ed9512e524e06085b03a25f599fd',
+                    type: 'plugin',
+                    slug: 'fooslug',
+                    version: '2',
+                },
+
+            };
+
+            datastoreGet.mockResolvedValueOnce(mockAudit);
+            datastoreGet.mockResolvedValueOnce(mockReport);
+
+            await getAudit({ params: auditParams, query: { reports: 'phpcs_phpcompatibilitywp' } }, res);
+            expect(datastoreSet).toBeCalledTimes(0);
+            expect(res.json).toBeCalledWith(
+                { reports: { phpcs_phpcompatibilitywp: { ...mockReport } }, ...mockAudit },
+            );
+            await getAudit({ params: auditParams, query: { reports: 'all' } }, res);
+            expect(datastoreSet).toBeCalledTimes(0);
+            expect(res.json).toBeCalledWith(
+                { reports: { phpcs_phpcompatibilitywp: { ...mockReport } }, ...mockAudit },
+            );
+        });
+
         it('Publishes a phpcs audit message when we have a valid plugin', async () => {
             const auditParams = {
                 type: 'plugin',
@@ -131,6 +184,28 @@ describe('Main index entry point getAudit', () => {
 
             expect(datastoreSet).toHaveBeenCalledWith(expectedAudit.id, expectedAudit);
             expect(publishMessage).toHaveBeenCalledWith(expectedMessage, 'MESSAGE_TYPE_PHPCS_REQUEST');
+        });
+
+        it('Returns null trying to createAudit for nonexistent project', async () => {
+            const auditParams = {
+                type: 'theme',
+                slug: 'non-existent',
+                version: '2.0.2',
+            };
+            const currentTime = 1000;
+            dateTime.mockReturnValue(currentTime);
+            datastoreGet.mockResolvedValueOnce(null);
+
+            await getAudit({
+                params: auditParams,
+            }, res);
+
+            expect(res.json).toBeCalledWith({
+                error: {
+                    code: 404,
+                    message: 'Audit not found',
+                },
+            });
         });
 
         it('Publishes a phpcs and lighthouse audit message when we have the latest valid theme', async () => {

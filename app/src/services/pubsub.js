@@ -1,3 +1,6 @@
+/**
+ * External Dependencies.
+ */
 const { PubSub } = require('@google-cloud/pubsub');
 const dotenv = require('dotenv');
 
@@ -5,6 +8,11 @@ dotenv.config({ path: `${process.cwd()}/../.env` });
 
 let pubsubInstance;
 
+/**
+ * Returns a singleton instance of PubSub client.
+ *
+ * @returns {object} PubSub instance.
+ */
 const getPubsub = async () => {
     const options = {};
     if (process.env.NODE_ENV !== 'production') {
@@ -33,6 +41,12 @@ const createTopic = async (topicName) => {
     }
 };
 
+/**
+ * Publish a message to a given topic.
+ *
+ * @param {string} message   Message to send.
+ * @param {string} topicName Topic to which the message should be published.
+ */
 const publishMessage = async (message, topicName) => {
     const buffer = Buffer.from(JSON.stringify(message));
     const pubsub = await getPubsub();
@@ -42,6 +56,14 @@ const publishMessage = async (message, topicName) => {
     console.debug(`Message ${messageId} published to ${topicName} with ${debugMessage}`);
 };
 
+/**
+ * Add a subscription to a topic.
+ *
+ * @param {string} subscriptionName Subscription name.
+ * @param {object} options          Subscription options.
+ *
+ * @returns {Promise<*>} Topic Subscription.
+ */
 const subscribeTopic = async (subscriptionName, options) => {
     const pubsub = await getPubsub();
     const topic = await pubsub.topic(subscriptionName);
