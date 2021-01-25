@@ -17,7 +17,7 @@ const main = async () => {
         ackDeadlineSeconds: 300,
     });
     await subscribe(messageTypes.MESSAGE_TYPE_SYNC, {
-        pushEndpoint: 'http://localhost:8120',
+        pushEndpoint: 'http://localhost:8100',
         ackDeadlineSeconds: 30,
     });
 };
