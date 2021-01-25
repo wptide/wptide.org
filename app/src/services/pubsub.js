@@ -18,19 +18,18 @@ const getPubsub = async () => {
     return pubsubInstance;
 };
 
-const createTopics = async (topics) => {
+/**
+ * Create a Topic by name.
+ *
+ * @param {string} topicName The name of the topic.
+ */
+const createTopic = async (topicName) => {
     const pubsub = await getPubsub();
-    // eslint-disable-next-line no-restricted-syntax
-    for (const topicName of topics) {
-        // eslint-disable-next-line no-await-in-loop
-        const topic = await pubsub.topic(topicName);
+    const topic = await pubsub.topic(topicName);
+    const [topicExists] = await topic.exists();
 
-        // eslint-disable-next-line no-await-in-loop
-        const [topicExists] = await topic.exists();
-        if (!topicExists) {
-            // eslint-disable-next-line no-await-in-loop
-            await topic.create();
-        }
+    if (!topicExists) {
+        await topic.create();
     }
 };
 
@@ -68,7 +67,7 @@ const subscribeTopic = async (subscriptionName, options) => {
 };
 
 module.exports = {
-    createTopics,
+    createTopic,
     subscribeTopic,
     publishMessage,
 };

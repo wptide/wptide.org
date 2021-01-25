@@ -1,4 +1,4 @@
-const { createTopics, subscribeTopic, publishMessage } = require('../services/pubsub');
+const { createTopic, subscribeTopic, publishMessage } = require('../services/pubsub');
 
 const MESSAGE_TYPE_LIGHTHOUSE_REQUEST = 'MESSAGE_TYPE_LIGHTHOUSE_REQUEST';
 const MESSAGE_TYPE_PHPCS_REQUEST = 'MESSAGE_TYPE_PHPCS_REQUEST';
@@ -12,19 +12,29 @@ const messageTypes = {
 
 let topicsExist = false;
 
-const publish = async (message, topicName) => {
+/**
+ * Conditionally creates each Topic by looping over `messageTypes`.
+ *
+ * @returns {void}
+ */
+const maybeCreateTopics = async () => {
     if (!topicsExist) {
-        createTopics(Object.keys(messageTypes));
+        // eslint-disable-next-line no-restricted-syntax
+        for (const topicName of Object.keys(messageTypes)) {
+            // eslint-disable-next-line no-await-in-loop
+            await createTopic(topicName);
+        }
         topicsExist = true;
     }
+};
+
+const publish = async (message, topicName) => {
+    await maybeCreateTopics();
     await publishMessage(message, topicName);
 };
 
 const subscribe = async (subscriptionName, options) => {
-    if (!topicsExist) {
-        createTopics(Object.keys(messageTypes));
-        topicsExist = true;
-    }
+    await maybeCreateTopics();
     const subscription = await subscribeTopic(subscriptionName, options);
     return subscription;
 };
