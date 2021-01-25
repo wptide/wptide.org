@@ -17,10 +17,13 @@ const lighthouseReporter = async (message) => {
     };
     const url = `https://wp-themes.com/${message.slug.replace(/[^\w.-]+/g, '')}/`;
 
-    const browser = await puppeteer.launch({
-        executablePath: process.env.CHROMIUM_PATH,
+    const args = {
         args: options.chromeFlags,
-    });
+    };
+    if (process.env.CHROMIUM_PATH) {
+        args.executablePath = process.env.CHROMIUM_PATH;
+    }
+    const browser = await puppeteer.launch(args);
     options.port = (new URL(browser.wsEndpoint())).port;
 
     const runnerResult = await lighthouse(url, options);
