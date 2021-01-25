@@ -6,7 +6,6 @@
 
 Inspired by the proverb _"A rising tide lifts all boats"_, we want to lift the quality of code across the whole WordPress ecosystem. **Tide’s vision is to run automated quality testing for all WordPress plugins and themes and make those test results visible for both the authors and the end users of those plugins and themes.** This will help improve the quality of code throughout the WordPress ecosystem and help WordPress site owners make better choices about plugins and themes.
 
-
 ## Current status
 
 The Tide project is an [official component of the WordPress project](https://make.wordpress.org/tide/) and still in the early stages. Today, Tide scans all WordPress plugins and themes and provides scan results as JSON through the Tide API.
@@ -95,4 +94,3 @@ Props: [Bartek Makoś (@MakiBM)](https://github.com/MakiBM),
 ## Contact Us
 
 Have questions? Join us in the [`#tide` channel](https://wordpress.slack.com/messages/C7TK8FBUJ/) in [WordPress Slack](https://make.wordpress.org/chat/). If you're new to Slack, keep in mind that it sometimes takes several hours for community members to respond — thank you for being patient!
-
