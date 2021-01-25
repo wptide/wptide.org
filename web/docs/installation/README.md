@@ -3,8 +3,8 @@
 Setting up Tide locally is fairly straight forward and consists of the following steps:
 
 1. Installing all the [prerequisite](#prerequisites) software.
-1. [Cloning](#cloning) the Tide repository.
-1. Finally, completing a handful of [setup](#setup) steps in the form of `npm` commands.
+2. [Cloning](#cloning) the Tide repository.
+3. Finally, completing a handful of [setup](#setup) steps in the form of `npm` commands.
 
 If you run into issues while getting Tide installed please [contact us](../README.md#contact-us), so we can address it and update the documentation for others.
 
@@ -47,6 +47,7 @@ Copy the hidden files:
 This command should only be used once. The new `.env` is for the Cloud Functions API and the `.env.server` is for the Docker Cloud Run Servers. Both files are for local development only and likely do not require any changes.
 
     npm run copy
+
 :::
 
 Install `npm` and `composer` dependencies:
@@ -63,6 +64,7 @@ Start Datastore:
 Datastore runs on `localhost` port `8081`.
 
     npm run start:emulator:datastore
+
 :::
 
 Start Firebase (optional):
@@ -71,6 +73,7 @@ Start Firebase (optional):
 Firestore run on `localhost` port `5000`.
 
     npm run start:emulator:firebase
+
 :::
 
 Start Pub/Sub:
@@ -79,6 +82,7 @@ Start Pub/Sub:
 Pub/Sub runs on `localhost` port `8085`.
 
     npm run start:emulator:pubsub
+
 :::
 
 ## Servers
@@ -91,6 +95,7 @@ Start the API server:
 The API server runs on `localhost` port `8080`.
 
     npm run start
+
 :::
 
 Start the Lighthouse server:
@@ -99,6 +104,7 @@ Start the Lighthouse server:
 The Lighthouse server runs on `localhost` port `8090`.
 
     npm run start:server:lighthouse
+
 :::
 
 Start the PHPCS server:
@@ -107,6 +113,7 @@ Start the PHPCS server:
 The PHPCS server runs on `localhost` port `8110`.
 
     npm run start:server:phpcs
+
 :::
 
 ## Proxy
@@ -129,4 +136,5 @@ Serve the front-end:
 The front-end dev server runs on `localhost` port `8000`.
 
     npm run docs:serve
+
 :::

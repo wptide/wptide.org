@@ -9,7 +9,7 @@ const stream = require('stream');
 /**
  * Downloads a zip file.
  *
- * @param {string} url The URL to the archive.
+ * @param {string} url  The URL to the archive.
  * @param {string} path The absolute path to on the server.
  * @returns {Promise<void>}
  */

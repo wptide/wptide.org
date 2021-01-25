@@ -1,3 +1,6 @@
+/**
+ * External Dependencies.
+ */
 const { PubSub } = require('@google-cloud/pubsub');
 const dotenv = require('dotenv');
 
@@ -5,6 +8,11 @@ dotenv.config({ path: `${process.cwd()}/../.env` });
 
 let pubsubInstance;
 
+/**
+ * Returns a singleton instance of PubSub client.
+ *
+ * @returns {object} PubSub instance.
+ */
 const getPubsub = async () => {
     const options = {};
     if (process.env.NODE_ENV !== 'production') {
@@ -18,22 +26,27 @@ const getPubsub = async () => {
     return pubsubInstance;
 };
 
-const createTopics = async (topics) => {
+/**
+ * Create a Topic by name.
+ *
+ * @param {string} topicName The name of the topic.
+ */
+const createTopic = async (topicName) => {
     const pubsub = await getPubsub();
-    // eslint-disable-next-line no-restricted-syntax
-    for (const topicName of topics) {
-        // eslint-disable-next-line no-await-in-loop
-        const topic = await pubsub.topic(topicName);
+    const topic = await pubsub.topic(topicName);
+    const [topicExists] = await topic.exists();
 
-        // eslint-disable-next-line no-await-in-loop
-        const [topicExists] = await topic.exists();
-        if (!topicExists) {
-            // eslint-disable-next-line no-await-in-loop
-            await topic.create();
-        }
+    if (!topicExists) {
+        await topic.create();
     }
 };
 
+/**
+ * Publish a message to a given topic.
+ *
+ * @param {string} message   Message to send.
+ * @param {string} topicName Topic to which the message should be published.
+ */
 const publishMessage = async (message, topicName) => {
     const buffer = Buffer.from(JSON.stringify(message));
     const pubsub = await getPubsub();
@@ -43,6 +56,14 @@ const publishMessage = async (message, topicName) => {
     console.debug(`Message ${messageId} published to ${topicName} with ${debugMessage}`);
 };
 
+/**
+ * Add a subscription to a topic.
+ *
+ * @param {string} subscriptionName Subscription name.
+ * @param {object} options          Subscription options.
+ *
+ * @returns {Promise<*>} Topic Subscription.
+ */
 const subscribeTopic = async (subscriptionName, options) => {
     const pubsub = await getPubsub();
     const topic = await pubsub.topic(subscriptionName);
@@ -68,7 +89,7 @@ const subscribeTopic = async (subscriptionName, options) => {
 };
 
 module.exports = {
-    createTopics,
+    createTopic,
     subscribeTopic,
     publishMessage,
 };

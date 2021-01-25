@@ -14,4 +14,4 @@ We believe the web can be better. With Tide, the code which underpins every webs
 
 ## Documentation
 
-@todo link to docs
+[Documentation is available](web/docs/README.md)
