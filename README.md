@@ -14,4 +14,4 @@ We believe the web can be better. With Tide, the code which underpins every webs
 
 ## Documentation
 
-The Markdown files used to generate the [documentation](https://wptide.org) site can be found in the [web/docs](web/docs/README.md) directory. There you will find information about Tide, all its services, and how to get the development environment setup.
+The Markdown files used to generate the [documentation](https://wptide.org) site can be found in the [web/docs](web/docs) directory. There you will find information about Tide, all its services, and how to get the development environment setup.
