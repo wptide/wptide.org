@@ -52,7 +52,7 @@ module.exports = {
    * ref：https://v1.vuepress.vuejs.org/theme/default-theme-config.html
    */
   themeConfig: {
-    repo: 'xwp/wptide.org',
+    repo: 'wptide/wptide.org',
     editLinks: true,
     lastUpdated: true,
     docsDir: 'web',
