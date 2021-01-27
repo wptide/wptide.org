@@ -1,7 +1,7 @@
 # [wptide.org](https://wptide.org)
 
 [![CI/CD Pipeline](https://github.com/wptide/wptide.org/workflows/CI/CD%20Pipeline/badge.svg?branch=develop)](https://github.com/wptide/wptide.org/actions?query=workflow%3A%22CI%2FCD+Pipeline%22)
-[![Coverage Status](https://coveralls.io/repos/github/wptide/wptide.org/badge.svg?branch=develop)](https://coveralls.io/github/wptide/wptide.org?branch=develop)
+[![Coverage Status](https://coveralls.io/repos/github/wptide/wptide.org/badge.svg?branch=refs/heads/develop)](https://coveralls.io/github/wptide/wptide.org?branch=refs/heads/develop)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE) 
 [![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](web/docs/contributing/README.md) 
 [![Shipping faster with ZenHub.io](https://img.shields.io/badge/Shipping_faster_with-ZenHub.io-6567bd.svg?style=flat)](https://www.zenhub.com/)
