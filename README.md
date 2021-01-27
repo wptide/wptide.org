@@ -1,7 +1,7 @@
 # [wptide.org](https://wptide.org)
 
-[![CI/CD Pipeline](https://github.com/xwp/wptide.org/workflows/CI/CD%20Pipeline/badge.svg?branch=develop)](https://github.com/xwp/wptide.org/actions?query=workflow%3A%22CI%2FCD+Pipeline%22) 
-[![Coverage Status](https://coveralls.io/repos/github/xwp/wptide.org/badge.svg?branch=refs/heads/develop&t=ieGDFa)](https://coveralls.io/github/xwp/wptide.org?branch=refs/heads/develop)
+[![CI/CD Pipeline](https://github.com/wptide/wptide.org/workflows/CI/CD%20Pipeline/badge.svg?branch=develop)](https://github.com/wptide/wptide.org/actions?query=workflow%3A%22CI%2FCD+Pipeline%22)
+[![Coverage Status](https://coveralls.io/repos/github/wptide/wptide.org/badge.svg?branch=develop)](https://coveralls.io/github/wptide/wptide.org?branch=develop)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE) 
 [![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](web/docs/contributing/README.md) 
 [![Shipping faster with ZenHub.io](https://img.shields.io/badge/Shipping_faster_with-ZenHub.io-6567bd.svg?style=flat)](https://www.zenhub.com/)
@@ -14,4 +14,4 @@ We believe the web can be better. With Tide, the code which underpins every webs
 
 ## Documentation
 
-[Documentation is available](web/docs/README.md)
+The Markdown files used to generate the [documentation](https://wptide.org) site can be found in the [web/docs](web/docs) directory. There you will find information about Tide, all its services, and how to get the development environment setup.
