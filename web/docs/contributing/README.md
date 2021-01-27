@@ -31,6 +31,38 @@ This project and everyone participating in it is governed by the [Code of Conduc
 
 Travis CI will run the unit tests whenever you push changes to your PR. Tests are required to pass successfully for a merge to be considered.
 
+## Tests
+
+All JavaScript tests are required to pass before the code can be merged into the Tide project or deployed to either the Staging or Production environment.
+
+To run the tests, use the following command:
+
+    npm run test
+
+_A `pre-push` hook should run each time you attempt to push code, which will automatically run the tests._
+
+To run tests while watching for code changes, use the following command:
+
+    npm run test:watch
+
+To run tests with coverage, use the following command:
+
+    npm run test:coverage
+
+## Coding standards
+
+All contributions to this project will be checked against the [Airbnb Javascript Style Guide](https://github.com/airbnb/javascript) using ESLint.
+
+To verify your code meets the requirements, use the following command:
+
+    npm run lint
+
+_A `pre-commit` hook should run each time you attempt to commit code, which will automatically run the linter._
+
+To fix linting issues, use the following command:
+
+    npm run lint:fix
+
 ## Profile Badges
 
 As outlined in [the announcement post](https://make.wordpress.org/tide/2019/06/20/tide-profile-badges/), badges related to work on Tide are awarded as follows:
