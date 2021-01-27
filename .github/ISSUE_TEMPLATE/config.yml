@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: ❓ WordPress Slack
+    url: https://wordpress.slack.com/messages/C7TK8FBUJ/
+    about: For project discussions and usage questions, please visit the WordPress Slack channel.
+  - name: ℹ️ Tide Documentation
+    url: https://wptide.org/
+    about: Documentation for the Tide API and various services.

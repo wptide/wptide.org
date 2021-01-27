@@ -29,7 +29,39 @@ This project and everyone participating in it is governed by the [Code of Conduc
   - Provide detailed description of the bug in the PR. Live demo preferred.
   - Add appropriate test coverage if applicable.
 
-Travis CI will run the unit tests whenever you push changes to your PR. Tests are required to pass successfully for a merge to be considered.
+GitHub Actions will run the unit tests and linter whenever you push changes to your PR. All jobs are required to pass successfully for a merge to be considered.
+
+## Coding standards
+
+All contributions to this project will be checked against the [Airbnb Javascript Style Guide](https://github.com/airbnb/javascript) using ESLint.
+
+To verify your code meets the requirements, use the following command:
+
+    npm run lint
+
+_A `pre-commit` hook should run each time you attempt to commit code, which will automatically run the linter._
+
+To fix linting issues, use the following command:
+
+    npm run lint:fix
+
+## Tests
+
+[Jest](https://jestjs.io/) is used as the JavaScript unit testing framework.
+
+To run the tests, use the following command:
+
+    npm run test
+
+_A `pre-push` hook should run each time you attempt to push code, which will automatically run the tests._
+
+To run tests while watching for code changes, use the following command:
+
+    npm run test:watch
+
+To run tests with coverage, use the following command:
+
+    npm run test:coverage
 
 ## Profile Badges
 
