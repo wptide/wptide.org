@@ -12,14 +12,14 @@
   "dependencies": {
     "@google-cloud/datastore": "^6.3.1",
     "@google-cloud/functions-framework": "^1.7.1",
-    "@google-cloud/pubsub": "^2.7.0",
+    "@google-cloud/pubsub": "^2.8.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "invariant": "^2.2.4",
-    "lighthouse": "^7.0.0",
+    "lighthouse": "^7.0.1",
     "node-fetch": "^2.6.1",
     "puppeteer": "^5.5.0",
-    "swagger-routes-express": "^3.2.1",
+    "swagger-routes-express": "^3.3.0",
     "yamljs": "^0.3.0"
   }
 }
