@@ -2,7 +2,7 @@
  * Internal Dependencies.
  */
 const schema = require('./schema');
-const getAudit = require('./getAudit');
+const { getAudit } = require('./getAudit');
 const getReport = require('./getReport');
 
 /**

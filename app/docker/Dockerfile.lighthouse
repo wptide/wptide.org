@@ -1,0 +1,21 @@
+# Node
+FROM node:12-alpine3.12
+
+MAINTAINER XWP <technology@xwp.co>
+
+WORKDIR /app
+
+COPY src src
+COPY package.json package.json
+COPY package-lock.json package-lock.json
+COPY lighthouseServer.js index.js
+
+RUN apk add --no-cache chromium
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
+ENV CHROMIUM_PATH /usr/bin/chromium-browser
+
+RUN npm install --production
+
+EXPOSE 8080
+
+ENTRYPOINT ["npm", "start"]

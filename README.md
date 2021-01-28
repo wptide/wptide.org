@@ -1,68 +1,17 @@
-# wptide.org
-Firebase hosted VuePress documentation site for [wptide.org](https://wptide.org). Along with an implementation of Tide using the OpenAPI Specification v3 deployed to Cloud Functions and Cloud Run.
+# [wptide.org](https://wptide.org)
 
-## Prerequisites
-* Install [Node](https://nodejs.org/en/download/)
-* Install [Docker](https://docs.docker.com/get-docker/)
-* Install [Google Cloud SDK](https://cloud.google.com/sdk/docs/install)
-* Install [Pub/Sub emulator](https://cloud.google.com/pubsub/docs/emulator)
-* Install [Datastore emulator](https://cloud.google.com/datastore/docs/tools/datastore-emulator)
-* Install [Firebase CLI](https://firebase.google.com/docs/cli) (optional)
-* Install [Make for Windows](http://gnuwin32.sourceforge.net/packages/make.htm) (Windows only)
+[![CI/CD Pipeline](https://github.com/wptide/wptide.org/workflows/CI/CD%20Pipeline/badge.svg?branch=develop)](https://github.com/wptide/wptide.org/actions?query=workflow%3A%22CI%2FCD+Pipeline%22)
+[![Coverage Status](https://coveralls.io/repos/github/wptide/wptide.org/badge.svg?branch=refs/heads/develop)](https://coveralls.io/github/wptide/wptide.org?branch=refs/heads/develop)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE) 
+[![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](web/docs/contributing/README.md) 
+[![Shipping faster with ZenHub.io](https://img.shields.io/badge/Shipping_faster_with-ZenHub.io-6567bd.svg?style=flat)](https://www.zenhub.com/)
 
-## Local Setup
+> A rising tide lifts all boats. -- United States President, John F. Kennedy (borrowed from the New England Council)
 
-Clone the repository:
+Tide is an automated tool to provide insight into WordPress code and highlight areas to improve the quality of plugins and themes.
 
-```
-git clone git@github.com:wptide/wptide.org.git
-```
+We believe the web can be better. With Tide, the code which underpins every website can be more standardized, faster, and more secure. Tide is focused on WordPress because no other platform has as large an impact on the state of the web. Tide raises the quality of code one plugin or theme at a time, by elevating the importance of code quality in the developer consciousness. Because a rising Tide lifts all boats.
 
-Install dependencies:
+## Documentation
 
-```
-npm install
-```
-
-Setup the API by installing the dependencies and creating the `.env` and `.env.server` files.
-
-```
-make setup.api
-```
-
-_The `.env` is for the Cloud Functions API and `.env.server` for the Cloud Run Servers. Both are only used locally._
-
-Setup the `.firebaserc` file (optional):
-
-```
-make setup.firebase
-```
-	
-### Docs Generator
-* Build front-end: `npm run build`
-* Serve front-end: `npm run dev`
-
-_**Note**: The front-end dev server runs on port `8000`_
-
-### Build Images
-* Build Lighthouse Cloud Run image: `make build.lighthouse-server`
-* Build PHPCS Cloud Run image: `make build.phpcs-server`
-
-### Start Emulators
-* Start Datastore: `make start.emulator.datastore`
-* Start Firebase (optional): `make start.emulator.firebase`
-* Start Pub/Sub: `make start.emulator.pubsub`
-
-_**Note**: Datastore runs on port `8081`, Firestore run on port `5000`, and Pub/Sub runs on port `8085`_
-
-### Start Servers
-* Start Cloud Functions API: `make start.api`
-* Start Lighthouse Cloud Run container: `make start.lighthouse-server`
-* Start PHPCS Cloud Run container: `make start.phpcs-server`
-* Start local Pub/Sub Proxy: `make start.proxy-server`
-
-_**Note**: The Cloud Functions API runs on port `8080`, the Lighthouse Server runs on port `8090`, and the PHPCS Server runs on port `8110`. If any of these ports are in use on your host machine there will be a port collision._
-
-### Example API Requests
-* Browse to this URL: http://localhost:8080/api/v1/audit/wordpress/theme/twentytwenty/1.5
-* Browse to this URL: http://localhost:8080/api/v1/audit/wordpress/plugin/pwa/0.5.0
+The Markdown files used to generate the [documentation](https://wptide.org) site can be found in the [web/docs](web/docs) directory. There you will find information about Tide, all its services, and how to get the development environment setup.

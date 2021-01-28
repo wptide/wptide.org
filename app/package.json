@@ -1,24 +1,25 @@
 {
-  "name": "tide-api",
-  "version": "1.0.0",
-  "description": "Node setup for the Tide Cloud Functions API",
+  "name": "app-server",
+  "version": "1.0.0-beta",
+  "description": "Shared Node setup for the Cloud Functions API and Lighthouse & PHPCS Cloud Run servers.",
   "main": "index.js",
+  "author": "XWP",
+  "license": "MIT",
+  "private": true,
   "scripts": {
     "start": "functions-framework --target=tide --signature-type=http"
   },
-  "author": "XWP",
-  "license": "MIT",
   "dependencies": {
-    "@google-cloud/datastore": "^6.2.0",
+    "@google-cloud/datastore": "^6.3.1",
     "@google-cloud/functions-framework": "^1.7.1",
-    "@google-cloud/pubsub": "^2.6.0",
+    "@google-cloud/pubsub": "^2.8.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "invariant": "^2.2.4",
-    "lighthouse": "6.4.1",
+    "lighthouse": "^7.0.1",
     "node-fetch": "^2.6.1",
-    "puppeteer": "^5.4.1",
-    "swagger-routes-express": "^3.2.1",
+    "puppeteer": "^5.5.0",
+    "swagger-routes-express": "^3.3.0",
     "yamljs": "^0.3.0"
   }
 }

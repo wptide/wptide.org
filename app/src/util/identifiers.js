@@ -2,53 +2,48 @@
  * External Dependencies.
  */
 const crypto = require('crypto');
-const fetch = require('node-fetch');
 
 /**
- * Checks if a downloadable ZIP archive for a specific version of a
- * theme or plugin exists on WordPress.org and returns the Source URL.
+ * Get a hash for a given input.
  *
- * @param {string} type The project type. One of `theme` or `plugin`.
- * @param {string} slug The theme or plugin slug.
- * @param {string} version The theme or plugin version.
- * @returns {Promise<string|boolean>} Return the source URL or false.
+ * @param {string | object | Array} input A string or any input that can be coverted to JSON.
+ *
+ * @returns {string} Hash for given input.
  */
-const getSourceUrl = async (type, slug, version) => {
-    const url = `https://downloads.wordpress.org/${type}/${slug}.${version}.zip`;
-
-    return fetch(url, {
-        method: 'HEAD',
-    })
-        .then((response) => {
-            if (response.ok) {
-                return url;
-            }
-            return false;
-        })
-        .catch((error) => {
-            // Helps to debug the server logs on GCP.
-            console.error(`Invalid Source URL ${url}:`, error);
-            return false;
-        });
-};
-
 const getHash = (input) => {
     const plainText = typeof input === 'string' ? input : JSON.stringify(input);
     return crypto.createHash('sha256').update(plainText).digest('hex');
 };
 
+/**
+ * Get an audit ID for a project at a particular version.
+ *
+ * @param {object} params      Audit Project params
+ * @param {string} params.type Type of project theme or plugin.
+ * @param {string} params.slug Project slug per WordPress.org.
+ *
+ * @returns {string} Audit ID, a hash of type, slug and version concatenated.
+ */
 const getAuditId = (params) => {
     const plainText = `${params.type}${params.slug}${params.version}`;
     return getHash(plainText);
 };
 
+/**
+ * Get a project ID, independent of the version.
+ *
+ * @param {object} params      Audit Project params
+ * @param {string} params.type Type of project theme or plugin.
+ * @param {string} params.slug Project slug per WordPress.org.
+ *
+ * @returns {string} Project ID, a hash of type and slug concatenated.
+ */
 const getProjectId = (params) => {
     const plainText = `${params.type}${params.slug}`;
     return getHash(plainText);
 };
 
 module.exports = {
-    getSourceUrl,
     getHash,
     getAuditId,
     getProjectId,

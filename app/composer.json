@@ -1,0 +1,6 @@
+{
+    "require": {
+        "dealerdirect/phpcodesniffer-composer-installer": "*",
+        "phpcompatibility/phpcompatibility-wp": "2.1.0"
+    }
+}

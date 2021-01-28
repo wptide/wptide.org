@@ -4,5 +4,25 @@
  * ref：https://v1.vuepress.vuejs.org/config/#index-styl
  */
 
+.navbar a.home-link span
+  font-weight 300
+  text-transform lowercase
+  font-size 1.6rem
+
+.navbar img.logo
+  margin-right 6px
+
 .home .hero img
   max-width 450px!important
+
+@media (max-width: 719px)
+  .navbar .site-name.can-hide
+    display inline-block
+
+.home .page
+  > footer
+    display none
+
+blockquote
+  color lighten($textColor, 20%)
+  border-color lighten($textColor, 20%)
