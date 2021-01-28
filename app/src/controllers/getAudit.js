@@ -76,8 +76,8 @@ const createNewAudit = async (id, params) => {
 /**
  * Add report docs to a given audit.
  *
- * @param {object} audit        Audit Params
- * @param {Array   }reportTypes Reports to add.
+ * @param {object} audit       Audit Params
+ * @param {Array}  reportTypes Reports to add.
  * @returns {object} Audit including reports.
  */
 const addReports = async (audit, reportTypes) => {
@@ -114,7 +114,6 @@ const addReports = async (audit, reportTypes) => {
  * Fetches an existing audit doc, creating an audit if we don't yet have it.
  *
  * @param {object} auditParams Audit params for audit.
- *
  * @returns {object | null} Audit if one exists or null if the project doesn't exist.
  */
 const doAudit = async (auditParams) => {
