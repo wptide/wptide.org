@@ -21,8 +21,12 @@ const maybeCreateTopics = async () => {
     if (!topicsExist) {
         // eslint-disable-next-line no-restricted-syntax
         for (const topicName of Object.keys(messageTypes)) {
-            // eslint-disable-next-line no-await-in-loop
-            await createTopic(topicName);
+            try {
+                // eslint-disable-next-line no-await-in-loop
+                await createTopic(topicName);
+            } catch (err) {
+                console.log(err);
+            }
         }
         topicsExist = true;
     }
