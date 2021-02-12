@@ -94,7 +94,7 @@ Start the API server:
 ::: tip IMPORTANT
 The API server runs on `localhost` port `8080`.
 
-    npm run start
+    npm run start:api
 
 :::
 
