@@ -55,7 +55,7 @@ const createNewAudit = async (id, params) => {
             slug: params.slug,
             version: params.version,
             created_datetime: timeNow,
-            last_modified_datetime: timeNow,
+            modified_datetime: timeNow,
             reports: {},
         };
 

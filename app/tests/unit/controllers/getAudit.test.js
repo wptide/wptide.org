@@ -85,7 +85,7 @@ describe('Main index entry point getAudit', () => {
                 slug: 'fooslug',
                 version: '2',
                 created_datetime: 1600000000,
-                last_modified_datetime: 1600000001,
+                modified_datetime: 1600000001,
                 reports: {
                     phpcs_phpcompatibilitywp: {
                         id: 'e5085200b1a1db56c82af70ee206947aa449ed9512e524e06085b03a25f599fd',
@@ -115,7 +115,7 @@ describe('Main index entry point getAudit', () => {
                 slug: 'fooslug',
                 version: '2',
                 created_datetime: 1600000000,
-                last_modified_datetime: 1600000001,
+                modified_datetime: 1600000001,
                 reports: {
                     phpcs_phpcompatibilitywp: {
                         id: 'e5085200b1a1db56c82af70ee206947aa449ed9512e524e06085b03a25f599fd',
@@ -171,7 +171,7 @@ describe('Main index entry point getAudit', () => {
                 ...auditParams,
                 id: '80b87c3c58e0db32770995c3589f6830304c6cc85cfa61f3c2c7d722b3ef7fe2',
                 created_datetime: currentTime,
-                last_modified_datetime: currentTime,
+                modified_datetime: currentTime,
                 reports: {
                     phpcs_phpcompatibilitywp: null,
                 },
@@ -226,7 +226,7 @@ describe('Main index entry point getAudit', () => {
                 ...auditParams,
                 id: 'd29213d0e05c8669ece2f68ce995e19407212debcdc6519f79b1208aa07c0b27',
                 created_datetime: currentTime,
-                last_modified_datetime: currentTime,
+                modified_datetime: currentTime,
                 reports: {
                     lighthouse: null,
                     phpcs_phpcompatibilitywp: null,

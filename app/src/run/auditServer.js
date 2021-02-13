@@ -97,7 +97,7 @@ exports.auditServer = async (req, res, reporter, type, name) => {
             };
 
             // Save the Audit.
-            audit.last_modified_datetime = createdDate;
+            audit.modified_datetime = createdDate;
             audit.reports[type] = {
                 id: reportId,
             };

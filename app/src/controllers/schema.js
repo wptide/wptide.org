@@ -1,7 +1,7 @@
 /**
  * Internal Dependencies.
  */
-const { apiSpec } = require('../util/apiSpec');
+const apiValidate = require('../util/apiValidate');
 
 /**
  * Renders the API schema.
@@ -9,8 +9,9 @@ const { apiSpec } = require('../util/apiSpec');
  * @param {object} req The HTTP request.
  * @param {object} res The HTTP response.
  */
-const schema = (req, res) => {
-    res.json(apiSpec());
+const schema = async (req, res) => {
+    const api = await apiValidate();
+    res.status(api.status ? 500 : 200).json(api);
 };
 
 module.exports = schema;

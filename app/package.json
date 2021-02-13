@@ -17,10 +17,11 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "invariant": "^2.2.4",
+    "js-yaml": "^4.0.0",
     "lighthouse": "^7.0.1",
     "node-fetch": "^2.6.1",
     "puppeteer": "^7.0.4",
-    "swagger-routes-express": "^3.3.0",
-    "yamljs": "^0.3.0"
+    "swagger-parser": "^10.0.2",
+    "swagger-routes-express": "^3.3.0"
   }
 }

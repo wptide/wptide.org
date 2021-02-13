@@ -1,9 +1,7 @@
+/**
+ * Internal Dependencies.
+ */
 const schema = require('../../../src/controllers/schema');
-
-jest.mock('../../../src/util/apiSpec',
-    () => ({
-        apiSpec: () => 'apispec',
-    }));
 
 describe('Main index entry point schema', () => {
     const res = {
@@ -18,7 +16,6 @@ describe('Main index entry point schema', () => {
             expect(async () => {
                 await schema(null, res);
             }).not.toThrow();
-            expect(res.json).toBeCalledWith('apispec');
         });
     });
 });

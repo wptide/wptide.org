@@ -33,7 +33,7 @@ const getAuditDoc = async (id) => {
             slug: audit.slug,
             version: audit.version,
             created_datetime: audit.created_datetime,
-            last_modified_datetime: audit.last_modified_datetime,
+            modified_datetime: audit.modified_datetime,
         }, audit);
     }
 
