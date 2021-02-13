@@ -3,7 +3,11 @@
   "version": "1.0.0-beta",
   "description": "Shared Node setup for the Cloud Functions API and Lighthouse & PHPCS Cloud Run servers.",
   "main": "index.js",
-  "author": "wptide.org",
+  "author": {
+    "name": "Tide Maintainers",
+    "email": "support@wptide.org",
+    "url": "https://wptide.org"
+  },
   "license": "MIT",
   "private": true,
   "scripts": {
