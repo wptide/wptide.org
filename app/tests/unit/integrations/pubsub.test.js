@@ -1,16 +1,18 @@
 /**
- * Mock.
- */
-jest.mock('../../../src/services/pubsub', () => ({
-    createTopics: () => true,
-    subscribeTopic: (subscriptionName) => subscriptionName,
-    publishMessage: () => true,
-}));
-
-/**
  * Internal Dependencies.
  */
 const { subscribe } = require('../../../src/integrations/pubsub');
+
+/**
+ * Setup mock before running tests.
+ */
+beforeAll(() => {
+    jest.mock('../../../src/services/pubsub', () => ({
+        createTopics: () => true,
+        subscribeTopic: (subscriptionName) => subscriptionName,
+        publishMessage: () => true,
+    }));
+});
 
 /**
  * Tests for subscribe.
