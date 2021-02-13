@@ -56,6 +56,13 @@
       "**/app/src/**/*.js",
       "!**/node_modules/**",
       "!**/vendor/**"
+    ],
+    "coveragePathIgnorePatterns": [
+      "<rootDir>/app/src/audits/phpcsReporter.js",
+      "<rootDir>/app/src/run/lighthouseServer.js",
+      "<rootDir>/app/src/run/phpcsServer.js",
+      "<rootDir>/app/src/run/proxyServer.js",
+      "<rootDir>/app/src/run/syncServer.js"
     ]
   }
 }
