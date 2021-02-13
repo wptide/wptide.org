@@ -4,12 +4,19 @@ info:
   title: Tide API
   description: JSON application API server for wptide.org
   contact:
+    name: Tide Maintainers
     email: support@wptide.org
+    url: "https://wptide.org"
   license:
     name: MIT
     url: 'https://opensource.org/licenses/MIT'
 servers:
   - url: /api/v1
+    description: Local server
+  - url: https://staging.wptide.org/api/v1
+    description: Staging server
+  - url: https://wptide.org/api/v1
+    description: Production server
 paths:
   /:
     get:
