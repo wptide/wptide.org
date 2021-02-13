@@ -20,6 +20,8 @@ servers:
 paths:
   /:
     get:
+      tags:
+        - Public
       summary: API Schema
       description: >-
         Returns a JSON object representing the API schema for wptide.org in the OpenAPI
@@ -32,9 +34,11 @@ paths:
           $ref: '#/components/responses/500InternalServerError'
   '/audit/wporg/{type}/{slug}/{version}':
     get:
-      summary: Get Audit
+      tags:
+        - Public
+      summary: Get WordPress.org Audit
       description: >-
-        Get a WordPress.org theme or plugin audit, with optional reports, by project type,
+        Gets a WordPress.org theme or plugin audit, with optional reports, by project type,
         slug and version.
       operationId: getAudit
       responses:
@@ -49,6 +53,8 @@ paths:
         - $ref: '#/components/parameters/reportsParam'
   '/report/{id}':
     get:
+      tags:
+        - Public
       summary: Get Report
       description: >-
         Get the raw PHP Compatibility or Lighthouse report by id.
@@ -84,23 +90,12 @@ components:
           properties:
             phpcs_phpcompatibilitywp:
               oneOf:
-                - $ref: '#/components/schemas/PHPCompat'
+                - $ref: '#/components/schemas/PHPCS'
                 - $ref: '#/components/schemas/ReportRef'
             lighthouse:
               oneOf:
                 - $ref: '#/components/schemas/Lighthouse'
                 - $ref: '#/components/schemas/ReportRef'
-    AuditRef:
-      type: object
-      properties:
-        id:
-          type: string
-        type:
-          type: string
-        slug:
-          type: string
-        version:
-          type: string
     Report:
       type: object
       properties:
@@ -130,23 +125,27 @@ components:
               $ref: '#/components/schemas/Dependencies'
         report:
           oneOf:
-            - $ref: '#/components/schemas/PHPCompat'
+            - $ref: '#/components/schemas/PHPCS'
             - $ref: '#/components/schemas/Lighthouse'
+    AuditRef:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        slug:
+          type: string
+        version:
+          type: string
     ReportRef:
       type: object
       properties:
         id:
           type: string
-    Dependencies:
-      type: array
-      items:
-        type: object
-        properties:
-          version:
-            type: string
-          vendor:
-            type: string
-    PHPCompat:
+    Lighthouse:
+      type: object
+    PHPCS:
       type: object
       properties:
         incompatible:
@@ -160,31 +159,47 @@ components:
         versions:
           type: object
           properties:
-            5.6:
-              $ref: '#/components/schemas/PHPCompatVersion'
-            7.0:
-              $ref: '#/components/schemas/PHPCompatVersion'
-            7.1:
-              $ref: '#/components/schemas/PHPCompatVersion'
-            7.2:
-              $ref: '#/components/schemas/PHPCompatVersion'
-            7.3:
-              $ref: '#/components/schemas/PHPCompatVersion'
-            7.4:
-              $ref: '#/components/schemas/PHPCompatVersion'
-            8.0:
-              $ref: '#/components/schemas/PHPCompatVersion'
+            "5.6":
+              $ref: '#/components/schemas/Versions'
+            "7.0":
+              $ref: '#/components/schemas/Versions'
+            "7.1":
+              $ref: '#/components/schemas/Versions'
+            "7.2":
+              $ref: '#/components/schemas/Versions'
+            "7.3":
+              $ref: '#/components/schemas/Versions'
+            "7.4":
+              $ref: '#/components/schemas/Versions'
+            "8.0":
+              $ref: '#/components/schemas/Versions'
         totals:
           $ref: '#/components/schemas/Totals'
-    PHPCompatVersion:
+    Totals:
+      type: object
+      properties:
+        warnings:
+          type: integer
+        errors:
+          type: integer
+        fixable:
+          type: integer
+    Versions:
       type: object
       properties:
         files:
           $ref: '#/components/schemas/Files'
         totals:
           $ref: '#/components/schemas/Totals'
-    Lighthouse:
-      type: object
+    Dependencies:
+      type: array
+      items:
+        type: object
+        properties:
+          version:
+            type: string
+          vendor:
+            type: string
     Files:
       type: object
       additionalProperties:
@@ -215,15 +230,6 @@ components:
           type: string
         fixable:
           type: boolean
-    Totals:
-      type: object
-      properties:
-        warnings:
-          type: integer
-        errors:
-          type: integer
-        fixable:
-          type: integer
     Message:
       type: object
       properties:
@@ -272,6 +278,15 @@ components:
         application/json:
           schema:
             type: object
+            properties:
+              openapi:
+                type: string
+              info:
+                type: object
+              paths:
+                type: object
+              components:
+                type: object
     400BadRequest:
       description: The request was invalid or cannot be otherwise served.
       content:
