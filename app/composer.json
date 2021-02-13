@@ -1,4 +1,14 @@
 {
+    "name": "wptide/wptide.org",
+    "description": "PHPCS Compatibility server dependencies",
+    "homepage": "https://wptide.org",
+    "authors": [
+        {
+            "name": "Tide Support",
+            "email": "support@wptide.org"
+        }
+    ],
+    "license": "MIT",
     "require": {
         "dealerdirect/phpcodesniffer-composer-installer": "*",
         "phpcompatibility/phpcompatibility-wp": "2.1.0"

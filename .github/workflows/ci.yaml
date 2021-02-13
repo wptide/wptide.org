@@ -30,15 +30,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-npm-
 
-      - name: Install Node dependencies
-        run: npm ci && cd app && npm ci && cd -
-        env:
-          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: true
-          CI: true
-
-      - name: Detect coding standard violations
-        run: npm run lint
-
       - name: Get Composer Cache Directory
         id: composer-cache
         run: echo "::set-output name=dir::$(composer config cache-files-dir)"
@@ -53,6 +44,15 @@ jobs:
 
       - name: Validate composer.json
         run: cd app && composer --no-interaction validate --no-check-all && cd -
+
+      - name: Install Node dependencies
+        run: npm ci && cd app && npm ci && cd -
+        env:
+          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: true
+          CI: true
+
+      - name: Detect coding standard violations
+        run: npm run lint
 
   unit-test-js:
     name: 'Unit test: JS'
