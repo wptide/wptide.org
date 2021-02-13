@@ -2,27 +2,37 @@
  * External Dependencies.
  */
 const { connector } = require('swagger-routes-express');
-const YAML = require('yamljs');
 const express = require('express');
+const cors = require('cors');
 
 /**
  * Internal Dependencies.
  */
+const { apiSpec } = require('./src/util/apiSpec');
 const controllers = require('./src/controllers');
 
-const apiSpec = YAML.load('openapi.yml');
 const app = express();
 
-const bootstrap = () => {
-    const connect = connector(controllers, apiSpec, {}); // make the connector
+// Automatically allow cross-origin requests
+app.use(cors({ origin: true }));
 
-    // do any other app stuff, such as wire in passport, use cors etc
-    connect(app); // attach the routes
+// Parse application/json
+app.use(express.json());
 
-    // add any error handlers last
-    return app;
-};
+// @todo Add middleware to authenticate requests
 
-bootstrap();
+// Generate the connector.
+const connect = connector(controllers, apiSpec(), {});
+
+// Attach the controllers to the routes.
+connect(app);
+
+// Capture All 404 errors.
+app.use((req, res) => {
+    res.status(404).json({
+        message: 'The requested resource does not exists',
+        status: 404
+    });
+});
 
 exports.tide = app;
