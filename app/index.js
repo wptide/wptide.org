@@ -31,7 +31,7 @@ connect(app);
 app.use((req, res) => {
     res.status(404).json({
         message: 'The requested resource does not exists',
-        status: 404
+        status: 404,
     });
 });
 
