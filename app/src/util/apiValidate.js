@@ -16,7 +16,8 @@ const { apiSpec } = require('./apiSpec');
 const apiValidate = async () => {
     // Return the API specification.
     try {
-        return await SwaggerParser.validate(apiSpec());
+        await SwaggerParser.validate(apiSpec());
+        return apiSpec();
     } catch (err) {
         return {
             message: 'The server could not respond with the OpenAPI Specification',
