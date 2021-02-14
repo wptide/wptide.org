@@ -1,16 +1,16 @@
 # Installation
 
-Setting up Tide locally is fairly straight forward and consists of the following steps:
+Setting up Tide locally consists of the following steps:
 
-1. Installing all the [prerequisite](#prerequisites) software.
-2. [Cloning](#cloning) the Tide repository.
-3. Finally, completing a handful of [setup](#setup) steps in the form of `npm` commands.
+1. Install all the [prerequisite](#prerequisites) software.
+2. [Clone](#cloning) the Tide repository.
+3. Finally, complete a handful of [setup](#setup) steps in the form of `npm` commands.
 
 If you run into issues while getting Tide installed please [contact us](../README.md#contact-us), so we can address it and update the documentation for others.
 
 ## Prerequisites
 
-There are several CLI tools that need to be installed on your system before you can meaningfully contribute to the Tide Component. The Firebase CLI is optional, but required if you need to emulate Firebase hosting locally. Docker is optional, but required in you plan to build the images and test them locally, and `make` is needed if you are building images and/or deploying to GCP.
+There are several CLI tools that need to be installed on your system before you can meaningfully contribute to the Tide Component. The Firebase CLI is optional, but required if you want to emulate Firebase hosting locally. Docker is optional, but required in you plan to build the images and test them locally, and `make` is needed if you are building images and/or deploying to GCP.
 
 * Install [Composer](https://getcomposer.org/)
 * Install [Node](https://nodejs.org/en/download/)
@@ -58,21 +58,14 @@ Install `npm` and `composer` dependencies:
 
 The local Datastore and Pub/Sub emulators must be running in order for Tide to process WordPress.org themes and plugins. The Firebase emulator is optional and only needs to be running if you plan to test Firebase hosting locally.
 
+The Firebase emulator will require connecting to a GCP project. However, the benefit is that you can run all the services, which are running on different ports, and have them mapped to the Firebase hosting rewrites. This means the static `docs` (VuePress), and Cloud Functions endpoints `tide` (`/api/v1`) and `docs` (`/api/spec/v1`) can all be reached from `localhost` on port `5000`. This makes development much easier and is highly recommended.
+
 Start Datastore:
 
 ::: tip IMPORTANT
 Datastore runs on `localhost` port `8081`.
 
     npm run start:emulator:datastore
-
-:::
-
-Start Firebase (optional):
-
-::: tip IMPORTANT
-Firestore run on `localhost` port `5000`.
-
-    npm run start:emulator:firebase
 
 :::
 
@@ -85,9 +78,20 @@ Pub/Sub runs on `localhost` port `8085`.
 
 :::
 
+Start Firebase (optional, though recommended):
+
+::: tip IMPORTANT
+Firestore run on `localhost` port `5000`.
+
+    npm run start:emulator:firebase
+
+:::
+
 ## Servers
 
 When doing local development each server is running within an instance of the [Functions Framework for Node.js](https://github.com/GoogleCloudPlatform/functions-framework-nodejs) inside a continuously running shell. This way we can remove the need to build Docker images locally.
+
+There is also a Docs Server that converts the OpenAPI Specification (Swagger UI) into an interactive visualization of the API’s resources, which are served from a Cloud Function and are not to be confused with the statically generated docs discussed further in this section.
 
 Start the API server:
 
@@ -116,6 +120,15 @@ The PHPCS server runs on `localhost` port `8110`.
 
 :::
 
+Start the Docs server:
+
+::: tip IMPORTANT
+The docs server runs on `localhost` port `8120`.
+
+    npm run start:server:docs
+
+:::
+
 ## Proxy
 
 Start the local Pub/Sub Proxy: 
@@ -124,7 +137,9 @@ Start the local Pub/Sub Proxy:
 
 ## Docs
 
-These docs are generated with [VuePress](https://vuepress.vuejs.org/), which is a Vue-powered Static Site Generator that converts several Markdown files into a searchable static site.
+The docs are generated with [VuePress](https://vuepress.vuejs.org/), which is a Vue-powered Static Site Generator that converts the Markdown files into a searchable static site. 
+
+If you are using the Firebase emulator you will need to run the `build` command, `serve` will not work because the emulator hosts the public statically generated file i.e. the output of the `build` command.
 
 Build the front-end:
 
