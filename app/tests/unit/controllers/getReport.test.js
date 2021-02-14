@@ -12,24 +12,20 @@ const datastoreGet = get;
 const datastoreSet = set;
 
 const mock = {
-    req: () => {
-        return {
-            validation: {
-                message: 'Request has validation errors',
-                status: 400,
-                errors: []
-            },
-            params: {},
-        }
-    },
-    res: () => {
-        return {
-            json: jest.fn(),
-            status(status) { // eslint-disable-line no-unused-vars
-                return this; // Make it chainable
-            },
-        }
-    }
+    req: () => ({
+        validation: {
+            message: 'Request has validation errors',
+            status: 400,
+            errors: [],
+        },
+        params: {},
+    }),
+    res: () => ({
+        json: jest.fn(),
+        status(status) { // eslint-disable-line no-unused-vars
+            return this; // Make it chainable
+        },
+    }),
 };
 
 beforeEach(() => {
@@ -62,7 +58,7 @@ describe('Main index entry point getReport', () => {
             expect(datastoreSet).toBeCalledTimes(0);
             expect(res.json).toBeCalledWith({
                 message: 'The provided report identifier does not exist.',
-                status: 404
+                status: 404,
             });
         });
 
@@ -79,7 +75,7 @@ describe('Main index entry point getReport', () => {
             expect(datastoreSet).toBeCalledTimes(0);
             expect(res.json).toBeCalledWith({
                 message: 'The server could not respond to the request.',
-                status: 500
+                status: 500,
             });
         });
 

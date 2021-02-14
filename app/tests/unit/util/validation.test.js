@@ -4,22 +4,16 @@
 const validation = require('../../../src/util/validation');
 
 const mock = {
-    req: () => {
-        return {
-            params: {},
-        }
-    },
-    res: () => {
-        return {
-            json: jest.fn(),
-            status(status) { // eslint-disable-line no-unused-vars
-                return this; // Make it chainable
-            },
-        }
-    },
-    next: () => {
-        return () => {};
-    },
+    req: () => ({
+        params: {},
+    }),
+    res: () => ({
+        json: jest.fn(),
+        status(status) { // eslint-disable-line no-unused-vars
+            return this; // Make it chainable
+        },
+    }),
+    next: () => () => {},
 };
 
 /**
@@ -48,13 +42,13 @@ describe('validation', () => {
         req.validation = {
             message: 'Request has validation errors',
             status: 400,
-            errors: []
+            errors: [],
         };
         await validation.handle()(req, res, next);
         expect(res.json).toBeCalledTimes(0);
         req.validation.errors.push({
             message: 'A report identifier is required.',
-            parameter: 'id'
+            parameter: 'id',
         });
         res.json.mockImplementationOnce(() => req.validation);
         await validation.handle()(req, res, next);
