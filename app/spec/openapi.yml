@@ -57,8 +57,12 @@ paths:
       responses:
         200:
           $ref: '#/components/responses/200Report'
+        400:
+          $ref: '#/components/responses/400BadRequest'
         404:
           $ref: '#/components/responses/404NotFound'
+        500:
+          $ref: '#/components/responses/500InternalServerError'
       parameters:
         - $ref: '#/components/parameters/idParam'
 components:
