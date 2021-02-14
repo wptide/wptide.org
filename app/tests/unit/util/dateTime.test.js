@@ -1,7 +1,7 @@
 /**
  * Internal Dependencies.
  */
-const { dateTime } = require('../../../src/util/time');
+const { dateTime } = require('../../../src/util/dateTime');
 
 /**
  * Tests for dateTime.

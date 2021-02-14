@@ -1,7 +1,7 @@
 /**
  * Internal Dependencies.
  */
-const { dateTime } = require('./time');
+const { dateTime } = require('./dateTime');
 const { getStatusDoc, setStatusDoc } = require('../integrations/datastore');
 
 const MAX_DURATION = 300; // Max audit duration in seconds.

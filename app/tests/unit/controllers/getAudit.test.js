@@ -1,7 +1,7 @@
 const { getAudit } = require('../../../src/controllers/getAudit');
 const { get, set } = require('../../../src/services/datastore');
 const { publishMessage } = require('../../../src/services/pubsub');
-const { dateTime } = require('../../../src/util/time');
+const { dateTime } = require('../../../src/util/dateTime');
 
 jest.mock('../../../src/services/datastore',
     () => ({
@@ -22,7 +22,7 @@ jest.mock('../../../src/util/shouldLighthouseAudit',
         shouldLighthouseAudit: () => true,
     }));
 
-jest.mock('../../../src/util/time');
+jest.mock('../../../src/util/dateTime');
 
 const datastoreGet = get;
 const datastoreSet = set;

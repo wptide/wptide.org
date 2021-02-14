@@ -1,8 +1,8 @@
 /**
  * Internal Dependencies.
  */
+const { dateTime } = require('../util/dateTime');
 const { getAuditDoc, setAuditDoc, setReportDoc } = require('../integrations/datastore');
-const { dateTime } = require('../util/time');
 const { getHash } = require('../util/identifiers');
 const { canProceed } = require('../util/canProceed');
 

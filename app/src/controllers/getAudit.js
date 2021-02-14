@@ -6,9 +6,9 @@ const invariant = require('invariant');
 /**
  * Internal Dependencies.
  */
+const { dateTime } = require('../util/dateTime');
 const { getAuditId } = require('../util/identifiers');
 const { getSourceUrl } = require('../util/getSourceUrl');
-const { dateTime } = require('../util/time');
 const { getAuditDoc, setAuditDoc, getReportDoc } = require('../integrations/datastore');
 const { publish, messageTypes } = require('../integrations/pubsub');
 const { shouldLighthouseAudit } = require('../util/shouldLighthouseAudit');
