@@ -6,7 +6,7 @@ info:
   contact:
     name: Tide Maintainers
     email: support@wptide.org
-    url: "https://staging.wptide.org/docs/"
+    url: "https://staging.wptide.org/"
   license:
     name: MIT
     url: 'https://opensource.org/licenses/MIT'
