@@ -18,6 +18,7 @@ FROM node:12-alpine3.12
 WORKDIR /app
 
 COPY src src
+COPY spec/openapi.yml spec/openapi.yml
 COPY package.json package.json
 COPY package-lock.json package-lock.json
 COPY phpcsServer.js index.js
