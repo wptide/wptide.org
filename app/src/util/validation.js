@@ -6,7 +6,7 @@
  * @param {Function} next The next handler.
  * @returns {void}
  */
-const setupFunc = (req, res, next) => {
+const setupValidation = (req, res, next) => {
     // Setup the validation object.
     req.validation = {
         message: 'Request has validation errors',
@@ -35,7 +35,7 @@ const setupFunc = (req, res, next) => {
  * @param {object}   res  The HTTP response.
  * @param {Function} next The next handler.
  */
-const handleFunc = (req, res, next) => {
+const handleValidation = (req, res, next) => {
     if (req.validation.errors.length) {
         res.status(400).json(req.validation);
     } else {
@@ -49,6 +49,6 @@ const handleFunc = (req, res, next) => {
  * @type {object}
  */
 module.exports = {
-    setup: () => setupFunc,
-    handle: () => handleFunc,
+    setupValidation: () => setupValidation,
+    handleValidation: () => handleValidation,
 };
