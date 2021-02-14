@@ -1,7 +1,7 @@
 /**
  * Internal Dependencies.
  */
-const validation = require('../../../src/util/validation');
+const { setupValidation, handleValidation } = require('../../../src/util/validation');
 
 const mock = {
     req: () => ({
@@ -24,7 +24,7 @@ describe('validation', () => {
         const req = mock.req();
         const res = mock.res();
         const next = mock.next();
-        await validation.setup()(req, res, next);
+        await setupValidation()(req, res, next);
         expect(req.validation).toBeDefined();
     });
     it('Sets a validation error for missing report id.', async () => {
@@ -32,7 +32,7 @@ describe('validation', () => {
         const res = mock.res();
         const next = mock.next();
         req.path = '/api/v1/report/';
-        await validation.setup()(req, res, next);
+        await setupValidation()(req, res, next);
         expect(req.validation.errors[0].message).toBe('A report identifier is required.');
     });
     it('Handles a validation error for missing report id.', async () => {
@@ -44,14 +44,14 @@ describe('validation', () => {
             status: 400,
             errors: [],
         };
-        await validation.handle()(req, res, next);
+        await handleValidation()(req, res, next);
         expect(res.json).toBeCalledTimes(0);
         req.validation.errors.push({
             message: 'A report identifier is required.',
             parameter: 'id',
         });
         res.json.mockImplementationOnce(() => req.validation);
-        await validation.handle()(req, res, next);
+        await handleValidation()(req, res, next);
         expect(res.json).toBeCalledWith(req.validation);
     });
 });
