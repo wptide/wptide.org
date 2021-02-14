@@ -30,8 +30,7 @@
     "test": "NODE_ENV=test jest --detectOpenHandles --forceExit --verbose",
     "test:watch": "NODE_ENV=test jest --watch",
     "test:coverage": "NODE_ENV=test jest --detectOpenHandles --forceExit --coverage --coverageDirectory ./app/tests/coverage",
-    "test:coveralls": "npm run test:coverage && coveralls < ./app/tests/coverage/lcov.info",
-    "postinstall": "husky install"
+    "test:coveralls": "npm run test:coverage && coveralls < ./app/tests/coverage/lcov.info"
   },
   "dependencies": {
     "dotenv": "^8.2.0"
@@ -46,7 +45,7 @@
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-jest": "^24.1.3",
     "eslint-plugin-jsdoc": "^31.0.0",
-    "husky": "^5.0.9",
+    "husky": "^4.3.8",
     "jest": "^26.6.3",
     "typescript": "^4.1.3",
     "vuepress": "^1.7.1"
