@@ -30,7 +30,8 @@
     "test": "NODE_ENV=test jest --detectOpenHandles --forceExit --verbose",
     "test:watch": "NODE_ENV=test jest --watch",
     "test:coverage": "NODE_ENV=test jest --detectOpenHandles --forceExit --coverage --coverageDirectory ./app/tests/coverage",
-    "test:coveralls": "npm run test:coverage && coveralls < ./app/tests/coverage/lcov.info"
+    "test:coveralls": "npm run test:coverage && coveralls < ./app/tests/coverage/lcov.info",
+    "postinstall": "husky install"
   },
   "dependencies": {
     "dotenv": "^8.2.0"

@@ -113,3 +113,6 @@ dist
 
 # Composer
 vendor
+
+# Husky
+.husky/
