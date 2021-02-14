@@ -46,7 +46,7 @@ jobs:
         run: cd app && composer --no-interaction validate --no-check-all && cd -
 
       - name: Install Node dependencies
-        run: npm ci && cd app && npm ci && cd -
+        run: npm ci && cd app && npm ci && cd spec && npm ci && cd ../../
         env:
           PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: true
           CI: true

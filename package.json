@@ -16,7 +16,7 @@
     "docs:serve": "vuepress dev web",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "setup": "npm i && cd app && npm i && composer install && cd -",
+    "setup": "npm i && cd app && npm i && composer install && cd spec && npm i && cd ../../",
     "start": "functions-framework --target=tide --signature-type=http",
     "start:api": "SERVER_PATH=./app SERVER_TARGET=tide functions-framework --target=tide --signature-type=http",
     "start:emulator:datastore": "gcloud beta emulators datastore start --no-store-on-disk",
