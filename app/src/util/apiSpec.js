@@ -8,7 +8,7 @@ const fs = require('fs');
 /**
  * Internal Dependencies.
  */
-const api = path.resolve(__dirname, '../../openapi.yml');
+const api = path.resolve(__dirname, '../../spec/openapi.yml');
 
 /**
  * Get the api spec from the yaml file.

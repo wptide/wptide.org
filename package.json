@@ -22,6 +22,7 @@
     "start:emulator:datastore": "gcloud beta emulators datastore start --no-store-on-disk",
     "start:emulator:firebase:": "firebase emulators:start",
     "start:emulator:pubsub": "gcloud beta emulators pubsub start",
+    "start:server:docs": "functions-framework --target=docs --signature-type=http --port=8120 --source=./app/spec",
     "start:server:lighthouse": "SERVER_PATH=./app/src/run/lighthouseServer SERVER_TARGET=lighthouseServer functions-framework --target=tide --signature-type=http --port=8090",
     "start:server:phpcs": "SERVER_PATH=./app/src/run/phpcsServer SERVER_TARGET=phpcsServer functions-framework --target=tide --signature-type=http --port=8110",
     "start:server:proxy": "cd app && node src/run/proxyServer.js",

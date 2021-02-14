@@ -8,8 +8,20 @@
     ],
     "rewrites": [
       {
-        "source": "**",
+        "source": "/api/v1",
         "function": "tide"
+      },
+      {
+        "source": "/api/v1/**",
+        "function": "tide"
+      },
+      {
+        "source": "/api/spec/v1",
+        "function": "docs"
+      },
+      {
+        "source": "/api/spec/v1/**",
+        "function": "docs"
       }
     ]
   }

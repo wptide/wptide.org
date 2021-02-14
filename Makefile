@@ -49,6 +49,9 @@ start.sync:
 deploy.api: setup
 	@gcloud functions deploy tide --source app --allow-unauthenticated --runtime nodejs12 --trigger-http
 
+deploy.docs: setup
+	@gcloud functions deploy docs --source app/spec --allow-unauthenticated --runtime nodejs12 --trigger-http
+
 deploy.datastore: setup
 	@gcloud app create --region=us-central
 	@gcloud datastore databases create --region=us-central

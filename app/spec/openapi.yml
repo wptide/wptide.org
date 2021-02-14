@@ -1,22 +1,17 @@
 openapi: 3.0.3
 info:
   version: 1.0.0-beta
-  title: Tide API
-  description: JSON application API server for wptide.org
+  title: Tide OpenAPI Specification
+  description: Definition and usage reference for the wptide.org JSON API server
   contact:
     name: Tide Maintainers
     email: support@wptide.org
-    url: "https://wptide.org"
+    url: "https://staging.wptide.org/docs/"
   license:
     name: MIT
     url: 'https://opensource.org/licenses/MIT'
 servers:
   - url: /api/v1
-    description: Local server
-  - url: https://staging.wptide.org/api/v1
-    description: Staging server
-  - url: https://wptide.org/api/v1
-    description: Production server
 paths:
   /:
     get:
@@ -55,7 +50,7 @@ paths:
     get:
       tags:
         - Public
-      summary: Get Report
+      summary: Get Report by ID
       description: >-
         Get the raw PHP Compatibility or Lighthouse report by id.
       operationId: getReport

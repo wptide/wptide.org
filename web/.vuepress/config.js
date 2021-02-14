@@ -76,8 +76,8 @@ module.exports = {
           collapsable: false,
           children: [
             '',
-            'installation/',
-            'services/'
+            'services/',
+            'installation/'
           ]
         },
         {
@@ -95,7 +95,7 @@ module.exports = {
           collapsable: false,
           children: [
             'google-cloud/',
-            'search/'
+            ['https://staging.wptide.org/api/spec/v1/', 'API Specification v1']
           ]
         }
       ],
