@@ -11,7 +11,7 @@ const apiValidate = require('../util/apiValidate');
  */
 const schema = async (req, res) => {
     const api = await apiValidate();
-    res.status(api.status ? 500 : 200).json(api);
+    res.status(api.status ? api.status : 200).json(api);
 };
 
 module.exports = schema;
