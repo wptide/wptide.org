@@ -12,11 +12,11 @@ const { download } = require('./download');
 /**
  * Runs phpcs on the local downloaded project.
  *
- * @param {string} version The project version.
- * @param {string} dir     The absolute path to the report directory.
- * @param {string} app     The app working directory.
+ * @param   {string} version The project version.
+ * @param   {string} dir     The absolute path to the report directory.
+ * @param   {string} app     The app working directory.
  *
- * @returns {object} The phpcs report.
+ * @returns {object}         The phpcs report.
  */
 const phpcsRunner = (version, dir, app) => {
     const command = `${app}/vendor/bin/phpcs -q -p . --standard=PHPCompatibilityWP --extensions=php --runtime-set testVersion ${version} --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1 --report=json`;
@@ -26,9 +26,9 @@ const phpcsRunner = (version, dir, app) => {
 /**
  * Downloads the project to the local disk.
  *
- * @param {string} url      The public ZIP archive download URL.
- * @param {string} dir      The absolute path to the parent report directory.
- * @param {string} filename The report ZIP archive name.
+ * @param   {string} url      The public ZIP archive download URL.
+ * @param   {string} dir      The absolute path to the parent report directory.
+ * @param   {string} filename The report ZIP archive name.
  *
  * @returns {void}
  */
@@ -41,7 +41,7 @@ const phpcsDownloader = async (url, dir, filename) => {
 /**
  * Remove the report directory from the local disk.
  *
- * @param {string} dir The absolute path to the report directory.
+ * @param   {string} dir The absolute path to the report directory.
  *
  * @returns {void}
  */
@@ -50,11 +50,11 @@ const phpcsRemover = (dir) => fs.rmdirSync(dir, { recursive: true });
 /**
  * Process a PHPCS JSON report.
  *
- * @param {string} url The public ZIP archive download URL.
- * @param {string} dir The absolute path to the report directory.
- * @param {string} app The app working directory.
+ * @param   {string} url The public ZIP archive download URL.
+ * @param   {string} dir The absolute path to the report directory.
+ * @param   {string} app The app working directory.
  *
- * @returns {object} The report.
+ * @returns {object}     The report.
  */
 const phpcsProcessor = (url, dir, app) => {
     const data = {

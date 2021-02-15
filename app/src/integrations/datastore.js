@@ -18,8 +18,8 @@ const syncKeyPath = process.env.DATASTORE_KEY_SYNC || 'Sync';
 /**
  * Gets an audit document for a given ID.
  *
- * @param {string} id Audit ID.
- * @returns {object | null} Audit document.
+ * @param   {string}        id Audit ID.
+ * @returns {object | null}    Audit document.
  */
 const getAuditDoc = async (id) => {
     const audit = await get(getKey(auditKeyPath, id));
@@ -43,51 +43,51 @@ const getAuditDoc = async (id) => {
 /**
  * Sets an audit document.
  *
- * @param {string} id   Audit ID.
- * @param {object} data Audit contents.
- * @returns {string} Key
+ * @param   {string} id   Audit ID.
+ * @param   {object} data Audit contents.
+ * @returns {string}      Key
  */
 const setAuditDoc = async (id, data) => set(getKey(auditKeyPath, id), data);
 
 /**
  * Gets a status document.
  *
- * @param {string} id Status ID.
- * @returns {object | null} Sync document if it exists.
+ * @param   {string}        id Status ID.
+ * @returns {object | null}    Sync document if it exists.
  */
 const getStatusDoc = async (id) => get(getKey(statusKeyPath, id));
 
 /**
  * Sets a status document.
  *
- * @param {string} id   Status ID.
- * @param {object} data Status contents.
- * @returns {string} Key
+ * @param   {string} id   Status ID.
+ * @param   {object} data Status contents.
+ * @returns {string}      Key
  */
 const setStatusDoc = async (id, data) => set(getKey(statusKeyPath, id), data);
 
 /**
  * Sets a sync document
  *
- * @param {string} id   Sync ID.
- * @param {object} data Sync contents.
- * @returns {string} Key
+ * @param   {string} id   Sync ID.
+ * @param   {object} data Sync contents.
+ * @returns {string}      Key
  */
 const setSyncDoc = async (id, data) => set(getKey(syncKeyPath, id), data);
 
 /**
  * Gets a sync document.
  *
- * @param {string} id Sync ID.
- * @returns {object | null} Sync document if it exists.
+ * @param   {string}        id Sync ID.
+ * @returns {object | null}    Sync document if it exists.
  */
 const getSyncDoc = async (id) => get(getKey(syncKeyPath, id));
 
 /**
  * Gets a report document.
  *
- * @param {string} id Report ID.
- * @returns {object | null} Report document if it exists.
+ * @param   {string}        id Report ID.
+ * @returns {object | null}    Report document if it exists.
  */
 const getReportDoc = async (id) => {
     const report = await get(getKey(reportKeyPath, id));
@@ -111,9 +111,9 @@ const getReportDoc = async (id) => {
 /**
  * Sets a report document
  *
- * @param {string} id   Report ID.
- * @param {object} data Report contents.
- * @returns {string} Key
+ * @param   {string} id   Report ID.
+ * @param   {object} data Report contents.
+ * @returns {string}      Key
  */
 const setReportDoc = async (id, data) => set(getKey(reportKeyPath, id), data);
 

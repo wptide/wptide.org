@@ -10,9 +10,9 @@ const MAX_RETRIES = 2; // Max number of times we can attempt to redo the same au
 /**
  * A gatekeeper for whether or not we can proceed with an audit
  *
- * @param {string} type Audit type being performed (e.g. lighthouse)
- * @param {object} item The audit params.
- * @returns {boolean} True if we can proceed or throws error if we cannot.
+ * @param   {string}  type Audit type being performed (e.g. lighthouse)
+ * @param   {object}  item The audit params.
+ * @returns {boolean}      True if we can proceed or throws error if we cannot.
  */
 const canProceed = async (type, item) => {
     if (!type) {

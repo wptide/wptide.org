@@ -11,7 +11,7 @@ const { apiSpec } = require('./apiSpec');
 /**
  * Validates the API schema.
  *
- * @returns {object} The valid OpenAPI Specification object, or server error.
+ * @returns {object}  The valid OpenAPI Specification object, or server error.
  */
 const apiValidate = async () => {
     // Return the API specification.

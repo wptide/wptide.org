@@ -7,8 +7,8 @@ const { getAuditId } = require('../util/identifiers');
 /**
  * Generates a PHPCS PHPCompatibilityWP report.
  *
- * @param {object} message The Pub/Sub message.
- * @returns {object} The report data.
+ * @param   {object} message The Pub/Sub message.
+ * @returns {object}         The report data.
  */
 const phpcsReporter = async (message) => {
     // @todo handle missing message params.

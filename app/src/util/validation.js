@@ -1,9 +1,9 @@
 /**
  * Initializes the validation middleware.
  *
- * @param {object}   req  The HTTP request.
- * @param {object}   res  The HTTP response.
- * @param {Function} next The next handler.
+ * @param   {object}   req  The HTTP request.
+ * @param   {object}   res  The HTTP response.
+ * @param   {Function} next The next handler.
  * @returns {void}
  */
 const setupValidation = (req, res, next) => {

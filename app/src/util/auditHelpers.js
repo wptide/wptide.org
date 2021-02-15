@@ -35,9 +35,9 @@ const sendAuditMessages = async (audit) => {
 /**
  * Create a new audit
  *
- * @param {string} id     Audit ID.
- * @param {object} params Audit Params.
- * @returns {object | null} Audit doc if project exists or null.
+ * @param   {string}        id     Audit ID.
+ * @param   {object}        params Audit Params.
+ * @returns {object | null}        Audit doc if project exists or null.
  */
 const createNewAudit = async (id, params) => {
     const sourceUrl = await getSourceUrl(params.type, params.slug, params.version);
@@ -71,9 +71,9 @@ const createNewAudit = async (id, params) => {
 /**
  * Add report docs to a given audit.
  *
- * @param {object} audit       Audit Params
- * @param {Array}  reportTypes Reports to add.
- * @returns {object} Audit including reports.
+ * @param   {object} audit       Audit Params
+ * @param   {Array}  reportTypes Reports to add.
+ * @returns {object}             Audit including reports.
  */
 const addAuditReports = async (audit, reportTypes) => {
     const updatedAudit = { ...audit };
@@ -108,8 +108,8 @@ const addAuditReports = async (audit, reportTypes) => {
 /**
  * Fetches an existing audit doc, creating an audit if we don't yet have it.
  *
- * @param {object} auditParams Audit params for audit.
- * @returns {object | null} Audit if one exists or null if the project doesn't exist.
+ * @param   {object}        auditParams Audit params for audit.
+ * @returns {object | null}             Audit if one exists or null if the project doesn't exist.
  */
 const getAuditData = async (auditParams) => {
     const id = getAuditId(auditParams);

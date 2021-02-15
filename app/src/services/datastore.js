@@ -11,7 +11,7 @@ let datastoreInstance;
 /**
  * Returns a singleton instance of DataStore client.
  *
- * @returns {object} Datastore instance.
+ * @returns {object}  Datastore instance.
  */
 const getDatastore = () => {
     if (!datastoreInstance) {
@@ -28,9 +28,9 @@ const getDatastore = () => {
 /**
  * Gets entity for a given key.
  *
- * @param {string} key Key to get.
+ * @param   {string}        key Key to get.
  *
- * @returns {object | null} Entity or null.
+ * @returns {object | null}     Entity or null.
  */
 const get = async (key) => {
     const datastore = getDatastore();
@@ -41,10 +41,10 @@ const get = async (key) => {
 /**
  * Sets entity for a given key.
  *
- * @param {string} key  Key to set.
- * @param {object} data Data to set for the given key.
+ * @param   {string} key  Key to set.
+ * @param   {object} data Data to set for the given key.
  *
- * @returns {string} Key.
+ * @returns {string}      Key.
  */
 const set = async (key, data) => {
     try {
@@ -64,10 +64,10 @@ const set = async (key, data) => {
 /**
  * Get the key for a given ID and key path.
  *
- * @param {string} keyPath Key Path for Key
- * @param {string} id      ID for Key
+ * @param   {string} keyPath Key Path for Key
+ * @param   {string} id      ID for Key
  *
- * @returns {object} Key for DataStore access.
+ * @returns {object}         Key for DataStore access.
  */
 const getKey = (keyPath, id) => getDatastore().key([keyPath, id]);
 

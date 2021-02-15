@@ -11,7 +11,7 @@ const getReport = require('./getReport');
  * The handlers correspond to an `operationId` defined in `paths`
  * for each endpoint, which is found in the `openeapi.yml` file.
  *
- * @see https://swagger.io/specification/#operationObject
+ * @see  https://swagger.io/specification/#operationObject
  */
 module.exports = {
     schema,

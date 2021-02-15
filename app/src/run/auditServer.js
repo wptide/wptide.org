@@ -9,12 +9,12 @@ const { canProceed } = require('../util/canProceed');
 /**
  * Audit Server helper to handle Pub/Sub HTTP requests.
  *
- * @param {object}   req      The HTTP Request.
- * @param {object}   res      The HTTP Response.
- * @param {Function} reporter The Audit Reporter.
- * @param {string}   type     The audit type.
- * @param {string}   name     The audit message name.
- * @returns {res} The modified HTTP response.
+ * @param   {object}   req      The HTTP Request.
+ * @param   {object}   res      The HTTP Response.
+ * @param   {Function} reporter The Audit Reporter.
+ * @param   {string}   type     The audit type.
+ * @param   {string}   name     The audit message name.
+ * @returns {res}               The modified HTTP response.
  */
 exports.auditServer = async (req, res, reporter, type, name) => {
     const now = Date.now();
