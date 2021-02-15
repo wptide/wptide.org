@@ -7,7 +7,7 @@ const fetch = require('node-fetch');
  * Internal Dependencies.
  */
 const { getSyncDoc, setSyncDoc } = require('../integrations/datastore');
-const { doAudit } = require('../controllers/getAudit');
+const { getAuditData } = require('../util/auditHelpers');
 
 const MAX_QUEUE_SIZE_FOR_DELTA = process.env.SYNC_SERVER_MAX_QUEUE_SIZE_FOR_DELTA || 1000;
 
@@ -192,7 +192,7 @@ const setState = async (state) => {
  * @returns {object | null} Audit response.
  */
 const makeAuditRequest = async (auditParams) => {
-    const auditResponse = await doAudit(auditParams);
+    const auditResponse = await getAuditData(auditParams);
     // Non existent audits are null
     if (auditResponse) {
         const isComplete = auditResponse && auditResponse.reports

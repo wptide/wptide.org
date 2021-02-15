@@ -13,6 +13,10 @@ const fetch = require('node-fetch');
  * @returns {Promise<string|boolean>} Return the source URL or false.
  */
 const getSourceUrl = async (type, slug, version) => {
+    if (!type || !slug || !version) {
+        return false;
+    }
+
     const url = `https://downloads.wordpress.org/${type}/${slug}.${version}.zip`;
 
     return fetch(url, {

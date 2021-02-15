@@ -35,6 +35,14 @@ describe('validation', () => {
         await setupValidation()(req, res, next);
         expect(req.validation.errors[0].message).toBe('A report identifier is required.');
     });
+    it('Sets a validation error for missing audit type.', async () => {
+        const req = mock.req();
+        const res = mock.res();
+        const next = mock.next();
+        req.path = '/api/v1/audit/wporg';
+        await setupValidation()(req, res, next);
+        expect(req.validation.errors[0].message).toBe('The audit project type is required.');
+    });
     it('Handles a validation error for missing report id.', async () => {
         const req = mock.req();
         const res = mock.res();

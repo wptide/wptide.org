@@ -15,9 +15,7 @@ const getReport = async (req, res) => {
             message: 'A report identifier is required.',
             parameter: 'id',
         });
-    }
-
-    if (Object.prototype.toString.call(req.params.id) !== '[object String]' || !req.params.id.match(/^[a-z0-9]+$/i)) {
+    } else if (Object.prototype.toString.call(req.params.id) !== '[object String]' || !req.params.id.match(/^[a-z0-9]+$/i)) {
         req.validation.errors.push({
             message: 'A report identifier must be an alpha-numeric string.',
             parameter: 'id',

@@ -1,4 +1,4 @@
-const { getAudit } = require('../../../src/controllers/getAudit');
+const getAudit = require('../../../src/controllers/getAudit');
 const { get, set } = require('../../../src/services/datastore');
 const { publishMessage } = require('../../../src/services/pubsub');
 const { dateTime } = require('../../../src/util/dateTime');
@@ -27,6 +27,23 @@ jest.mock('../../../src/util/dateTime');
 const datastoreGet = get;
 const datastoreSet = set;
 
+const mock = {
+    req: () => ({
+        validation: {
+            message: 'Request has validation errors',
+            status: 400,
+            errors: [],
+        },
+        params: {},
+    }),
+    res: () => ({
+        json: jest.fn(),
+        status(status) { // eslint-disable-line no-unused-vars
+            return this; // Make it chainable
+        },
+    }),
+};
+
 beforeEach(() => {
     datastoreGet.mockClear();
     dateTime.mockClear();
@@ -34,212 +51,268 @@ beforeEach(() => {
     publishMessage.mockClear();
 });
 
-describe('Main index entry point getAudit', () => {
-    const res = {
-        json: jest.fn(),
-        status(status) { // eslint-disable-line no-unused-vars
-            return this; // Make it chainable
-        },
-    };
+describe('The getAudit route handler', () => {
+    it('Missing type parameter', async () => {
+        const req = mock.req();
+        await getAudit(req, mock.res());
+        expect(req.validation.errors[0].message).toEqual('The audit project type is required.');
+    });
 
-    describe('Route handler', () => {
-        it('Invokes route handler', async () => {
-            let errorMessage;
-            try {
-                await getAudit({ params: {} });
-            } catch (error) {
-                errorMessage = error.message;
-            }
-            expect(errorMessage).toEqual('Project type missing');
+    it('The type parameter is invalid', async () => {
+        const req = mock.req();
+        req.params.type = 'site';
+        await getAudit(req, mock.res());
+        expect(req.validation.errors[0].message).toEqual('The audit project type must be theme or plugin.');
+    });
 
-            try {
-                await getAudit({ params: { type: 'foo' } });
-            } catch (error) {
-                errorMessage = error.message;
-            }
-            expect(errorMessage).toEqual('Project type should be theme or plugin');
+    it('Missing slug parameter', async () => {
+        const req = mock.req();
+        req.params.type = 'theme';
+        await getAudit(req, mock.res());
+        expect(req.validation.errors[0].message).toEqual('The audit project slug is required.');
+    });
 
-            expect(async () => {
-                await getAudit({
-                    params: {
-                        type: 'theme',
-                        slug: 'fooslug',
-                        version: '1',
-                    },
-                }, res);
-            }).not.toThrow();
+    it('The slug parameter is invalid', async () => {
+        const req = mock.req();
+        req.params.type = 'theme';
+        req.params.slug = 'INVALID_SLUG';
+        await getAudit(req, mock.res());
+        expect(req.validation.errors[0].message).toEqual('The audit project slug must be an alpha-numeric string, dashes are allowed.');
+    });
+
+    it('Missing version parameter', async () => {
+        const req = mock.req();
+        req.params.type = 'plugin';
+        req.params.slug = 'pwa';
+        await getAudit(req, mock.res());
+        expect(req.validation.errors[0].message).toEqual('The audit project version is required.');
+    });
+
+    it('The version parameter is invalid', async () => {
+        const req = mock.req();
+        req.params.type = 'plugin';
+        req.params.slug = 'pwa';
+        req.params.version = '1.0.0-alpha';
+        await getAudit(req, mock.res());
+        expect(req.validation.errors[0].message).toEqual('The audit project version must contain only numbers and periods, plus begins and ends with a number.');
+    });
+
+    it('Returns a 404 if audit does not exist.', async () => {
+        const req = mock.req();
+        const res = mock.res();
+        req.params.type = 'plugin';
+        req.params.slug = 'fake';
+        req.params.version = '0.0.1';
+
+        const currentTime = 1000;
+        dateTime.mockReturnValue(currentTime);
+        datastoreGet.mockResolvedValueOnce(null);
+
+        await getAudit(req, res);
+        expect(res.json).toBeCalledWith({
+            message: 'The audit requested does not exist.',
+            status: 404,
+        });
+    });
+
+    it('Returns a 500 if datastore throws an error.', async () => {
+        const req = mock.req();
+        const res = mock.res();
+        req.params.type = 'plugin';
+        req.params.slug = 'pwa';
+        req.params.version = '0.5';
+
+        datastoreGet.mockImplementation(() => {
+            throw new Error('Something bad happened');
         });
 
-        it('Returns completed audit if one exists.', async () => {
-            const auditParams = {
-                type: 'plugin',
-                slug: 'fooslug',
-                version: '2',
-            };
-            const currentTime = 1000;
-            dateTime.mockReturnValue(currentTime);
-
-            const mockAudit = {
-                id: 'fb8fd6304dd6a5f2fc4f281a8c7c8e53be9b5d1a5286c0f6ad2eebf78b5838c3',
-                type: 'plugin',
-                slug: 'fooslug',
-                version: '2',
-                created_datetime: 1600000000,
-                modified_datetime: 1600000001,
-                reports: {
-                    phpcs_phpcompatibilitywp: {
-                        id: 'e5085200b1a1db56c82af70ee206947aa449ed9512e524e06085b03a25f599fd',
-                    },
-                },
-            };
-
-            datastoreGet.mockResolvedValue(mockAudit);
-
-            await getAudit({ params: auditParams }, res);
-            expect(datastoreSet).toBeCalledTimes(0);
-            expect(res.json).toBeCalledWith(mockAudit);
+        await getAudit(req, res);
+        expect(datastoreSet).toBeCalledTimes(0);
+        expect(res.json).toBeCalledWith({
+            message: 'The server could not respond to the request.',
+            status: 500,
         });
+    });
 
-        it('Returns completed audit with reports if requested.', async () => {
-            const auditParams = {
-                type: 'plugin',
-                slug: 'fooslug',
-                version: '2',
-            };
-            const currentTime = 1000;
-            dateTime.mockReturnValue(currentTime);
+    it('Returns completed audit if one exists.', async () => {
+        const req = mock.req();
+        const res = mock.res();
+        req.params = {
+            type: 'plugin',
+            slug: 'fooslug',
+            version: '2',
+        };
+        const currentTime = 1000;
+        dateTime.mockReturnValue(currentTime);
 
-            const mockAudit = {
-                id: 'fb8fd6304dd6a5f2fc4f281a8c7c8e53be9b5d1a5286c0f6ad2eebf78b5838c3',
-                type: 'plugin',
-                slug: 'fooslug',
-                version: '2',
-                created_datetime: 1600000000,
-                modified_datetime: 1600000001,
-                reports: {
-                    phpcs_phpcompatibilitywp: {
-                        id: 'e5085200b1a1db56c82af70ee206947aa449ed9512e524e06085b03a25f599fd',
-                    },
-                },
-            };
-
-            const mockReport = {
-                id: 'fb8fd6304dd6a5f2fc4f281a8c7c8e53be9b5d1a5286c0f6ad2eebf78b5838c3',
-                type: 'phpcs_phpcompatibilitywp',
-                source_url: 'https://downloads.wordpress.org/plugin/fooslug.3.zip',
-                created_datetime: 1600000001,
-                milliseconds: 10000,
-                audit: {
+        const mockAudit = {
+            id: 'fb8fd6304dd6a5f2fc4f281a8c7c8e53be9b5d1a5286c0f6ad2eebf78b5838c3',
+            type: 'plugin',
+            slug: 'fooslug',
+            version: '2',
+            created_datetime: 1600000000,
+            modified_datetime: 1600000001,
+            reports: {
+                phpcs_phpcompatibilitywp: {
                     id: 'e5085200b1a1db56c82af70ee206947aa449ed9512e524e06085b03a25f599fd',
-                    type: 'plugin',
-                    slug: 'fooslug',
-                    version: '2',
                 },
+            },
+        };
 
-            };
+        datastoreGet.mockResolvedValue(mockAudit);
 
-            datastoreGet.mockResolvedValueOnce(mockAudit);
-            datastoreGet.mockResolvedValueOnce(mockReport);
+        await getAudit(req, res);
+        expect(datastoreSet).toBeCalledTimes(0);
+        expect(res.json).toBeCalledWith(mockAudit);
+    });
 
-            await getAudit({ params: auditParams, query: { reports: 'phpcs_phpcompatibilitywp' } }, res);
-            expect(datastoreSet).toBeCalledTimes(0);
-            expect(res.json).toBeCalledWith(
-                { reports: { phpcs_phpcompatibilitywp: { ...mockReport } }, ...mockAudit },
-            );
-            await getAudit({ params: auditParams, query: { reports: 'all' } }, res);
-            expect(datastoreSet).toBeCalledTimes(0);
-            expect(res.json).toBeCalledWith(
-                { reports: { phpcs_phpcompatibilitywp: { ...mockReport } }, ...mockAudit },
-            );
-        });
+    it('Returns completed audit with reports if requested.', async () => {
+        const req = mock.req();
+        const res = mock.res();
+        req.params = {
+            type: 'theme',
+            slug: 'fooslug',
+            version: '2.0.1',
+        };
+        req.query = {
+            reports: 'phpcs_phpcompatibilitywp',
+        };
+        const currentTime = 1000;
+        dateTime.mockReturnValue(currentTime);
 
-        it('Publishes a phpcs audit message when we have a valid plugin', async () => {
-            const auditParams = {
-                type: 'plugin',
-                slug: 'fooslug',
-                version: '2.0.1',
-            };
-            const currentTime = 1000;
-            dateTime.mockReturnValue(currentTime);
-            datastoreGet.mockResolvedValueOnce(null);
-
-            await getAudit({
-                params: auditParams,
-            }, res);
-
-            const expectedAudit = {
-                ...auditParams,
-                id: '80b87c3c58e0db32770995c3589f6830304c6cc85cfa61f3c2c7d722b3ef7fe2',
-                created_datetime: currentTime,
-                modified_datetime: currentTime,
-                reports: {
-                    phpcs_phpcompatibilitywp: null,
+        const mockAudit = {
+            id: 'd29213d0e05c8669ece2f68ce995e19407212debcdc6519f79b1208aa07c0b27',
+            type: 'theme',
+            slug: 'fooslug',
+            version: '2.0.1',
+            created_datetime: 1600000000,
+            modified_datetime: 1600000001,
+            reports: {
+                phpcs_phpcompatibilitywp: {
+                    id: 'e5085200b1a1db56c82af70ee206947aa449ed9512e524e06085b03a25f599fd',
                 },
-            };
-
-            const expectedMessage = {
-                ...auditParams,
-                id: expectedAudit.id,
-            };
-
-            expect(datastoreSet).toHaveBeenCalledWith(expectedAudit.id, expectedAudit);
-            expect(publishMessage).toHaveBeenCalledWith(expectedMessage, 'MESSAGE_TYPE_PHPCS_REQUEST');
-        });
-
-        it('Returns null trying to createAudit for nonexistent project', async () => {
-            const auditParams = {
-                type: 'theme',
-                slug: 'non-existent',
-                version: '2.0.2',
-            };
-            const currentTime = 1000;
-            dateTime.mockReturnValue(currentTime);
-            datastoreGet.mockResolvedValueOnce(null);
-
-            await getAudit({
-                params: auditParams,
-            }, res);
-
-            expect(res.json).toBeCalledWith({
-                error: {
-                    code: 404,
-                    message: 'Audit not found',
+                lighthouse: {
+                    id: 'a5467200b1a1db56c82af70ee206947aa449ed9512e524e06085b03a25f599fc',
                 },
-            });
-        });
+            },
+        };
+        datastoreGet.mockResolvedValueOnce(mockAudit);
 
-        it('Publishes a phpcs and lighthouse audit message when we have the latest valid theme', async () => {
-            const auditParams = {
-                type: 'theme',
-                slug: 'fooslug',
-                version: '2.0.1',
-            };
-            const currentTime = 1000;
-            dateTime.mockReturnValue(currentTime);
-            datastoreGet.mockResolvedValueOnce(null);
-
-            await getAudit({
-                params: auditParams,
-            }, res);
-
-            const expectedAudit = {
-                ...auditParams,
+        const mockCompatReport = {
+            id: 'd29213d0e05c8669ece2f68ce995e19407212debcdc6519f79b1208aa07c0b27',
+            type: 'phpcs_phpcompatibilitywp',
+            source_url: 'https://downloads.wordpress.org/theme/fooslug.3.zip',
+            created_datetime: 1600000001,
+            milliseconds: 10000,
+            audit: {
                 id: 'd29213d0e05c8669ece2f68ce995e19407212debcdc6519f79b1208aa07c0b27',
-                created_datetime: currentTime,
-                modified_datetime: currentTime,
-                reports: {
-                    lighthouse: null,
-                    phpcs_phpcompatibilitywp: null,
-                },
-            };
+                type: 'theme',
+                slug: 'fooslug',
+                version: '2.0.1',
+            },
+        };
+        datastoreGet.mockResolvedValueOnce(mockCompatReport);
 
-            const expectedMessage = {
-                ...auditParams,
-                id: expectedAudit.id,
-            };
+        const mockLighthouseReport = {
+            id: 'a5467200b1a1db56c82af70ee206947aa449ed9512e524e06085b03a25f599fc',
+            type: 'lighthouse',
+            source_url: 'https://wp-themes.com/fooslug',
+            created_datetime: 1600000001,
+            milliseconds: 10000,
+            audit: {
+                id: 'd29213d0e05c8669ece2f68ce995e19407212debcdc6519f79b1208aa07c0b27',
+                type: 'theme',
+                slug: 'fooslug',
+                version: '2.0.1',
+            },
+        };
+        datastoreGet.mockResolvedValueOnce(mockLighthouseReport);
 
-            expect(datastoreSet).toHaveBeenCalledWith(expectedAudit.id, expectedAudit);
-            expect(publishMessage).toHaveBeenCalledWith(expectedMessage, 'MESSAGE_TYPE_PHPCS_REQUEST');
+        await getAudit(req, res);
+        expect(datastoreSet).toBeCalledTimes(0);
+        expect(res.json).toBeCalledWith({
+            reports: {
+                phpcs_phpcompatibilitywp: { ...mockCompatReport },
+            },
+            ...mockAudit,
         });
+        req.query.reports = 'all';
+        await getAudit(req, res);
+        expect(datastoreSet).toBeCalledTimes(0);
+        expect(res.json).toBeCalledWith({
+            reports: {
+                phpcs_phpcompatibilitywp: { ...mockCompatReport },
+                lighthouse: { ...mockLighthouseReport },
+            },
+            ...mockAudit,
+        });
+    });
+
+    it('Publishes a phpcs audit message when we have a valid plugin', async () => {
+        const req = mock.req();
+        const res = mock.res();
+        req.params = {
+            type: 'plugin',
+            slug: 'fooslug',
+            version: '2',
+        };
+        const currentTime = 1000;
+        dateTime.mockReturnValue(currentTime);
+        datastoreGet.mockResolvedValueOnce(null);
+
+        await getAudit(req, res);
+
+        const expectedAudit = {
+            ...req.params,
+            id: 'f4d5b369004513a9eeb691e19f1c17c2f05888485b4342f31ee5ec981c8f60c0',
+            created_datetime: currentTime,
+            modified_datetime: currentTime,
+            reports: {
+                phpcs_phpcompatibilitywp: null,
+            },
+        };
+
+        const expectedMessage = {
+            ...req.params,
+            id: expectedAudit.id,
+        };
+
+        expect(datastoreSet).toHaveBeenCalledWith(expectedAudit.id, expectedAudit);
+        expect(publishMessage).toHaveBeenCalledWith(expectedMessage, 'MESSAGE_TYPE_PHPCS_REQUEST');
+    });
+
+    it('Publishes a phpcs and lighthouse audit message when we have the latest valid theme', async () => {
+        const req = mock.req();
+        const res = mock.res();
+        req.params = {
+            type: 'theme',
+            slug: 'fooslug',
+            version: '2.0.1',
+        };
+        const currentTime = 1000;
+        dateTime.mockReturnValue(currentTime);
+        datastoreGet.mockResolvedValueOnce(null);
+
+        await getAudit(req, res);
+
+        const expectedAudit = {
+            ...req.params,
+            id: 'd29213d0e05c8669ece2f68ce995e19407212debcdc6519f79b1208aa07c0b27',
+            created_datetime: currentTime,
+            modified_datetime: currentTime,
+            reports: {
+                lighthouse: null,
+                phpcs_phpcompatibilitywp: null,
+            },
+        };
+
+        const expectedMessage = {
+            ...req.params,
+            id: expectedAudit.id,
+        };
+
+        expect(datastoreSet).toHaveBeenCalledWith(expectedAudit.id, expectedAudit);
+        expect(publishMessage).toHaveBeenCalledWith(expectedMessage, 'MESSAGE_TYPE_PHPCS_REQUEST');
+        expect(publishMessage).toHaveBeenCalledWith(expectedMessage, 'MESSAGE_TYPE_LIGHTHOUSE_REQUEST');
     });
 });

@@ -14,15 +14,43 @@ const setupValidation = (req, res, next) => {
         errors: [],
     };
 
-    /**
-     * The report endpoint requires an id. We do this early to ensure the
-     * 400 error is returned before the 404 handler.
-     */
-    if (['/api/v1/report/', '/api/v1/report'].includes(req.path)) {
-        req.validation.errors.push({
-            message: 'A report identifier is required.',
-            parameter: 'id',
-        });
+    if (req.path) {
+        /**
+         * The report endpoint requires an id. We do this early to ensure the
+         * 400 error is returned before the 404 handler.
+         */
+        if (['/api/v1/report/', '/api/v1/report'].includes(req.path)) {
+            req.validation.errors.push({
+                message: 'A report identifier is required.',
+                parameter: 'id',
+            });
+        }
+
+        /**
+         * The wporg audit endpoint requires certain parameters. We do this early to
+         * ensure the 400 error is returned before the 404 handler.
+         */
+        if (req.path.includes('/api/v1/audit/wporg')) {
+            const params = req.path.replace(/^\/|\/$/g, '').split('/');
+            if (params.length === 4) {
+                req.validation.errors.push({
+                    message: 'The audit project type is required.',
+                    parameter: 'type',
+                });
+            }
+            if (params.length <= 5) {
+                req.validation.errors.push({
+                    message: 'The audit project slug is required.',
+                    parameter: 'slug',
+                });
+            }
+            if (params.length <= 6) {
+                req.validation.errors.push({
+                    message: 'The audit project version is required.',
+                    parameter: 'version',
+                });
+            }
+        }
     }
 
     next();
