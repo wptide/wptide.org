@@ -23,7 +23,7 @@
     "js-yaml": "^4.0.0",
     "lighthouse": "^7.0.1",
     "node-fetch": "^2.6.1",
-    "puppeteer": "^7.0.4",
+    "puppeteer": "^7.1.0",
     "swagger-parser": "^10.0.2",
     "swagger-routes-express": "^3.3.0"
   }
