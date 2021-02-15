@@ -148,6 +148,56 @@ components:
           type: string
     Lighthouse:
       type: object
+      properties:
+        lighthouseVersion:
+          type: string
+          description: The version of Lighthouse with which this result was generated.
+        fetchTime:
+          type: string
+          format: date
+          description: The ISO-8601 timestamp of when the result was generated.
+        userAgent:
+          type: string
+          description: The user agent string of the version of Chrome that was used by Lighthouse.
+        requestedUrl:
+          type: string
+          description: The URL that was supplied to Lighthouse and initially navigated to.
+        finalUrl:
+          type: string
+          description: The URL that Lighthouse ended up auditing after redirects were followed.
+        audits:
+          type: object
+          description: An object containing the results of the audits.
+        configSettings:
+          type: object
+          description: An object containing information about the configuration used by Lighthouse.
+        timing:
+          type: object
+          description: An object containing information about how long Lighthouse spent auditing.
+        categories:
+          type: object
+          description: An object containing the different categories, their scores, and references to the audits that comprise them.
+        categoryGroups:
+          type: object
+          description: An object containing the display groups of audits for the report.
+        runtimeError:
+          type: object
+          description: An object providing a top-level error message that, if present, indicates a serious enough problem that this Lighthouse result may need to be discarded.
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+        runWarnings:
+          type: array
+          description: Array of top-level warnings for this Lighthouse run.
+          items:
+            type: object
+            properties:
+              code:
+                type: string
+              message:
+                type: string
     PHPCS:
       type: object
       properties:
