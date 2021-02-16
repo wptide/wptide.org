@@ -11,6 +11,6 @@
     "license": "MIT",
     "require": {
         "dealerdirect/phpcodesniffer-composer-installer": "*",
-        "phpcompatibility/phpcompatibility-wp": "2.1.0"
+        "phpcompatibility/phpcompatibility-wp": "2.1.1"
     }
 }
