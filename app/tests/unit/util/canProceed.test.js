@@ -3,7 +3,7 @@
  */
 const { get, set } = require('../../../src/services/datastore');
 const { canProceed } = require('../../../src/util/canProceed');
-const { dateTime } = require('../../../src/util/time');
+const { dateTime } = require('../../../src/util/dateTime');
 
 jest.mock('../../../src/services/datastore',
     () => ({
@@ -11,7 +11,7 @@ jest.mock('../../../src/services/datastore',
         get: jest.fn(),
         set: jest.fn(),
     }));
-jest.mock('../../../src/util/time');
+jest.mock('../../../src/util/dateTime');
 
 const datastoreGet = get;
 const datastoreSet = set;
@@ -22,11 +22,13 @@ beforeEach(() => {
     datastoreSet.mockClear();
 });
 
+global.console.log = jest.fn();
+
 /**
  * Tests for canProceed.
  */
 describe('canProceed', () => {
-    it('requires the correct parameters for invocation', async () => {
+    it('Throws if type param is missing', async () => {
         let errorMessage;
 
         try {
@@ -34,77 +36,186 @@ describe('canProceed', () => {
         } catch (error) {
             errorMessage = error.message;
         }
-        expect(errorMessage).toEqual('type param missing');
-
+        expect(errorMessage).toEqual('The type parameter is required');
+    });
+    it('Throws if id param is missing', async () => {
+        let errorMessage;
         try {
-            await canProceed('lighthouse', {});
+            await canProceed('lighthouse');
         } catch (error) {
             errorMessage = error.message;
         }
-        expect(errorMessage).toEqual('item.slug param missing');
-
+        expect(errorMessage).toEqual('The id parameter is required');
+    });
+    it('Throws if status doc is not found', async () => {
+        let errorMessage;
         try {
-            await canProceed('lighthouse', { slug: 'stream' });
+            datastoreGet.mockResolvedValue(false);
+            await canProceed('lighthouse', '1234abcde');
         } catch (error) {
             errorMessage = error.message;
         }
-        expect(errorMessage).toEqual('item.version param missing');
+        expect(errorMessage).toEqual('The status doc does not exist');
     });
 
-    const retryCounts = [
-        0,
-        1,
-    ];
-
-    it.each(retryCounts)('can retry after %s retries', async (retryCount) => {
-        const currentTime = 1000;
+    it.each([1, 2])('Can retry after %s attempts', async (retryCount) => {
+        const currentTime = 1000 * (retryCount + 1);
         dateTime.mockReturnValue(currentTime);
-        const statusDoc = { retries: retryCount, startTime: 1 };
-        const expectedStatusDoc = { retries: retryCount + 1, startTime: currentTime };
-        const audit = { slug: 'foo', version: 1 };
-        const type = 'lighthouse';
+        const statusDoc = {
+            id: '12345abced',
+            type: 'lighthouse',
+            slug: 'fake-slug',
+            version: '1.0.0',
+            created_datetime: 1,
+            modified_datetime: 1,
+            reports: {
+                lighthouse: {
+                    attempts: retryCount,
+                    startTime: 1,
+                },
+            },
+        };
         datastoreGet.mockResolvedValue(statusDoc);
-        await canProceed('lighthouse', audit);
-        expect(datastoreSet).toHaveBeenCalledWith(`${type}-${audit.slug}-${audit.version}`, expectedStatusDoc);
+        await canProceed('lighthouse', statusDoc.id);
+        const expectedStatusDoc = {
+            ...statusDoc,
+        };
+        expectedStatusDoc.reports.lighthouse.attempts = retryCount + 1;
+        expectedStatusDoc.reports.lighthouse.startTime = currentTime;
+        expect(datastoreSet).toHaveBeenCalledWith(statusDoc.id, expectedStatusDoc);
     });
 
-    it('returns true when we first run an audit', async () => {
-        const statusDoc = undefined;
-        const audit = { slug: 'foo', version: 1 };
-        const type = 'lighthouse';
+    it('Returns true when we first run an audit', async () => {
+        const statusDoc = {
+            id: '12345abced',
+            type: 'lighthouse',
+            slug: 'fake-slug',
+            version: '1.0.0',
+            created_datetime: 1,
+            modified_datetime: 1,
+            reports: {
+                lighthouse: {
+                    attempts: 0,
+                    startTime: 1,
+                },
+            },
+        };
         const timeNow = 1000;
         dateTime.mockReturnValue(timeNow);
         datastoreGet.mockResolvedValue(statusDoc);
-        const returnStatus = await canProceed(type, audit);
-        expect(datastoreSet).toHaveBeenCalledWith(`${type}-${audit.slug}-${audit.version}`, { retries: 0, startTime: timeNow });
+        const returnStatus = await canProceed(statusDoc.type, statusDoc.id);
+        const expectedDoc = Object.assign(statusDoc, {
+            reports: {
+                lighthouse: {
+                    attempts: 1,
+                    startTime: timeNow,
+                },
+            },
+        });
+        expect(datastoreSet).toHaveBeenCalledWith(statusDoc.id, expectedDoc);
         expect(returnStatus).toEqual(true);
     });
 
-    it('throws an error when we want to run an audit while one is in progress', async () => {
+    it('Throws an error when we want to run an audit while one is in progress', async () => {
         let errorMessage;
-        const statusDoc = { retries: 0, startTime: 1 };
-        const audit = { slug: 'foo', version: 1 };
-        const type = 'lighthouse';
+        const statusDoc = {
+            id: '12345abced',
+            type: 'lighthouse',
+            slug: 'fake-slug',
+            version: '1.0.0',
+            created_datetime: 1,
+            modified_datetime: 1,
+            reports: {
+                lighthouse: {
+                    attempts: 1,
+                    startTime: 1,
+                },
+            },
+        };
         const timeNow = 5;
         dateTime.mockReturnValue(timeNow);
         datastoreGet.mockResolvedValue(statusDoc);
         try {
-            await canProceed(type, audit);
+            await canProceed(statusDoc.type, statusDoc.id);
         } catch (error) {
             errorMessage = error.message;
         }
-        expect(errorMessage).toEqual('audit still in progress {"retries":0,"startTime":1}');
+        expect(errorMessage).toEqual('Audit 12345abced is still in progress.');
     });
 
-    it('returns false when we try and run an audit a fourth time', async () => {
+    it('Returns false when we try and run an audit a fourth time', async () => {
+        const statusDoc = {
+            id: '12345abced',
+            type: 'lighthouse',
+            slug: 'fake-slug',
+            version: '1.0.0',
+            created_datetime: 1,
+            modified_datetime: 1,
+            reports: {
+                lighthouse: {
+                    attempts: 3,
+                    startTime: 1,
+                    status: 'pending',
+                },
+            },
+        };
         const currentTime = 1000;
         dateTime.mockReturnValue(currentTime);
-        const statusDoc = { retries: 3, startTime: 1 };
-        const audit = { slug: 'foo', version: 1 };
-        const type = 'lighthouse';
-
-        datastoreGet.mockResolvedValue(statusDoc);
-        const returnStatus = await canProceed(type, audit);
+        datastoreGet.mockResolvedValueOnce(statusDoc);
+        const returnStatus = await canProceed(statusDoc.type, statusDoc.id);
         expect(returnStatus).toEqual(false);
+        statusDoc.reports.lighthouse.status = 'failed';
+        expect(datastoreSet).toHaveBeenCalledWith(statusDoc.id, statusDoc);
+    });
+
+    it('Returns false when we have already completed the audit', async () => {
+        const statusDoc = {
+            id: '12345abced',
+            type: 'lighthouse',
+            slug: 'fake-slug',
+            version: '1.0.0',
+            created_datetime: 1,
+            modified_datetime: 1,
+            reports: {
+                lighthouse: {
+                    attempts: 1,
+                    startTime: 1000,
+                    status: 'complete',
+                },
+            },
+        };
+        const currentTime = 1000;
+        dateTime.mockReturnValue(currentTime);
+        datastoreGet.mockResolvedValue(statusDoc);
+        const returnStatus = await canProceed(statusDoc.type, statusDoc.id);
+        expect(returnStatus).toEqual(false);
+    });
+
+    it('Throws an error when the audit previously failed', async () => {
+        let errorMessage;
+        try {
+            const statusDoc = {
+                id: '12345abced',
+                type: 'lighthouse',
+                slug: 'fake-slug',
+                version: '1.0.0',
+                created_datetime: 1,
+                modified_datetime: 1,
+                reports: {
+                    lighthouse: {
+                        attempts: 1,
+                        startTime: 1000,
+                        status: 'failed',
+                    },
+                },
+            };
+            const currentTime = 1000;
+            dateTime.mockReturnValue(currentTime);
+            datastoreGet.mockResolvedValue(statusDoc);
+            await canProceed(statusDoc.type, statusDoc.id);
+        } catch (error) {
+            errorMessage = error.message;
+        }
+        expect(errorMessage).toEqual('Audit 12345abced has already failed.');
     });
 });

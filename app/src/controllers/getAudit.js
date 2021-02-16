@@ -1,132 +1,7 @@
 /**
- * External Dependencies.
- */
-const invariant = require('invariant');
-
-/**
  * Internal Dependencies.
  */
-const { getAuditId } = require('../util/identifiers');
-const { getSourceUrl } = require('../util/getSourceUrl');
-const { dateTime } = require('../util/time');
-const { getAuditDoc, setAuditDoc, getReportDoc } = require('../integrations/datastore');
-const { publish, messageTypes } = require('../integrations/pubsub');
-const { shouldLighthouseAudit } = require('../util/shouldLighthouseAudit');
-
-/**
- * Send Audit Messages for audits that need to occur.
- *
- * @param {object} audit Project we are auditing.
- */
-const sendAuditMessages = async (audit) => {
-    const messageBody = {
-        id: audit.id,
-        slug: audit.slug,
-        type: audit.type,
-        version: audit.version,
-    };
-
-    if (audit.reports) {
-        if (audit.reports.phpcs_phpcompatibilitywp === null) {
-            await publish(messageBody, messageTypes.MESSAGE_TYPE_PHPCS_REQUEST);
-        }
-
-        if (audit.reports.lighthouse === null) {
-            await publish(messageBody, messageTypes.MESSAGE_TYPE_LIGHTHOUSE_REQUEST);
-        }
-    }
-};
-
-/**
- * Create a new audit
- *
- * @param {string} id     Audit ID.
- * @param {object} params Audit Params.
- * @returns {object | null} Audit doc if project exists or null.
- */
-const createNewAudit = async (id, params) => {
-    const sourceUrl = await getSourceUrl(params.type, params.slug, params.version);
-
-    if (sourceUrl) {
-        const timeNow = dateTime();
-        const audit = {
-            id,
-            type: params.type,
-            slug: params.slug,
-            version: params.version,
-            created_datetime: timeNow,
-            last_modified_datetime: timeNow,
-            reports: {},
-        };
-
-        if (audit.type === 'theme' && await shouldLighthouseAudit(audit)) {
-            audit.reports.lighthouse = null;
-        }
-        audit.reports.phpcs_phpcompatibilitywp = null;
-
-        await setAuditDoc(audit.id, audit);
-        await sendAuditMessages(audit);
-
-        return getAuditDoc(audit.id);
-    }
-
-    return null; // Project not found
-};
-
-/**
- * Add report docs to a given audit.
- *
- * @param {object} audit       Audit Params
- * @param {Array}  reportTypes Reports to add.
- * @returns {object} Audit including reports.
- */
-const addReports = async (audit, reportTypes) => {
-    const updatedAudit = { ...audit };
-    const validReportTypes = ['lighthouse', 'phpcs_phpcompatibilitywp'];
-    let fetchReportTypes = [];
-
-    if (reportTypes.includes('all')) {
-        fetchReportTypes = validReportTypes;
-    } else {
-        validReportTypes.forEach((validReportType) => {
-            if (reportTypes.includes(validReportType)) {
-                fetchReportTypes.push(validReportType);
-            }
-        });
-    }
-
-    await Promise.all(fetchReportTypes.map(async (reportType) => {
-        const reportId = updatedAudit.reports[reportType]
-            ? updatedAudit.reports[reportType].id : null;
-        if (reportId) {
-            const report = await getReportDoc(reportId);
-            if (report) {
-                // Attach the audit report to the doc.
-                updatedAudit.reports[reportType] = report;
-            }
-        }
-    }));
-
-    return updatedAudit;
-};
-
-/**
- * Fetches an existing audit doc, creating an audit if we don't yet have it.
- *
- * @param {object} auditParams Audit params for audit.
- * @returns {object | null} Audit if one exists or null if the project doesn't exist.
- */
-const doAudit = async (auditParams) => {
-    const id = getAuditId(auditParams);
-
-    let existingAuditData = await getAuditDoc(id);
-
-    if (!existingAuditData) {
-        existingAuditData = await createNewAudit(id, auditParams);
-    }
-
-    return existingAuditData;
-};
+const { getAuditData, addAuditReports } = require('../util/auditHelpers');
 
 /**
  * Gets an existing Audit.
@@ -135,34 +10,70 @@ const doAudit = async (auditParams) => {
  * @param {object} res The HTTP response.
  */
 const getAudit = async (req, res) => {
-    invariant(req.params.type, 'Project type missing');
-    invariant(['theme', 'plugin'].includes(req.params.type), 'Project type should be theme or plugin');
-    invariant(req.params.slug, 'Project slug missing');
-    invariant(req.params.version, 'Version missing');
-    invariant(req.params.length !== 3, 'Only type, slug and version required');
-    req.params.type = req.params.type.replace(/[^\w.-]+/g, '');
-    req.params.slug = req.params.slug.replace(/[^\w.-]+/g, '');
-    req.params.version = req.params.version.replace(/[^\d.]+/g, '');
-
-    let existingAuditData = await doAudit(req.params);
-
-    if (existingAuditData && req.query && req.query.reports) {
-        existingAuditData = await addReports(existingAuditData, req.query.reports.split(','));
-    }
-
-    if (existingAuditData) {
-        res.json(existingAuditData);
-    } else {
-        res.status(404).json({
-            error: {
-                code: 404,
-                message: 'Audit not found',
-            },
+    if (!req.params.type) {
+        req.validation.errors.push({
+            message: 'The audit project type is required.',
+            parameter: 'type',
+        });
+    } else if (!['theme', 'plugin'].includes(req.params.type)) {
+        req.validation.errors.push({
+            message: 'The audit project type must be theme or plugin.',
+            parameter: 'type',
         });
     }
+
+    if (!req.params.slug) {
+        req.validation.errors.push({
+            message: 'The audit project slug is required.',
+            parameter: 'slug',
+        });
+    } else if (!req.params.slug.match(/^[a-z0-9-]+$/)) {
+        req.validation.errors.push({
+            message: 'The audit project slug must be an alpha-numeric string, dashes are allowed.',
+            parameter: 'slug',
+        });
+    }
+
+    if (!req.params.version) {
+        req.validation.errors.push({
+            message: 'The audit project version is required.',
+            parameter: 'version',
+        });
+    } else if (!req.params.version.match(/^(?!^\.)(?!.*[.]$)[0-9.]+$/)) {
+        req.validation.errors.push({
+            message: 'The audit project version must contain only numbers and periods, plus begins and ends with a number.',
+            parameter: 'version',
+        });
+    }
+
+    if (req.validation.errors.length) {
+        res.status(400).json(req.validation);
+    } else {
+        try {
+            let existingAuditData = await getAuditData(req.params);
+
+            if (existingAuditData && req.query && req.query.reports) {
+                const { reports } = req.query;
+                // Support both array and csv format.
+                const reportsSanitized = Array.isArray(reports) ? reports : reports.split(',');
+                existingAuditData = await addAuditReports(existingAuditData, reportsSanitized);
+            }
+
+            if (existingAuditData) {
+                res.status(200).json(existingAuditData);
+            } else {
+                res.status(404).json({
+                    message: 'The audit requested does not exist.',
+                    status: 404,
+                });
+            }
+        } catch (err) {
+            res.status(500).json({
+                message: 'The server could not respond to the request.',
+                status: 500,
+            });
+        }
+    }
 };
 
-module.exports = {
-    getAudit,
-    doAudit,
-};
+module.exports = getAudit;

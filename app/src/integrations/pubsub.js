@@ -10,7 +10,14 @@ const messageTypes = {
     MESSAGE_TYPE_SYNC_REQUEST,
 };
 
-let topicsExist = false;
+let localTopicsExist = false;
+
+/**
+ * Expose if topics exist.
+ *
+ * @returns {boolean}  The value of `localTopicsExist`.
+ */
+const topicsExist = () => localTopicsExist;
 
 /**
  * Conditionally creates each Topic by looping over `messageTypes`.
@@ -18,7 +25,7 @@ let topicsExist = false;
  * @returns {void}
  */
 const maybeCreateTopics = async () => {
-    if (!topicsExist) {
+    if (!topicsExist()) {
         // eslint-disable-next-line no-restricted-syntax
         for (const topicName of Object.keys(messageTypes)) {
             try {
@@ -28,7 +35,7 @@ const maybeCreateTopics = async () => {
                 console.log(err);
             }
         }
-        topicsExist = true;
+        localTopicsExist = true;
     }
 };
 
@@ -44,6 +51,7 @@ const subscribe = async (subscriptionName, options) => {
 };
 
 module.exports = {
+    topicsExist,
     messageTypes,
     subscribe,
     publish,

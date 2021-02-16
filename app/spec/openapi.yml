@@ -1,0 +1,432 @@
+openapi: 3.0.3
+info:
+  version: 1.0.0-beta
+  title: Tide OpenAPI Specification
+  description: Definition and usage reference for the wptide.org JSON API server
+  contact:
+    name: Tide Maintainers
+    email: support@wptide.org
+    url: "https://staging.wptide.org/"
+  license:
+    name: MIT
+    url: 'https://opensource.org/licenses/MIT'
+servers:
+  - url: /api/v1
+paths:
+  /:
+    get:
+      tags:
+        - Public
+      summary: API Schema
+      description: >-
+        Returns a JSON object representing the API schema for wptide.org in the OpenAPI
+        Specification (OAS) v3 format.
+      operationId: schema
+      responses:
+        200:
+          $ref: '#/components/responses/200Schema'
+        500:
+          $ref: '#/components/responses/500InternalServerError'
+  '/audit/wporg/{type}/{slug}/{version}':
+    get:
+      tags:
+        - Public
+      summary: Get WordPress.org Audit
+      description: >-
+        Gets a WordPress.org theme or plugin audit, with optional reports, by project type,
+        slug and version.
+      operationId: getAudit
+      responses:
+        200:
+          $ref: '#/components/responses/200Audit'
+        400:
+          $ref: '#/components/responses/400BadRequest'
+        404:
+          $ref: '#/components/responses/404NotFound'
+        500:
+          $ref: '#/components/responses/500InternalServerError'
+      parameters:
+        - $ref: '#/components/parameters/typeParam'
+        - $ref: '#/components/parameters/slugParam'
+        - $ref: '#/components/parameters/versionParam'
+        - $ref: '#/components/parameters/reportsParam'
+  '/report/{id}':
+    get:
+      tags:
+        - Public
+      summary: Get Report by ID
+      description: >-
+        Get the raw PHP Compatibility or Lighthouse report by id.
+      operationId: getReport
+      responses:
+        200:
+          $ref: '#/components/responses/200Report'
+        400:
+          $ref: '#/components/responses/400BadRequest'
+        404:
+          $ref: '#/components/responses/404NotFound'
+        500:
+          $ref: '#/components/responses/500InternalServerError'
+      parameters:
+        - $ref: '#/components/parameters/idParam'
+components:
+  schemas:
+    Audit:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        slug:
+          type: string
+        version:
+          type: string
+        created_datetime:
+          type: integer
+        modified_datetime:
+          type: integer
+        reports:
+          type: object
+          required:
+            - phpcs_phpcompatibilitywp
+          properties:
+            phpcs_phpcompatibilitywp:
+              oneOf:
+                - $ref: '#/components/schemas/PHPCS'
+                - $ref: '#/components/schemas/ReportRef'
+            lighthouse:
+              oneOf:
+                - $ref: '#/components/schemas/Lighthouse'
+                - $ref: '#/components/schemas/ReportRef'
+    Report:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        source_url:
+          type: string
+        created_datetime:
+          type: integer
+        milliseconds:
+          type: integer
+        audit:
+          $ref: '#/components/schemas/AuditRef'
+        server:
+          type: object
+          required:
+            - node
+            - dependencies
+          properties:
+            node:
+              type: string
+            php:
+              type: string
+            dependencies:
+              $ref: '#/components/schemas/Dependencies'
+        report:
+          oneOf:
+            - $ref: '#/components/schemas/PHPCS'
+            - $ref: '#/components/schemas/Lighthouse'
+    AuditRef:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        slug:
+          type: string
+        version:
+          type: string
+    ReportRef:
+      type: object
+      properties:
+        id:
+          type: string
+    Lighthouse:
+      type: object
+      properties:
+        lighthouseVersion:
+          type: string
+          description: The version of Lighthouse with which this result was generated.
+        fetchTime:
+          type: string
+          format: date
+          description: The ISO-8601 timestamp of when the result was generated.
+        userAgent:
+          type: string
+          description: The user agent string of the version of Chrome that was used by Lighthouse.
+        requestedUrl:
+          type: string
+          description: The URL that was supplied to Lighthouse and initially navigated to.
+        finalUrl:
+          type: string
+          description: The URL that Lighthouse ended up auditing after redirects were followed.
+        audits:
+          type: object
+          description: An object containing the results of the audits.
+        configSettings:
+          type: object
+          description: An object containing information about the configuration used by Lighthouse.
+        timing:
+          type: object
+          description: An object containing information about how long Lighthouse spent auditing.
+        categories:
+          type: object
+          description: An object containing the different categories, their scores, and references to the audits that comprise them.
+        categoryGroups:
+          type: object
+          description: An object containing the display groups of audits for the report.
+        runtimeError:
+          type: object
+          description: An object providing a top-level error message that, if present, indicates a serious enough problem that this Lighthouse result may need to be discarded.
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+        runWarnings:
+          type: array
+          description: Array of top-level warnings for this Lighthouse run.
+          items:
+            type: object
+            properties:
+              code:
+                type: string
+              message:
+                type: string
+    PHPCS:
+      type: object
+      properties:
+        incompatible:
+          type: array
+          items:
+            type: string
+        compatible:
+          type: array
+          items:
+            type: string
+        versions:
+          type: object
+          properties:
+            "5.6":
+              $ref: '#/components/schemas/Versions'
+            "7.0":
+              $ref: '#/components/schemas/Versions'
+            "7.1":
+              $ref: '#/components/schemas/Versions'
+            "7.2":
+              $ref: '#/components/schemas/Versions'
+            "7.3":
+              $ref: '#/components/schemas/Versions'
+            "7.4":
+              $ref: '#/components/schemas/Versions'
+            "8.0":
+              $ref: '#/components/schemas/Versions'
+        totals:
+          $ref: '#/components/schemas/Totals'
+    Totals:
+      type: object
+      properties:
+        warnings:
+          type: integer
+        errors:
+          type: integer
+        fixable:
+          type: integer
+    Versions:
+      type: object
+      properties:
+        files:
+          $ref: '#/components/schemas/Files'
+        totals:
+          $ref: '#/components/schemas/Totals'
+    Dependencies:
+      type: array
+      items:
+        type: object
+        properties:
+          version:
+            type: string
+          vendor:
+            type: string
+    Files:
+      type: object
+      additionalProperties:
+        type: object
+        properties:
+          warnings:
+            type: integer
+          errors:
+            type: integer
+          messages:
+            type: array
+            items:
+              $ref: '#/components/schemas/FileMessages'
+    FileMessages:
+      type: object
+      properties:
+        severity:
+          type: integer
+        line:
+          type: integer
+        column:
+          type: integer
+        source:
+          type: string
+        message:
+          type: string
+        type:
+          type: string
+        fixable:
+          type: boolean
+    Message:
+      type: object
+      properties:
+        message:
+          type: string
+        status:
+          type: integer
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+        parameter:
+          type: string
+    Errors:
+      type: array
+      items:
+        $ref: '#/components/schemas/Error'
+    ValidationError:
+      type: object
+      properties:
+        message:
+          type: string
+        status:
+          type: integer
+        errors:
+          $ref: '#/components/schemas/Errors'
+  responses:
+    200Audit:
+      description: A JSON object containing an audit.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Audit'
+    200Report:
+      description: A JSON object containing a report.
+      content:
+        application/json:
+          schema:
+            oneOf:
+              - $ref: '#/components/schemas/Report'
+              - $ref: '#/components/schemas/ReportRef'
+    200Schema:
+      description: A JSON object containing the OpenAPI Schema.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              openapi:
+                type: string
+              info:
+                type: object
+              paths:
+                type: object
+              components:
+                type: object
+    400BadRequest:
+      description: The request was invalid or cannot be otherwise served.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationError'
+    401Unauthorized:
+      description: Authentication credentials were missing or incorrect.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Message'
+    403Forbidden:
+      description: >-
+        The request is understood, but it has been refused or access is not allowed.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Message'
+    404NotFound:
+      description: The URI requested is invalid or the resource requested does not exists.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Message'
+    429TooManyRequests:
+      description: >-
+        The request cannot be served due to the application’s rate limit having been
+        exhausted for the resource.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Message'
+    500InternalServerError:
+      description: Something has severely broken and the server could not respond.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Message'
+    503ServiceUnavailable:
+      description: The server is up, but overloaded with requests. Try again later.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Message'
+  parameters:
+    idParam:
+      name: id
+      in: path
+      description: A report id.
+      required: true
+      schema:
+        type: string
+    reportsParam:
+      name: reports
+      in: query
+      description: An array of report types.
+      required: false
+      schema:
+        type: array
+        items:
+          type: string
+          enum:
+            - all
+            - lighthouse
+            - phpcs_phpcompatibilitywp
+    slugParam:
+      name: slug
+      in: path
+      description: The WordPress.org project slug.
+      required: true
+      schema:
+        type: string
+    typeParam:
+      name: type
+      in: path
+      description: The WordPress.org project type, in singular format.
+      required: true
+      schema:
+        type: string
+        enum:
+          - plugin
+          - theme
+    versionParam:
+      name: version
+      in: path
+      description: The WordPress.org project version.
+      required: true
+      schema:
+        type: string

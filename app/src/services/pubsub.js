@@ -11,7 +11,7 @@ let pubsubInstance;
 /**
  * Returns a singleton instance of PubSub client.
  *
- * @returns {object} PubSub instance.
+ * @returns {object}  PubSub instance.
  */
 const getPubsub = async () => {
     const options = {};
@@ -59,10 +59,10 @@ const publishMessage = async (message, topicName) => {
 /**
  * Add a subscription to a topic.
  *
- * @param {string} subscriptionName Subscription name.
- * @param {object} options          Subscription options.
+ * @param   {string}     subscriptionName Subscription name.
+ * @param   {object}     options          Subscription options.
  *
- * @returns {Promise<*>} Topic Subscription.
+ * @returns {Promise<*>}                  Topic Subscription.
  */
 const subscribeTopic = async (subscriptionName, options) => {
     const pubsub = await getPubsub();

@@ -8,9 +8,9 @@ const puppeteer = require('puppeteer');
 /**
  * Runs a lighthouse audit for a given project.
  *
- * @param {object} message      Audit message.
- * @param {string} message.slug Theme slug to audit.
- * @returns {object} Lighthouse audit report.
+ * @param   {object} message      Audit message.
+ * @param   {string} message.slug Theme slug to audit.
+ * @returns {object}              Lighthouse audit report.
  */
 const lighthouseReporter = async (message) => {
     const options = {

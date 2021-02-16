@@ -2,7 +2,7 @@
  * Internal Dependencies.
  */
 const schema = require('./schema');
-const { getAudit } = require('./getAudit');
+const getAudit = require('./getAudit');
 const getReport = require('./getReport');
 
 /**
@@ -11,7 +11,7 @@ const getReport = require('./getReport');
  * The handlers correspond to an `operationId` defined in `paths`
  * for each endpoint, which is found in the `openeapi.yml` file.
  *
- * @see https://swagger.io/specification/#operationObject
+ * @see  https://swagger.io/specification/#operationObject
  */
 module.exports = {
     schema,

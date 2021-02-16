@@ -2,14 +2,11 @@
 
 @todo
 
-## API
+## API Server
 
-The API is the public endpoint of the service, and can be used to fetch audits for any version of any WordPress plugin or theme.
+The [API Specification v1](https://staging.wptide.org/api/spec/v1/) definition and usage reference for the wptide.org JSON API server provides a user interface to lean about the API endpoints and make requests. Take some time to familiarize yourself with the API schema, parameters, and responses.
 
-### Example API Requests
-
-* Browse to this URL: http://localhost:8080/api/v1/audit/wordpress/theme/twentytwenty/1.6
-* Browse to this URL: http://localhost:8080/api/v1/audit/wordpress/plugin/pwa/0.5.0
+The API is the public endpoint of the Tide service, and can be used to fetch audits and reports for any version of any WordPress plugin or theme.
 
 ## Lighthouse Server
 

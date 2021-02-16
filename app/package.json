@@ -3,7 +3,11 @@
   "version": "1.0.0-beta",
   "description": "Shared Node setup for the Cloud Functions API and Lighthouse & PHPCS Cloud Run servers.",
   "main": "index.js",
-  "author": "XWP",
+  "author": {
+    "name": "Tide Maintainers",
+    "email": "support@wptide.org",
+    "url": "https://wptide.org"
+  },
   "license": "MIT",
   "private": true,
   "scripts": {
@@ -12,14 +16,15 @@
   "dependencies": {
     "@google-cloud/datastore": "^6.3.1",
     "@google-cloud/functions-framework": "^1.7.1",
-    "@google-cloud/pubsub": "^2.8.0",
+    "@google-cloud/pubsub": "^2.9.0",
+    "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
-    "invariant": "^2.2.4",
-    "lighthouse": "^7.0.1",
+    "js-yaml": "^4.0.0",
+    "lighthouse": "^7.1.0",
     "node-fetch": "^2.6.1",
-    "puppeteer": "^7.0.4",
-    "swagger-routes-express": "^3.3.0",
-    "yamljs": "^0.3.0"
+    "puppeteer": "^7.1.0",
+    "swagger-parser": "^10.0.2",
+    "swagger-routes-express": "^3.3.0"
   }
 }

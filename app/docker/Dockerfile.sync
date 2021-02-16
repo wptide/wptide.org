@@ -6,6 +6,7 @@ MAINTAINER XWP <technology@xwp.co>
 WORKDIR /app
 
 COPY src src
+COPY spec/openapi.yml spec/openapi.yml
 COPY package.json package.json
 COPY package-lock.json package-lock.json
 COPY syncServer.js index.js

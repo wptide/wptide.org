@@ -7,7 +7,7 @@ const fetch = require('node-fetch');
  * Internal Dependencies.
  */
 const { getSyncDoc, setSyncDoc } = require('../integrations/datastore');
-const { doAudit } = require('../controllers/getAudit');
+const { getAuditData } = require('../util/auditHelpers');
 
 const MAX_QUEUE_SIZE_FOR_DELTA = process.env.SYNC_SERVER_MAX_QUEUE_SIZE_FOR_DELTA || 1000;
 
@@ -69,8 +69,9 @@ const apiUrl = (params, type) => {
 /**
  * Cleans an input array of themes or plugins by filtering out unused parameters.
  *
- * @param {object} input Object containing API responses in an array in the themes or plugins keys.
- * @returns {Array} Array of API responses keeping only the properties specified.
+ * @param   {object} input Object containing API responses in an array in the themes
+ *                         or plugins keys.
+ * @returns {Array}        Array of API responses keeping only the properties specified.
  */
 const cleanApiResponse = (input) => {
     const keepKeys = [
@@ -101,8 +102,8 @@ const cleanApiResponse = (input) => {
 /**
  * Gets the list of projects to sync for a given set of url parameters.
  *
- * @param {object} urlParams URL Params to fetch from.
- * @returns {object} Sync list to process.
+ * @param   {object} urlParams URL Params to fetch from.
+ * @returns {object}           Sync list to process.
  */
 const getSyncList = async (urlParams) => {
     const syncList = {
@@ -145,7 +146,7 @@ const getSyncList = async (urlParams) => {
 /**
  * Get the current sync state for our sync server.
  *
- * @returns {object} Sync state.
+ * @returns {object}  Sync state.
  */
 const getState = async () => {
     const state = {
@@ -188,11 +189,11 @@ const setState = async (state) => {
 /**
  * Make an audit request for a given project.
  *
- * @param {object} auditParams Params for project to audit.
- * @returns {object | null} Audit response.
+ * @param   {object}        auditParams Params for project to audit.
+ * @returns {object | null}             Audit response.
  */
 const makeAuditRequest = async (auditParams) => {
-    const auditResponse = await doAudit(auditParams);
+    const auditResponse = await getAuditData(auditParams);
     // Non existent audits are null
     if (auditResponse) {
         const isComplete = auditResponse && auditResponse.reports

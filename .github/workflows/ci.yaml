@@ -30,8 +30,23 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-npm-
 
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - name: Configure Composer cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      - name: Validate composer.json
+        run: cd app && composer --no-interaction validate --no-check-all && cd -
+
       - name: Install Node dependencies
-        run: npm ci && cd app && npm ci && cd -
+        run: npm ci && cd app && npm ci && cd spec && npm ci && cd ../../
         env:
           PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: true
           CI: true
@@ -58,6 +73,21 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-npm-
 
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - name: Configure Composer cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      - name: Install Composer dependencies
+        run: cd app && composer install --prefer-dist --optimize-autoloader --no-progress --no-interaction && cd -
+
       - name: Setup Jest cache
         uses: actions/cache@v2
         with:
@@ -67,7 +97,6 @@ jobs:
       - name: Install Node dependencies
         run: npm ci && cd app && npm ci && cd -
         env:
-          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: true
           CI: true
 
       - name: Run unit tests (with coverage)
@@ -151,7 +180,9 @@ jobs:
       - name: Deploy to Cloud Functions
         env:
           GOOGLE_CLOUD_PROJECT: ${{ secrets.GOOGLE_CLOUD_PROJECT_STAGING }}
-        run: make deploy.api
+        run: |
+          make deploy.api
+          make deploy.docs
 
       - name: Deploy to Cloud Run
         env:
