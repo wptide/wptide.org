@@ -19,7 +19,7 @@ describe('getSourceUrl', () => {
     it('Returns false for the Fake theme v1.0.0, which is not a real theme or version', async () => {
         expect(await getSourceUrl('theme', 'fake', '1.0.0')).toBe(false);
     });
-    it('Returns false when the project cannot be downloaded from WordPress.org', async () => {
+    it('Returns false when the parameters are missing', async () => {
         expect(await getSourceUrl()).toBe(false);
     });
 });
