@@ -53,7 +53,10 @@ const getAudit = async (req, res) => {
             let existingAuditData = await getAuditData(req.params);
 
             if (existingAuditData && req.query && req.query.reports) {
-                existingAuditData = await addAuditReports(existingAuditData, req.query.reports.split(','));
+                const { reports } = req.query;
+                // Support both array and csv format.
+                const reportsSanitized = Array.isArray(reports) ? reports : reports.split(',');
+                existingAuditData = await addAuditReports(existingAuditData, reportsSanitized);
             }
 
             if (existingAuditData) {
