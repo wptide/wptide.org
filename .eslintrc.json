@@ -11,6 +11,11 @@
         "jsdoc/check-line-alignment": [
             "error",
             "always"
-        ]
+        ],
+        "jest/no-jasmine-globals": "off"
+    },
+    "parser": "babel-eslint",
+    "env": {
+        "jest": true
     }
 }

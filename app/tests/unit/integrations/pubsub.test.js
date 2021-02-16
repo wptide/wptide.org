@@ -8,19 +8,19 @@ const { subscribe } = require('../../../src/integrations/pubsub');
  */
 beforeAll(() => {
     jest.mock('../../../src/services/pubsub', () => ({
-        createTopics: () => true,
+        createTopic: () => true,
         subscribeTopic: (subscriptionName) => subscriptionName,
         publishMessage: () => true,
     }));
-    global.console.log = jest.fn();
+    global.console.debug = jest.fn();
 });
 
 /**
  * Tests for subscribe.
  */
 describe('subscribe', () => {
-    it('subscribes to a given subscription', async () => {
-        const subscriptionName = 'subscription1';
+    it('subscribes to a topic', async () => {
+        const subscriptionName = 'subscription';
 
         expect(async () => {
             const subscription = await subscribe(subscriptionName);
