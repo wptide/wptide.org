@@ -63,7 +63,6 @@
     "coveragePathIgnorePatterns": [
       "<rootDir>/app/src/audits/phpcsReporter.js",
       "<rootDir>/app/src/controllers/index.js",
-      "<rootDir>/app/src/run/lighthouseServer.js",
       "<rootDir>/app/src/run/phpcsServer.js",
       "<rootDir>/app/src/run/proxyServer.js",
       "<rootDir>/app/src/run/syncServer.js",
