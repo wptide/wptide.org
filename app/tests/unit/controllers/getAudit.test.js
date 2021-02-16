@@ -311,6 +311,20 @@ describe('The getAudit route handler', () => {
             id: expectedAudit.id,
         };
 
+        const expectedStatus = {
+            ...expectedAudit,
+        };
+        const statusObj = {
+            attempts: 0,
+            startTime: currentTime,
+            status: 'pending',
+        };
+        expectedStatus.reports = {
+            lighthouse: { ...statusObj },
+            phpcs_phpcompatibilitywp: { ...statusObj },
+        };
+
+        expect(datastoreSet).toHaveBeenCalledWith(expectedAudit.id, expectedStatus);
         expect(datastoreSet).toHaveBeenCalledWith(expectedAudit.id, expectedAudit);
         expect(publishMessage).toHaveBeenCalledWith(expectedMessage, 'MESSAGE_TYPE_PHPCS_REQUEST');
         expect(publishMessage).toHaveBeenCalledWith(expectedMessage, 'MESSAGE_TYPE_LIGHTHOUSE_REQUEST');

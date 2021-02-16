@@ -12,6 +12,7 @@ beforeAll(() => {
         subscribeTopic: (subscriptionName) => subscriptionName,
         publishMessage: () => true,
     }));
+    global.console.log = jest.fn();
 });
 
 /**

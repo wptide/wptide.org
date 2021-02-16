@@ -4,7 +4,9 @@
 const { dateTime } = require('./dateTime');
 const { getAuditId } = require('./identifiers');
 const { getSourceUrl } = require('./getSourceUrl');
-const { getAuditDoc, setAuditDoc, getReportDoc } = require('../integrations/datastore');
+const {
+    getAuditDoc, setAuditDoc, getReportDoc, setStatusDoc,
+} = require('../integrations/datastore');
 const { publish, messageTypes } = require('../integrations/pubsub');
 const { shouldLighthouseAudit } = require('./shouldLighthouseAudit');
 
@@ -53,12 +55,34 @@ const createNewAudit = async (id, params) => {
             modified_datetime: timeNow,
             reports: {},
         };
+        const statusObj = {
+            startTime: timeNow,
+            attempts: 0,
+            status: 'pending',
+        };
+        const status = {
+            id,
+            type: params.type,
+            slug: params.slug,
+            version: params.version,
+            created_datetime: timeNow,
+            modified_datetime: timeNow,
+            reports: {
+                phpcs_phpcompatibilitywp: {
+                    ...statusObj,
+                },
+            },
+        };
 
         if (audit.type === 'theme' && await shouldLighthouseAudit(audit)) {
             audit.reports.lighthouse = null;
+            status.reports.lighthouse = {
+                ...statusObj,
+            };
         }
         audit.reports.phpcs_phpcompatibilitywp = null;
 
+        await setStatusDoc(status.id, status);
         await setAuditDoc(audit.id, audit);
         await sendAuditMessages(audit);
 
