@@ -91,7 +91,7 @@ Firestore run on `localhost` port `5000`.
 
 When doing local development each server is running within an instance of the [Functions Framework for Node.js](https://github.com/GoogleCloudPlatform/functions-framework-nodejs) inside a continuously running shell. This way we can remove the need to build Docker images locally.
 
-There is also a Docs Server that converts the OpenAPI Specification (Swagger UI) into an interactive visualization of the API’s resources, which are served from a Cloud Function and are not to be confused with the statically generated docs discussed further in this section.
+There is also a Docs Server that converts the OpenAPI Specification into an interactive visualization (Swagger UI) of the API’s resources, which are served from a Cloud Function and are not to be confused with the statically generated docs discussed further in this section.
 
 Start the API server:
 
@@ -139,7 +139,7 @@ Start the local Pub/Sub Proxy:
 
 The docs are generated with [VuePress](https://vuepress.vuejs.org/), which is a Vue-powered Static Site Generator that converts the Markdown files into a searchable static site. 
 
-If you are using the Firebase emulator you will need to run the `build` command, `serve` will not work because the emulator hosts the public statically generated file i.e. the output of the `build` command.
+If you are using the Firebase emulator you will need to run the `build` command, `serve` will not work because the emulator hosts the public statically generated files i.e. the output of the `build` command.
 
 Build the front-end:
 
