@@ -28,8 +28,7 @@
     "start:server:sync": "SERVER_PATH=./app/src/run/syncServer SERVER_TARGET=syncServer functions-framework --target=tide --signature-type=http --port=8100",
     "test": "NODE_ENV=test jest --detectOpenHandles --forceExit --verbose",
     "test:watch": "NODE_ENV=test jest --watch",
-    "test:coverage": "NODE_ENV=test jest --detectOpenHandles --forceExit --coverage --coverageDirectory ./app/tests/coverage",
-    "test:coveralls": "npm run test:coverage && coveralls < ./app/tests/coverage/lcov.info"
+    "test:coverage": "NODE_ENV=test jest --detectOpenHandles --forceExit --coverage --coverageDirectory ./app/tests/coverage"
   },
   "dependencies": {
     "dotenv": "^8.2.0"
