@@ -6,6 +6,8 @@
 [![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](web/docs/contributing/README.md) 
 [![Shipping faster with ZenHub.io](https://img.shields.io/badge/Shipping_faster_with-ZenHub.io-6567bd.svg?style=flat)](https://www.zenhub.com/)
 
+![](web/.vuepress/public/assets/img/tide-wp.png)
+
 > A rising tide lifts all boats. -- United States President, John F. Kennedy (borrowed from the New England Council)
 
 Tide is an automated tool to provide insight into WordPress code and highlight areas to improve the quality of plugins and themes.
