@@ -180,13 +180,6 @@ jobs:
           make push.lighthouse
           make push.phpcs
 
-      - name: Deploy to Cloud Functions
-        env:
-          GOOGLE_CLOUD_PROJECT: ${{ secrets.GOOGLE_CLOUD_PROJECT_STAGING }}
-        run: |
-          make deploy.api
-          make deploy.docs
-
       - name: Deploy to Cloud Run
         env:
           GOOGLE_CLOUD_PROJECT: ${{ secrets.GOOGLE_CLOUD_PROJECT_STAGING }}
