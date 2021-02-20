@@ -8,6 +8,9 @@
     "email": "support@wptide.org",
     "url": "https://wptide.org"
   },
+  "engines": {
+    "node": "12"
+  },
   "license": "MIT",
   "private": true,
   "scripts": {
@@ -15,15 +18,19 @@
   },
   "dependencies": {
     "@google-cloud/datastore": "^6.3.1",
+    "@google-cloud/firestore": "^4.9.4",
     "@google-cloud/functions-framework": "^1.7.1",
     "@google-cloud/pubsub": "^2.9.0",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "firebase-admin": "^9.5.0",
+    "firebase-functions": "^3.13.1",
     "js-yaml": "^4.0.0",
     "lighthouse": "^7.1.0",
     "node-fetch": "^2.6.1",
     "puppeteer": "^7.1.0",
+    "swagger-ui-express": "^4.1.6",
     "swagger-parser": "^10.0.2",
     "swagger-routes-express": "^3.3.0"
   }

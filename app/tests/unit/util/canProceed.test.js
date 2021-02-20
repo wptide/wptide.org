@@ -1,25 +1,24 @@
 /**
  * Internal Dependencies.
  */
-const { get, set } = require('../../../src/services/datastore');
+const { get, set } = require('../../../src/services/firestore');
 const { canProceed } = require('../../../src/util/canProceed');
 const { dateTime } = require('../../../src/util/dateTime');
 
-jest.mock('../../../src/services/datastore',
+jest.mock('../../../src/services/firestore',
     () => ({
-        getKey: (a, b) => b,
         get: jest.fn(),
         set: jest.fn(),
     }));
 jest.mock('../../../src/util/dateTime');
 
-const datastoreGet = get;
-const datastoreSet = set;
+const firestoreGet = get;
+const firestoreSet = set;
 
 beforeEach(() => {
-    datastoreGet.mockClear();
+    firestoreGet.mockClear();
     dateTime.mockClear();
-    datastoreSet.mockClear();
+    firestoreSet.mockClear();
 });
 
 global.console.log = jest.fn();
@@ -50,7 +49,7 @@ describe('canProceed', () => {
     it('Throws if status doc is not found', async () => {
         let errorMessage;
         try {
-            datastoreGet.mockResolvedValue(false);
+            firestoreGet.mockResolvedValue(false);
             await canProceed('lighthouse', '1234abcde');
         } catch (error) {
             errorMessage = error.message;
@@ -75,14 +74,14 @@ describe('canProceed', () => {
                 },
             },
         };
-        datastoreGet.mockResolvedValue(statusDoc);
+        firestoreGet.mockResolvedValue(statusDoc);
         await canProceed('lighthouse', statusDoc.id);
         const expectedStatusDoc = {
             ...statusDoc,
         };
         expectedStatusDoc.reports.lighthouse.attempts = retryCount + 1;
         expectedStatusDoc.reports.lighthouse.startTime = currentTime;
-        expect(datastoreSet).toHaveBeenCalledWith(statusDoc.id, expectedStatusDoc);
+        expect(firestoreSet).toHaveBeenCalledWith(`Status/${statusDoc.id}`, expectedStatusDoc);
     });
 
     it('Returns true when we first run an audit', async () => {
@@ -102,7 +101,7 @@ describe('canProceed', () => {
         };
         const timeNow = 1000;
         dateTime.mockReturnValue(timeNow);
-        datastoreGet.mockResolvedValue(statusDoc);
+        firestoreGet.mockResolvedValue(statusDoc);
         const returnStatus = await canProceed(statusDoc.type, statusDoc.id);
         const expectedDoc = Object.assign(statusDoc, {
             reports: {
@@ -112,7 +111,7 @@ describe('canProceed', () => {
                 },
             },
         });
-        expect(datastoreSet).toHaveBeenCalledWith(statusDoc.id, expectedDoc);
+        expect(firestoreSet).toHaveBeenCalledWith(`Status/${statusDoc.id}`, expectedDoc);
         expect(returnStatus).toEqual(true);
     });
 
@@ -134,7 +133,7 @@ describe('canProceed', () => {
         };
         const timeNow = 5;
         dateTime.mockReturnValue(timeNow);
-        datastoreGet.mockResolvedValue(statusDoc);
+        firestoreGet.mockResolvedValue(statusDoc);
         try {
             await canProceed(statusDoc.type, statusDoc.id);
         } catch (error) {
@@ -161,11 +160,11 @@ describe('canProceed', () => {
         };
         const currentTime = 1000;
         dateTime.mockReturnValue(currentTime);
-        datastoreGet.mockResolvedValueOnce(statusDoc);
+        firestoreGet.mockResolvedValueOnce(statusDoc);
         const returnStatus = await canProceed(statusDoc.type, statusDoc.id);
         expect(returnStatus).toEqual(false);
         statusDoc.reports.lighthouse.status = 'failed';
-        expect(datastoreSet).toHaveBeenCalledWith(statusDoc.id, statusDoc);
+        expect(firestoreSet).toHaveBeenCalledWith(`Status/${statusDoc.id}`, statusDoc);
     });
 
     it('Returns false when we have already completed the audit', async () => {
@@ -186,7 +185,7 @@ describe('canProceed', () => {
         };
         const currentTime = 1000;
         dateTime.mockReturnValue(currentTime);
-        datastoreGet.mockResolvedValue(statusDoc);
+        firestoreGet.mockResolvedValue(statusDoc);
         const returnStatus = await canProceed(statusDoc.type, statusDoc.id);
         expect(returnStatus).toEqual(false);
     });
@@ -211,7 +210,7 @@ describe('canProceed', () => {
             };
             const currentTime = 1000;
             dateTime.mockReturnValue(currentTime);
-            datastoreGet.mockResolvedValue(statusDoc);
+            firestoreGet.mockResolvedValue(statusDoc);
             await canProceed(statusDoc.type, statusDoc.id);
         } catch (error) {
             errorMessage = error.message;

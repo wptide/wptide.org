@@ -3,14 +3,12 @@
  */
 const express = require('express');
 const swaggerUi = require('swagger-ui-express');
-const yaml = require('js-yaml');
 const path = require('path');
-const fs = require('fs');
 
 /**
  * Internal Dependencies.
  */
-const api = path.resolve(__dirname, './openapi.yml');
+const { apiSpec } = require('./src/util/apiSpec');
 
 const app = express();
 
@@ -27,6 +25,6 @@ const options = {
     customfavIcon: './assets/images/favicon.ico',
 };
 
-app.use('/api/spec/v1', swaggerUi.serve, swaggerUi.setup(yaml.load(fs.readFileSync(api, 'utf8')), options));
+app.use('/api/spec/v1', swaggerUi.serve, swaggerUi.setup(apiSpec(), options));
 
-exports.docs = app;
+module.exports = app;

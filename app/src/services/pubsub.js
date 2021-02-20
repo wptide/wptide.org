@@ -16,7 +16,6 @@ let pubsubInstance;
 const getPubsub = async () => {
     const options = {};
     if (process.env.NODE_ENV !== 'production') {
-        options.apiEndpoint = process.env.ENDPOINT_PUBSUB;
         options.projectId = process.env.GOOGLE_CLOUD_PROJECT;
     }
 

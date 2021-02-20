@@ -6,14 +6,14 @@ const dotenv = require('dotenv');
 /**
  * Internal Dependencies.
  */
-const { get, set, getKey } = require('../services/datastore');
+const { get, set } = require('../services/firestore');
 
 dotenv.config({ path: `${process.cwd()}/../.env` });
 
-const auditKeyPath = process.env.DATASTORE_KEY_AUDIT || 'Audit';
-const reportKeyPath = process.env.DATASTORE_KEY_REPORT || 'Report';
-const statusKeyPath = process.env.DATASTORE_KEY_STATUS || 'Status';
-const syncKeyPath = process.env.DATASTORE_KEY_SYNC || 'Sync';
+const auditCollection = 'Audit';
+const reportCollection = 'Report';
+const statusCollection = 'Status';
+const syncCollection = 'Sync';
 
 /**
  * Gets an audit document for a given ID.
@@ -22,7 +22,7 @@ const syncKeyPath = process.env.DATASTORE_KEY_SYNC || 'Sync';
  * @returns {object | null}    Audit document.
  */
 const getAuditDoc = async (id) => {
-    const audit = await get(getKey(auditKeyPath, id));
+    const audit = await get(`${auditCollection}/${id}`);
 
     /* eslint-disable prefer-object-spread */
     if (audit) {
@@ -47,7 +47,7 @@ const getAuditDoc = async (id) => {
  * @param   {object} data Audit contents.
  * @returns {string}      Key
  */
-const setAuditDoc = async (id, data) => set(getKey(auditKeyPath, id), data);
+const setAuditDoc = async (id, data) => set(`${auditCollection}/${id}`, data);
 
 /**
  * Gets a status document.
@@ -55,7 +55,7 @@ const setAuditDoc = async (id, data) => set(getKey(auditKeyPath, id), data);
  * @param   {string}        id Status ID.
  * @returns {object | null}    Sync document if it exists.
  */
-const getStatusDoc = async (id) => get(getKey(statusKeyPath, id));
+const getStatusDoc = async (id) => get(`${statusCollection}/${id}`);
 
 /**
  * Sets a status document.
@@ -64,7 +64,7 @@ const getStatusDoc = async (id) => get(getKey(statusKeyPath, id));
  * @param   {object} data Status contents.
  * @returns {string}      Key
  */
-const setStatusDoc = async (id, data) => set(getKey(statusKeyPath, id), data);
+const setStatusDoc = async (id, data) => set(`${statusCollection}/${id}`, data);
 
 /**
  * Sets a sync document
@@ -73,7 +73,7 @@ const setStatusDoc = async (id, data) => set(getKey(statusKeyPath, id), data);
  * @param   {object} data Sync contents.
  * @returns {string}      Key
  */
-const setSyncDoc = async (id, data) => set(getKey(syncKeyPath, id), data);
+const setSyncDoc = async (id, data) => set(`${syncCollection}/${id}`, data);
 
 /**
  * Gets a sync document.
@@ -81,7 +81,7 @@ const setSyncDoc = async (id, data) => set(getKey(syncKeyPath, id), data);
  * @param   {string}        id Sync ID.
  * @returns {object | null}    Sync document if it exists.
  */
-const getSyncDoc = async (id) => get(getKey(syncKeyPath, id));
+const getSyncDoc = async (id) => get(`${syncCollection}/${id}`);
 
 /**
  * Gets a report document.
@@ -90,7 +90,7 @@ const getSyncDoc = async (id) => get(getKey(syncKeyPath, id));
  * @returns {object | null}    Report document if it exists.
  */
 const getReportDoc = async (id) => {
-    const report = await get(getKey(reportKeyPath, id));
+    const report = await get(`${reportCollection}/${id}`);
 
     /* eslint-disable prefer-object-spread */
     if (report) {
@@ -115,7 +115,7 @@ const getReportDoc = async (id) => {
  * @param   {object} data Report contents.
  * @returns {string}      Key
  */
-const setReportDoc = async (id, data) => set(getKey(reportKeyPath, id), data);
+const setReportDoc = async (id, data) => set(`${reportCollection}/${id}`, data);
 
 module.exports = {
     getAuditDoc,

@@ -1,15 +1,14 @@
 const getReport = require('../../../src/controllers/getReport');
-const { get, set } = require('../../../src/services/datastore');
+const { get, set } = require('../../../src/services/firestore');
 
-jest.mock('../../../src/services/datastore',
+jest.mock('../../../src/services/firestore',
     () => ({
-        getKey: (a, b) => b,
         get: jest.fn(),
         set: jest.fn(),
     }));
 
-const datastoreGet = get;
-const datastoreSet = set;
+const firestoreGet = get;
+const firestoreSet = set;
 
 const mock = {
     req: () => ({
@@ -29,7 +28,7 @@ const mock = {
 };
 
 beforeEach(() => {
-    datastoreGet.mockClear();
+    firestoreGet.mockClear();
 });
 
 describe('Main index entry point getReport', () => {
@@ -52,27 +51,27 @@ describe('Main index entry point getReport', () => {
             const res = mock.res();
             req.params.id = 'report1';
 
-            datastoreGet.mockResolvedValue(false);
+            firestoreGet.mockResolvedValue(false);
 
             await getReport(req, res);
-            expect(datastoreSet).toBeCalledTimes(0);
+            expect(firestoreSet).toBeCalledTimes(0);
             expect(res.json).toBeCalledWith({
                 message: 'The provided report identifier does not exist.',
                 status: 404,
             });
         });
 
-        it('Returns a 500 if datastore throws an error.', async () => {
+        it('Returns a 500 if firestore throws an error.', async () => {
             const req = mock.req();
             const res = mock.res();
             req.params.id = 'report1';
 
-            datastoreGet.mockImplementation(() => {
+            firestoreGet.mockImplementation(() => {
                 throw new Error('Something bad happened');
             });
 
             await getReport(req, res);
-            expect(datastoreSet).toBeCalledTimes(0);
+            expect(firestoreSet).toBeCalledTimes(0);
             expect(res.json).toBeCalledWith({
                 message: 'The server could not respond to the request.',
                 status: 500,
@@ -89,10 +88,10 @@ describe('Main index entry point getReport', () => {
                 foo: 'bar',
             };
 
-            datastoreGet.mockResolvedValue(mockReport);
+            firestoreGet.mockResolvedValue(mockReport);
 
             await getReport(req, res);
-            expect(datastoreSet).toBeCalledTimes(0);
+            expect(firestoreSet).toBeCalledTimes(0);
             expect(res.json).toBeCalledWith(mockReport);
         });
     });

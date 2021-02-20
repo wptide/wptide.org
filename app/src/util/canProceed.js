@@ -2,7 +2,7 @@
  * Internal Dependencies.
  */
 const { dateTime } = require('./dateTime');
-const { getStatusDoc, setStatusDoc } = require('../integrations/datastore');
+const { getStatusDoc, setStatusDoc } = require('../integrations/firestore');
 
 const MAX_DURATION = 300; // Max audit duration in seconds.
 const MAX_ATTEMPTS = 3; // Max number of times we can attempt the same audit

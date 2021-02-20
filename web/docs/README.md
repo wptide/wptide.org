@@ -55,8 +55,7 @@ Please read our [Contributing](contributing/README.md) guide for details on the 
 
 ## Maintainers
 
-[Derek Herman (@derekherman)](https://github.com/derekherman),
-[Ivan Kruchkoff (@ivankruchkoff)](https://github.com/ivankruchkoff), and
+[Derek Herman (@derekherman)](https://github.com/derekherman), and
 [Jeff Paul (@jeffpaul)](https://github.com/jeffpaul)
 
 ## Contributors
@@ -69,6 +68,7 @@ Props: [Bartek Makoś (@MakiBM)](https://github.com/MakiBM),
 [David Lonjon (@davidlonjon)](https://github.com/davidlonjon),
 [Derek Herman (@derekherman)](https://github.com/derekherman),
 [Dušan D. Majkić (@dmajkic)](https://github.com/dmajkic),
+[Ivan Kruchkoff (@ivankruchkoff)](https://github.com/ivankruchkoff),
 [Janki Moradiya (@jankimoradiya)](https://github.com/jankimoradiya),
 [Jeff Paul (@jeffpaul)](https://github.com/jeffpaul),
 [Jonathan Wold (@sirjonathan)](https://github.com/sirjonathan),

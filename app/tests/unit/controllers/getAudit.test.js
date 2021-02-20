@@ -1,11 +1,10 @@
 const getAudit = require('../../../src/controllers/getAudit');
-const { get, set } = require('../../../src/services/datastore');
+const { get, set } = require('../../../src/services/firestore');
 const { publishMessage } = require('../../../src/services/pubsub');
 const { dateTime } = require('../../../src/util/dateTime');
 
-jest.mock('../../../src/services/datastore',
+jest.mock('../../../src/services/firestore',
     () => ({
-        getKey: (a, b) => b,
         get: jest.fn(),
         set: jest.fn(),
     }));
@@ -24,8 +23,8 @@ jest.mock('../../../src/util/shouldLighthouseAudit',
 
 jest.mock('../../../src/util/dateTime');
 
-const datastoreGet = get;
-const datastoreSet = set;
+const firestoreGet = get;
+const firestoreSet = set;
 
 const mock = {
     req: () => ({
@@ -45,9 +44,9 @@ const mock = {
 };
 
 beforeEach(() => {
-    datastoreGet.mockClear();
+    firestoreGet.mockClear();
     dateTime.mockClear();
-    datastoreSet.mockClear();
+    firestoreSet.mockClear();
     publishMessage.mockClear();
 });
 
@@ -106,7 +105,7 @@ describe('The getAudit route handler', () => {
 
         const currentTime = 1000;
         dateTime.mockReturnValue(currentTime);
-        datastoreGet.mockResolvedValueOnce(null);
+        firestoreGet.mockResolvedValueOnce(null);
 
         await getAudit(req, res);
         expect(res.json).toBeCalledWith({
@@ -115,19 +114,19 @@ describe('The getAudit route handler', () => {
         });
     });
 
-    it('Returns a 500 if datastore throws an error.', async () => {
+    it('Returns a 500 if firestore throws an error.', async () => {
         const req = mock.req();
         const res = mock.res();
         req.params.type = 'plugin';
         req.params.slug = 'pwa';
         req.params.version = '0.5';
 
-        datastoreGet.mockImplementation(() => {
+        firestoreGet.mockImplementation(() => {
             throw new Error('Something bad happened');
         });
 
         await getAudit(req, res);
-        expect(datastoreSet).toBeCalledTimes(0);
+        expect(firestoreSet).toBeCalledTimes(0);
         expect(res.json).toBeCalledWith({
             message: 'The server could not respond to the request.',
             status: 500,
@@ -159,10 +158,10 @@ describe('The getAudit route handler', () => {
             },
         };
 
-        datastoreGet.mockResolvedValue(mockAudit);
+        firestoreGet.mockResolvedValue(mockAudit);
 
         await getAudit(req, res);
-        expect(datastoreSet).toBeCalledTimes(0);
+        expect(firestoreSet).toBeCalledTimes(0);
         expect(res.json).toBeCalledWith(mockAudit);
     });
 
@@ -196,7 +195,7 @@ describe('The getAudit route handler', () => {
                 },
             },
         };
-        datastoreGet.mockResolvedValueOnce(mockAudit);
+        firestoreGet.mockResolvedValueOnce(mockAudit);
 
         const mockCompatReport = {
             id: 'd29213d0e05c8669ece2f68ce995e19407212debcdc6519f79b1208aa07c0b27',
@@ -211,7 +210,7 @@ describe('The getAudit route handler', () => {
                 version: '2.0.1',
             },
         };
-        datastoreGet.mockResolvedValueOnce(mockCompatReport);
+        firestoreGet.mockResolvedValueOnce(mockCompatReport);
 
         const mockLighthouseReport = {
             id: 'a5467200b1a1db56c82af70ee206947aa449ed9512e524e06085b03a25f599fc',
@@ -226,10 +225,10 @@ describe('The getAudit route handler', () => {
                 version: '2.0.1',
             },
         };
-        datastoreGet.mockResolvedValueOnce(mockLighthouseReport);
+        firestoreGet.mockResolvedValueOnce(mockLighthouseReport);
 
         await getAudit(req, res);
-        expect(datastoreSet).toBeCalledTimes(0);
+        expect(firestoreSet).toBeCalledTimes(0);
         expect(res.json).toBeCalledWith({
             reports: {
                 phpcs_phpcompatibilitywp: { ...mockCompatReport },
@@ -238,7 +237,7 @@ describe('The getAudit route handler', () => {
         });
         req.query.reports = 'all';
         await getAudit(req, res);
-        expect(datastoreSet).toBeCalledTimes(0);
+        expect(firestoreSet).toBeCalledTimes(0);
         expect(res.json).toBeCalledWith({
             reports: {
                 phpcs_phpcompatibilitywp: { ...mockCompatReport },
@@ -258,7 +257,7 @@ describe('The getAudit route handler', () => {
         };
         const currentTime = 1000;
         dateTime.mockReturnValue(currentTime);
-        datastoreGet.mockResolvedValueOnce(null);
+        firestoreGet.mockResolvedValueOnce(null);
 
         await getAudit(req, res);
 
@@ -277,7 +276,7 @@ describe('The getAudit route handler', () => {
             id: expectedAudit.id,
         };
 
-        expect(datastoreSet).toHaveBeenCalledWith(expectedAudit.id, expectedAudit);
+        expect(firestoreSet).toHaveBeenCalledWith(`Audit/${expectedAudit.id}`, expectedAudit);
         expect(publishMessage).toHaveBeenCalledWith(expectedMessage, 'MESSAGE_TYPE_PHPCS_REQUEST');
     });
 
@@ -291,7 +290,7 @@ describe('The getAudit route handler', () => {
         };
         const currentTime = 1000;
         dateTime.mockReturnValue(currentTime);
-        datastoreGet.mockResolvedValueOnce(null);
+        firestoreGet.mockResolvedValueOnce(null);
 
         await getAudit(req, res);
 
@@ -312,7 +311,10 @@ describe('The getAudit route handler', () => {
         };
 
         const expectedStatus = {
-            ...expectedAudit,
+            ...req.params,
+            id: 'd29213d0e05c8669ece2f68ce995e19407212debcdc6519f79b1208aa07c0b27',
+            created_datetime: currentTime,
+            modified_datetime: currentTime,
         };
         const statusObj = {
             attempts: 0,
@@ -324,8 +326,8 @@ describe('The getAudit route handler', () => {
             phpcs_phpcompatibilitywp: { ...statusObj },
         };
 
-        expect(datastoreSet).toHaveBeenCalledWith(expectedAudit.id, expectedStatus);
-        expect(datastoreSet).toHaveBeenCalledWith(expectedAudit.id, expectedAudit);
+        expect(firestoreSet).toHaveBeenCalledWith(`Status/${expectedAudit.id}`, expectedStatus);
+        expect(firestoreSet).toHaveBeenCalledWith(`Audit/${expectedAudit.id}`, expectedAudit);
         expect(publishMessage).toHaveBeenCalledWith(expectedMessage, 'MESSAGE_TYPE_PHPCS_REQUEST');
         expect(publishMessage).toHaveBeenCalledWith(expectedMessage, 'MESSAGE_TYPE_LIGHTHOUSE_REQUEST');
     });

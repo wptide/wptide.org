@@ -1,7 +1,7 @@
 /**
  * Internal Dependencies.
  */
-const { getReportDoc } = require('../integrations/datastore');
+const { getReportDoc } = require('../integrations/firestore');
 
 /**
  * Gets an existing Audit Report.

@@ -5,15 +5,15 @@ const lighthouseReporter = require('../../../src/audits/lighthouseReporter');
 const { dateTime } = require('../../../src/util/dateTime');
 const { // eslint-disable-next-line no-unused-vars
     getAuditDoc, getStatusDoc, setAuditDoc, setReportDoc, setStatusDoc,
-} = require('../../../src/integrations/datastore');
+} = require('../../../src/integrations/firestore');
 const { canProceed } = require('../../../src/util/canProceed');
-const { get, set } = require('../../../src/services/datastore');
+const { get, set } = require('../../../src/services/firestore');
 
 jest.mock('../../../src/util/sendError');
 jest.mock('../../../src/audits/lighthouseReporter');
 jest.mock('../../../src/util/canProceed');
 jest.mock('../../../src/util/dateTime');
-jest.mock('../../../src/integrations/datastore',
+jest.mock('../../../src/integrations/firestore',
     () => ({
         getAuditDoc: jest.fn(),
         getStatusDoc: jest.fn(),
@@ -21,15 +21,14 @@ jest.mock('../../../src/integrations/datastore',
         setReportDoc: jest.fn(),
         setStatusDoc: jest.fn(),
     }));
-jest.mock('../../../src/services/datastore',
+jest.mock('../../../src/services/firestore',
     () => ({
-        getKey: (a, b) => b,
         get: jest.fn(),
         set: jest.fn(),
     }));
 
-const datastoreGet = get;
-const datastoreSet = set;
+const firestoreGet = get;
+const firestoreSet = set;
 
 const mock = {
     req: () => ({
@@ -49,9 +48,9 @@ const mock = {
 };
 
 beforeEach(() => {
-    datastoreGet.mockClear();
+    firestoreGet.mockClear();
     dateTime.mockClear();
-    datastoreSet.mockClear();
+    firestoreSet.mockClear();
     canProceed.mockClear();
     sendError.mockClear();
 });
@@ -268,7 +267,7 @@ describe('The auditServer HTTP handler', () => {
         canProceed.mockResolvedValue(true);
 
         statusMock.reports.lighthouse.status = 'complete';
-        datastoreSet.mockResolvedValue(statusMock);
+        firestoreSet.mockResolvedValue(statusMock);
         await lighthouseServer(req, res);
         expect(spy).toBeCalledWith('Lighthouse audit for fake-slug v1.0.1 started.');
         expect(spy.mock.calls[1][0]).toContain('Lighthouse audit for fake-slug v1.0.1 completed successfully');
@@ -314,7 +313,7 @@ describe('The auditServer HTTP handler', () => {
         canProceed.mockResolvedValue(true);
 
         statusMock.reports.lighthouse.status = 'complete';
-        datastoreSet.mockResolvedValue(statusMock);
+        firestoreSet.mockResolvedValue(statusMock);
         await auditServer(req, res, lighthouseReporter, 'lighthouse', 'Lighthouse');
         expect(spy).toBeCalledWith('Lighthouse audit for fake-slug v1.0.1 started.');
         expect(spy.mock.calls[1][0]).toContain('Lighthouse audit for fake-slug v1.0.1 completed successfully');

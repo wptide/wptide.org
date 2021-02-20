@@ -6,7 +6,7 @@ const { getAuditId } = require('./identifiers');
 const { getSourceUrl } = require('./getSourceUrl');
 const {
     getAuditDoc, setAuditDoc, getReportDoc, setStatusDoc,
-} = require('../integrations/datastore');
+} = require('../integrations/firestore');
 const { publish, messageTypes } = require('../integrations/pubsub');
 const { shouldLighthouseAudit } = require('./shouldLighthouseAudit');
 

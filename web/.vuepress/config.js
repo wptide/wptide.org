@@ -64,6 +64,10 @@ module.exports = {
         link: '/docs/'
       },
       {
+        text: 'Specification',
+        link: '/spec/'
+      },
+      {
         text: 'WordPress.org',
         link: 'https://make.wordpress.org/tide/',
         target: '_blank'
@@ -77,7 +81,8 @@ module.exports = {
           children: [
             '',
             'services/',
-            'installation/'
+            'installation/',
+            'google-cloud/',
           ]
         },
         {
@@ -88,14 +93,6 @@ module.exports = {
             'code-of-conduct/',
             'roadmap/',
             'sponsors/',
-          ]
-        },
-        {
-          title: '',
-          collapsable: false,
-          children: [
-            'google-cloud/',
-            ['https://staging.wptide.org/api/spec/v1/', 'API Specification v1']
           ]
         }
       ],

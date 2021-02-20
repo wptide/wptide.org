@@ -4,7 +4,7 @@
 const { dateTime } = require('../util/dateTime');
 const {
     getAuditDoc, getStatusDoc, setAuditDoc, setReportDoc, setStatusDoc,
-} = require('../integrations/datastore');
+} = require('../integrations/firestore');
 const { getHash } = require('../util/identifiers');
 const { canProceed } = require('../util/canProceed');
 const { sendError } = require('../util/sendError');

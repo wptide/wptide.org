@@ -6,7 +6,7 @@ const fetch = require('node-fetch');
 /**
  * Internal Dependencies.
  */
-const { getSyncDoc, setSyncDoc } = require('../integrations/datastore');
+const { getSyncDoc, setSyncDoc } = require('../integrations/firestore');
 const { getAuditData } = require('../util/auditHelpers');
 
 const MAX_QUEUE_SIZE_FOR_DELTA = process.env.SYNC_SERVER_MAX_QUEUE_SIZE_FOR_DELTA || 1000;
