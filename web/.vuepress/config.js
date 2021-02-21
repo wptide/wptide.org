@@ -60,7 +60,7 @@ module.exports = {
     logo: '/assets/img/logo.svg',
     nav: [
       {
-        text: 'Docs',
+        text: 'Documentation',
         link: '/docs/'
       },
       {
