@@ -11,7 +11,9 @@ const apiValidate = require('../util/apiValidate');
  */
 const schema = async (req, res) => {
     const api = await apiValidate();
-    res.status(api.status ? api.status : 200).json(api);
+    const status = api.status ? api.status : 200;
+    res.set('Cache-control', status === 200 ? 'public, max-age=86400' : 'no-store');
+    res.status(status).json(api);
 };
 
 module.exports = schema;

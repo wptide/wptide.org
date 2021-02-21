@@ -37,6 +37,7 @@ const mock = {
     }),
     res: () => ({
         json: jest.fn(),
+        set: jest.fn(),
         status(status) { // eslint-disable-line no-unused-vars
             return this; // Make it chainable
         },
@@ -278,6 +279,7 @@ describe('The getAudit route handler', () => {
 
         expect(firestoreSet).toHaveBeenCalledWith(`Audit/${expectedAudit.id}`, expectedAudit);
         expect(publishMessage).toHaveBeenCalledWith(expectedMessage, 'MESSAGE_TYPE_PHPCS_REQUEST');
+        expect(res.set).toHaveBeenCalledWith('Cache-control', 'public, max-age=86400');
     });
 
     it('Publishes a phpcs and lighthouse audit message when we have the latest valid theme', async () => {
@@ -330,5 +332,6 @@ describe('The getAudit route handler', () => {
         expect(firestoreSet).toHaveBeenCalledWith(`Audit/${expectedAudit.id}`, expectedAudit);
         expect(publishMessage).toHaveBeenCalledWith(expectedMessage, 'MESSAGE_TYPE_PHPCS_REQUEST');
         expect(publishMessage).toHaveBeenCalledWith(expectedMessage, 'MESSAGE_TYPE_LIGHTHOUSE_REQUEST');
+        expect(res.set).toHaveBeenCalledWith('Cache-control', 'no-store');
     });
 });

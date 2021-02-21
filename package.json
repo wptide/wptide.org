@@ -61,7 +61,7 @@
       "<rootDir>/app/src/run/phpcsServer.js",
       "<rootDir>/app/src/run/proxyServer.js",
       "<rootDir>/app/src/run/syncServer.js",
-      "<rootDir>/app/src/services/firestore.js"
+      "<rootDir>/app/src/services"
     ],
     "testMatch": [
       "**/__tests__/**/*.[jt]s?(x)",

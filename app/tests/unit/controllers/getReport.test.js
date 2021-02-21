@@ -21,6 +21,7 @@ const mock = {
     }),
     res: () => ({
         json: jest.fn(),
+        set: jest.fn(),
         status(status) { // eslint-disable-line no-unused-vars
             return this; // Make it chainable
         },
@@ -76,6 +77,7 @@ describe('Main index entry point getReport', () => {
                 message: 'The server could not respond to the request.',
                 status: 500,
             });
+            expect(res.set).toHaveBeenCalledWith('Cache-control', 'no-store');
         });
 
         it('Returns report if one exists.', async () => {
@@ -93,6 +95,7 @@ describe('Main index entry point getReport', () => {
             await getReport(req, res);
             expect(firestoreSet).toBeCalledTimes(0);
             expect(res.json).toBeCalledWith(mockReport);
+            expect(res.set).toHaveBeenCalledWith('Cache-control', 'public, max-age=86400');
         });
     });
 });

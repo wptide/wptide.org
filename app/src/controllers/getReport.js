@@ -10,6 +10,8 @@ const { getReportDoc } = require('../integrations/firestore');
  * @param {object} res The HTTP response.
  */
 const getReport = async (req, res) => {
+    res.set('Cache-control', 'no-store');
+
     if (!req.params.id) {
         req.validation.errors.push({
             message: 'A report identifier is required.',
@@ -30,6 +32,7 @@ const getReport = async (req, res) => {
             const report = await getReportDoc(reportId);
 
             if (report) {
+                res.set('Cache-control', 'public, max-age=86400');
                 res.status(200).json(report);
             } else {
                 res.status(404).json({
