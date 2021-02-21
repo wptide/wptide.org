@@ -1,7 +1,7 @@
 /**
  * Internal Dependencies.
  */
-const { getAuditData, addAuditReports } = require('../util/auditHelpers');
+const { getAuditData, addAuditReports, addMissingAuditReports } = require('../util/auditHelpers');
 
 /**
  * Gets an existing Audit.
@@ -62,6 +62,8 @@ const getAudit = async (req, res) => {
             }
 
             if (existingAuditData) {
+                existingAuditData = await addMissingAuditReports(existingAuditData);
+
                 const addCache = Object
                     .keys(existingAuditData.reports)
                     .every((report) => !!existingAuditData.reports[report]);

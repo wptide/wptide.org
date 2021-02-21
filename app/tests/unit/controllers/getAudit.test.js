@@ -2,26 +2,20 @@ const getAudit = require('../../../src/controllers/getAudit');
 const { get, set } = require('../../../src/services/firestore');
 const { publishMessage } = require('../../../src/services/pubsub');
 const { dateTime } = require('../../../src/util/dateTime');
+const { shouldLighthouseAudit } = require('../../../src/util/shouldLighthouseAudit');
 
+jest.mock('../../../src/services/pubsub');
+jest.mock('../../../src/util/shouldLighthouseAudit');
+jest.mock('../../../src/util/dateTime');
 jest.mock('../../../src/services/firestore',
     () => ({
         get: jest.fn(),
         set: jest.fn(),
     }));
-
-jest.mock('../../../src/services/pubsub');
-
 jest.mock('../../../src/util/getSourceUrl',
     () => ({
         getSourceUrl: async (type, slug, version) => (slug === 'non-existent' ? null : `https://downloads.wordpress.org/${type}/${slug}.${version}.zip`),
     }));
-
-jest.mock('../../../src/util/shouldLighthouseAudit',
-    () => ({
-        shouldLighthouseAudit: () => true,
-    }));
-
-jest.mock('../../../src/util/dateTime');
 
 const firestoreGet = get;
 const firestoreSet = set;
@@ -45,10 +39,11 @@ const mock = {
 };
 
 beforeEach(() => {
-    firestoreGet.mockClear();
     dateTime.mockClear();
+    firestoreGet.mockClear();
     firestoreSet.mockClear();
     publishMessage.mockClear();
+    shouldLighthouseAudit.mockClear();
 });
 
 describe('The getAudit route handler', () => {
@@ -179,6 +174,7 @@ describe('The getAudit route handler', () => {
         };
         const currentTime = 1000;
         dateTime.mockReturnValue(currentTime);
+        shouldLighthouseAudit.mockReturnValue(true);
 
         const mockAudit = {
             id: 'd29213d0e05c8669ece2f68ce995e19407212debcdc6519f79b1208aa07c0b27',
@@ -293,6 +289,7 @@ describe('The getAudit route handler', () => {
         const currentTime = 1000;
         dateTime.mockReturnValue(currentTime);
         firestoreGet.mockResolvedValueOnce(null);
+        shouldLighthouseAudit.mockReturnValue(true);
 
         await getAudit(req, res);
 
@@ -331,6 +328,65 @@ describe('The getAudit route handler', () => {
         expect(firestoreSet).toHaveBeenCalledWith(`Status/${expectedAudit.id}`, expectedStatus);
         expect(firestoreSet).toHaveBeenCalledWith(`Audit/${expectedAudit.id}`, expectedAudit);
         expect(publishMessage).toHaveBeenCalledWith(expectedMessage, 'MESSAGE_TYPE_PHPCS_REQUEST');
+        expect(publishMessage).toHaveBeenCalledWith(expectedMessage, 'MESSAGE_TYPE_LIGHTHOUSE_REQUEST');
+        expect(res.set).toHaveBeenCalledWith('Cache-control', 'no-store');
+    });
+
+    it('Publishes a lighthouse audit message if missing', async () => {
+        const req = mock.req();
+        const res = mock.res();
+        req.params = {
+            type: 'theme',
+            slug: 'twentytwenty',
+            version: '1.6',
+        };
+        const currentTime = 1000;
+        const expectedAudit = {
+            ...req.params,
+            id: '01aeced35125e34401a3e23dc6dd8ea064b14af48eaf47ff1be8d97a9a9038a3',
+            created_datetime: currentTime,
+            modified_datetime: currentTime,
+            reports: {
+                phpcs_phpcompatibilitywp: null,
+            },
+        };
+        const statusObj = {
+            attempts: 0,
+            startTime: currentTime,
+            status: 'pending',
+        };
+        const expectedStatus = {
+            ...expectedAudit,
+        };
+        expectedStatus.reports = {
+            phpcs_phpcompatibilitywp: { ...statusObj },
+        };
+
+        dateTime.mockReturnValue(currentTime);
+        firestoreGet.mockResolvedValueOnce(expectedAudit);
+        firestoreGet.mockResolvedValueOnce(expectedStatus);
+        shouldLighthouseAudit.mockReturnValue(true);
+        await getAudit(req, res);
+
+        const expectedNewAudit = {
+            ...expectedAudit,
+        };
+        expectedNewAudit.reports.lighthouse = null;
+        const expectedNewStatus = {
+            ...expectedAudit,
+        };
+        expectedNewStatus.reports = {
+            lighthouse: { ...statusObj },
+            phpcs_phpcompatibilitywp: { ...statusObj },
+        };
+
+        const expectedMessage = {
+            ...req.params,
+            id: expectedAudit.id,
+        };
+
+        expect(firestoreSet).toHaveBeenCalledWith(`Audit/${expectedAudit.id}`, expectedNewAudit);
+        expect(firestoreSet).toHaveBeenCalledWith(`Status/${expectedAudit.id}`, expectedNewStatus);
         expect(publishMessage).toHaveBeenCalledWith(expectedMessage, 'MESSAGE_TYPE_LIGHTHOUSE_REQUEST');
         expect(res.set).toHaveBeenCalledWith('Cache-control', 'no-store');
     });
