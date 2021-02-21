@@ -32,18 +32,21 @@ const setupValidation = (req, res, next) => {
          */
         if (req.path.includes('/api/v1/audit/wporg')) {
             const params = req.path.replace(/^\/|\/$/g, '').split('/');
+            /* istanbul ignore else */
             if (params.length === 4) {
                 req.validation.errors.push({
                     message: 'The audit project type is required.',
                     parameter: 'type',
                 });
             }
+            /* istanbul ignore else */
             if (params.length <= 5) {
                 req.validation.errors.push({
                     message: 'The audit project slug is required.',
                     parameter: 'slug',
                 });
             }
+            /* istanbul ignore else */
             if (params.length <= 6) {
                 req.validation.errors.push({
                     message: 'The audit project version is required.',

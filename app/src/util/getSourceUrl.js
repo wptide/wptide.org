@@ -28,7 +28,7 @@ const getSourceUrl = async (type, slug, version) => {
             }
             return false;
         })
-        .catch((error) => {
+        .catch(/* istanbul ignore next */(error) => {
             // Helps to debug the server logs on GCP.
             console.error(`Invalid Source URL ${url}:`, error);
             return false;

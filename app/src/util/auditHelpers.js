@@ -25,6 +25,7 @@ const sendAuditMessages = async (audit) => {
         version: audit.version,
     };
 
+    /* istanbul ignore else */
     if (audit.reports) {
         if (audit.reports.phpcs_phpcompatibilitywp === null) {
             await publish(messageBody, messageTypes.MESSAGE_TYPE_PHPCS_REQUEST);
@@ -46,6 +47,7 @@ const sendAuditMessages = async (audit) => {
 const createNewAudit = async (id, params) => {
     const sourceUrl = await getSourceUrl(params.type, params.slug, params.version);
 
+    /* istanbul ignore else */
     if (sourceUrl) {
         const timeNow = dateTime();
         const audit = {
@@ -91,6 +93,7 @@ const createNewAudit = async (id, params) => {
         return getAuditDoc(audit.id);
     }
 
+    /* istanbul ignore next */
     return null; // Project not found
 };
 
@@ -120,6 +123,7 @@ const addAuditReports = async (audit, reportTypes) => {
             ? updatedAudit.reports[reportType].id : null;
         if (reportId) {
             const report = await getReportDoc(reportId);
+            /* istanbul ignore else */
             if (report) {
                 // Attach the audit report to the doc.
                 updatedAudit.reports[reportType] = report;
@@ -163,6 +167,7 @@ const addMissingAuditReports = async (existingAuditData) => {
 
     validReportTypes.forEach((report) => {
         if (!Object.prototype.hasOwnProperty.call(existingAuditData.reports, report)) {
+            /* istanbul ignore else */
             if (report === 'lighthouse') {
                 if (existingAuditData.type !== 'theme' || !doLighthouse) {
                     return;

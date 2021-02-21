@@ -50,6 +50,7 @@ exports.auditServer = async (req, res, reporter, type, name) => {
         }
 
         const pubSubMessage = req.body.message;
+        /* istanbul ignore next */
         const message = pubSubMessage.data
             ? JSON.parse(Buffer.from(pubSubMessage.data, 'base64').toString('utf-8').trim())
             : {};
@@ -161,6 +162,7 @@ exports.auditServer = async (req, res, reporter, type, name) => {
 
     // Catch and log all errors.
     } catch (error) {
+        /* istanbul ignore next */
         return sendError(res, error.message || error, 500);
     }
 };

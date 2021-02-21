@@ -232,7 +232,7 @@ describe('The getAudit route handler', () => {
             },
             ...mockAudit,
         });
-        req.query.reports = 'all';
+        req.query.reports = ['all'];
         await getAudit(req, res);
         expect(firestoreSet).toBeCalledTimes(0);
         expect(res.json).toBeCalledWith({
