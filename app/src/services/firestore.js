@@ -9,9 +9,9 @@ dotenv.config({ path: `${process.cwd()}/../.env` });
 let firestoreInstance;
 
 /**
- * Returns a singleton instance of DataStore client.
+ * Returns a singleton instance of Firestore client.
  *
- * @returns {object}  Datastore instance.
+ * @returns {object}  Firestore instance.
  */
 const getFirestore = () => {
     if (!firestoreInstance) {

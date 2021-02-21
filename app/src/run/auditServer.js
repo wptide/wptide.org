@@ -113,7 +113,7 @@ exports.auditServer = async (req, res, reporter, type, name) => {
         // Get a fresh copy of the Audit.
         audit = await getAuditDoc(message.id);
 
-        // Don't update a missing Audit (failure to read Datastore).
+        // Don't update a missing Audit (failure to read Firestore).
         if (Object.prototype.toString.call(audit) !== '[object Object]') {
             throw new Error(`Audit for ${message.slug} v${message.version} is missing.`);
         }

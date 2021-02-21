@@ -17,7 +17,6 @@
     "start": "functions-framework --target=tide --signature-type=http"
   },
   "dependencies": {
-    "@google-cloud/datastore": "^6.3.1",
     "@google-cloud/firestore": "^4.9.4",
     "@google-cloud/functions-framework": "^1.7.1",
     "@google-cloud/pubsub": "^2.9.0",
