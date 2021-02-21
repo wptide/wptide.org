@@ -45,12 +45,6 @@ start.phpcs:
 start.sync:
 	@docker run -v $(PWD)/app/src:/app/src --rm -p 5012:8080 --env-file .env.server gcr.io/${GOOGLE_CLOUD_PROJECT}/sync:${VERSION}
 
-deploy.api: setup
-	@gcloud functions deploy tide --source app --allow-unauthenticated --runtime nodejs12 --trigger-http
-
-deploy.docs: setup
-	@gcloud functions deploy docs --source app/spec --allow-unauthenticated --runtime nodejs12 --trigger-http
-
 deploy.firestore: setup
 	@gcloud app create --region=us-central
 	@gcloud firestore databases create --region=us-central
