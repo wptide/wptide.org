@@ -18,10 +18,10 @@
     "lint:fix": "eslint . --fix",
     "setup": "npm i && cd app && npm i && composer install && cd -",
     "start:emulator": "firebase emulators:start",
-    "start:server:lighthouse": "SERVER_PATH=./app/src/run/lighthouseServer SERVER_TARGET=lighthouseServer functions-framework --target=tide --signature-type=http --port=5010",
-    "start:server:phpcs": "SERVER_PATH=./app/src/run/phpcsServer SERVER_TARGET=phpcsServer functions-framework --target=tide --signature-type=http --port=5011",
+    "start:server:lighthouse": "SERVER_PATH=./app/lighthouseServer functions-framework --target=tide --signature-type=http --port=5010",
+    "start:server:phpcs": "SERVER_PATH=./app/phpcsServer functions-framework --target=tide --signature-type=http --port=5011",
     "start:server:proxy": "cd app && node proxyServer.js",
-    "start:server:sync": "SERVER_PATH=./app/src/run/syncServer SERVER_TARGET=syncServer functions-framework --target=tide --signature-type=http --port=5012",
+    "start:server:sync": "SERVER_PATH=./app/syncServer functions-framework --target=tide --signature-type=http --port=5012",
     "test": "NODE_ENV=test jest --detectOpenHandles --forceExit --verbose",
     "test:watch": "NODE_ENV=test jest --watch",
     "test:coverage": "NODE_ENV=test jest --detectOpenHandles --forceExit --coverage --coverageDirectory ./app/tests/coverage"
@@ -58,9 +58,6 @@
     ],
     "coveragePathIgnorePatterns": [
       "<rootDir>/app/src/controllers/index.js",
-      "<rootDir>/app/src/run/phpcsServer.js",
-      "<rootDir>/app/src/run/proxyServer.js",
-      "<rootDir>/app/src/run/syncServer.js",
       "<rootDir>/app/src/services"
     ],
     "testMatch": [

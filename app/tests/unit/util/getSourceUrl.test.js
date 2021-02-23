@@ -3,6 +3,12 @@
  */
 const { getSourceUrl } = require('../../../src/util/getSourceUrl');
 
+global.console.error = jest.fn();
+
+afterEach(() => {
+    global.console.error.mockRestore();
+});
+
 /**
  * Tests for getSourceUrl.
  */
@@ -21,5 +27,8 @@ describe('getSourceUrl', () => {
     });
     it('Returns false when the parameters are missing', async () => {
         expect(await getSourceUrl()).toBe(false);
+    });
+    it('Returns fallback URL for plugin that wrongly uses trunk as the source, they should use tags', async () => {
+        expect(await getSourceUrl('plugin', 'xpro-addons-beaver-builder-elementor', '1.4.1')).toBe('https://downloads.wordpress.org/plugin/xpro-addons-beaver-builder-elementor.zip');
     });
 });

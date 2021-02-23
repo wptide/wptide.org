@@ -15,13 +15,12 @@ const phpcsReporter = async (message) => {
     const parentDir = `/tmp/${getAuditId(message)}/`;
     const reportDir = `${parentDir}${message.slug}/`;
     const downloadFilename = `${message.slug}.${message.version}.zip`;
-    const url = `https://downloads.wordpress.org/${message.type}/${message.slug}.${message.version}.zip`;
 
     // Download & unzip the archive.
-    await phpcsDownloader(url, parentDir, downloadFilename);
+    await phpcsDownloader(message.source_url, parentDir, downloadFilename);
 
     // Process the report.
-    const data = phpcsProcessor(url, reportDir, process.cwd());
+    const data = phpcsProcessor(message.source_url, reportDir, process.cwd());
 
     // Remove directory.
     phpcsRemover(reportDir);

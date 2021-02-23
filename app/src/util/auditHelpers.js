@@ -23,6 +23,7 @@ const sendAuditMessages = async (audit) => {
         slug: audit.slug,
         type: audit.type,
         version: audit.version,
+        source_url: audit.source_url,
     };
 
     /* istanbul ignore else */
@@ -57,6 +58,7 @@ const createNewAudit = async (id, params) => {
             version: params.version,
             created_datetime: timeNow,
             modified_datetime: timeNow,
+            source_url: sourceUrl,
             reports: {},
         };
         const statusObj = {
@@ -71,6 +73,7 @@ const createNewAudit = async (id, params) => {
             version: params.version,
             created_datetime: timeNow,
             modified_datetime: timeNow,
+            source_url: sourceUrl,
             reports: {
                 phpcs_phpcompatibilitywp: {
                     ...statusObj,
