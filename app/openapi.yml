@@ -19,7 +19,7 @@ paths:
         - Public
       summary: API Schema
       description: >-
-        Returns a JSON object representing the API schema for wptide.org in the OpenAPI
+        Gets a JSON object representing the API schema for wptide.org in the OpenAPI
         Specification (OAS) v3 format.
       operationId: schema
       responses:
@@ -33,8 +33,12 @@ paths:
         - Public
       summary: Get WordPress.org Audit
       description: >-
-        Gets a WordPress.org theme or plugin audit, with optional reports, by project type,
-        slug and version.
+        Gets a WordPress.org theme or plugin audit by project `type`, `slug` and `version`,
+        with an optional `reports` parameter. Providing the `reports` parameter will change
+        the report value from an `id` reference to including the full report object in
+        the response. If a report has a `null` value that means the report is either
+        `pending` or `failed`. Use the `/status/{id}` endpoint to check on the audit status
+        by providing the endpoint an audit `id`.
       operationId: getAudit
       responses:
         200:
@@ -50,13 +54,32 @@ paths:
         - $ref: '#/components/parameters/slugParam'
         - $ref: '#/components/parameters/versionParam'
         - $ref: '#/components/parameters/reportsParam'
+  '/status/{id}':
+    get:
+      tags:
+        - Public
+      summary: Get Audit Status by ID
+      description: >-
+        Gets the status of an audit by `id`. Both status and audit have matching identifiers.
+      operationId: getStatus
+      responses:
+        200:
+          $ref: '#/components/responses/200Status'
+        400:
+          $ref: '#/components/responses/400BadRequest'
+        404:
+          $ref: '#/components/responses/404NotFound'
+        500:
+          $ref: '#/components/responses/500InternalServerError'
+      parameters:
+        - $ref: '#/components/parameters/idParam'
   '/report/{id}':
     get:
       tags:
         - Public
       summary: Get Report by ID
       description: >-
-        Get the raw PHP Compatibility or Lighthouse report by id.
+        Gets the report by `id`, which includes the JSON CLI output from the audit server.
       operationId: getReport
       responses:
         200:
@@ -86,6 +109,8 @@ components:
           type: integer
         modified_datetime:
           type: integer
+        source_url:
+          type: string
         reports:
           type: object
           required:
@@ -99,6 +124,32 @@ components:
               oneOf:
                 - $ref: '#/components/schemas/Lighthouse'
                 - $ref: '#/components/schemas/ReportRef'
+    Status:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        slug:
+          type: string
+        version:
+          type: string
+        created_datetime:
+          type: integer
+        modified_datetime:
+          type: integer
+        source_url:
+          type: string
+        reports:
+          type: object
+          required:
+            - phpcs_phpcompatibilitywp
+          properties:
+            phpcs_phpcompatibilitywp:
+              $ref: '#/components/schemas/StatusRef'
+            lighthouse:
+              $ref: '#/components/schemas/StatusRef'
     Report:
       type: object
       properties:
@@ -140,6 +191,15 @@ components:
         slug:
           type: string
         version:
+          type: string
+    StatusRef:
+      type: object
+      properties:
+        start_datetime:
+          type: integer
+        attempts:
+          type: integer
+        status:
           type: string
     ReportRef:
       type: object
@@ -325,6 +385,12 @@ components:
             oneOf:
               - $ref: '#/components/schemas/Report'
               - $ref: '#/components/schemas/ReportRef'
+    200Status:
+      description: A JSON object containing an audit status.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Status'
     200Schema:
       description: A JSON object containing the OpenAPI Schema.
       content:
@@ -389,7 +455,7 @@ components:
     idParam:
       name: id
       in: path
-      description: A report id.
+      description: An object id.
       required: true
       schema:
         type: string

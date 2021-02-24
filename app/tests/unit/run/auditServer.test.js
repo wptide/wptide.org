@@ -260,7 +260,7 @@ describe('The auditServer HTTP handler', () => {
             reports: {
                 lighthouse: {
                     attempts: 1,
-                    startTime: 500,
+                    start_datetime: 500,
                     status: 'pending',
                 },
             },
@@ -306,7 +306,7 @@ describe('The auditServer HTTP handler', () => {
             reports: {
                 lighthouse: {
                     attempts: 1,
-                    startTime: 500,
+                    start_datetime: 500,
                     status: 'pending',
                 },
             },

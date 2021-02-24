@@ -42,10 +42,10 @@ const canProceed = async (type, id) => {
 
     if (statusDoc.reports[type].attempts === 0) {
         statusDoc.reports[type].attempts = 1;
-        statusDoc.reports[type].startTime = timeNow;
-    } else if (statusDoc.reports[type].startTime < minTime) {
+        statusDoc.reports[type].start_datetime = timeNow;
+    } else if (statusDoc.reports[type].start_datetime < minTime) {
         statusDoc.reports[type].attempts += 1;
-        statusDoc.reports[type].startTime = timeNow;
+        statusDoc.reports[type].start_datetime = timeNow;
         if (statusDoc.reports[type].attempts <= MAX_ATTEMPTS) {
             console.log(`Running too long, incrementing attempts ${JSON.stringify(statusDoc)}`);
         }

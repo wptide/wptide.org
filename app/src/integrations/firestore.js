@@ -32,6 +32,7 @@ const getAuditDoc = async (id) => {
             type: audit.type,
             slug: audit.slug,
             version: audit.version,
+            source_url: audit.source_url,
             created_datetime: audit.created_datetime,
             modified_datetime: audit.modified_datetime,
         }, audit);
@@ -102,6 +103,7 @@ const getReportDoc = async (id) => {
             created_datetime: report.created_datetime,
             milliseconds: report.milliseconds,
             audit: report.audit,
+            server: report.server,
         }, report);
     }
 

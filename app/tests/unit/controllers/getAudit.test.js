@@ -322,7 +322,7 @@ describe('The getAudit route handler', () => {
         };
         const statusObj = {
             attempts: 0,
-            startTime: currentTime,
+            start_datetime: currentTime,
             status: 'pending',
         };
         expectedStatus.reports = {
@@ -357,7 +357,7 @@ describe('The getAudit route handler', () => {
         };
         const statusObj = {
             attempts: 0,
-            startTime: currentTime,
+            start_datetime: currentTime,
             status: 'pending',
         };
         const expectedStatus = {
