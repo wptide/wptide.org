@@ -70,7 +70,7 @@ describe('canProceed', () => {
             reports: {
                 lighthouse: {
                     attempts: retryCount,
-                    startTime: 1,
+                    start_datetime: 1,
                 },
             },
         };
@@ -80,7 +80,7 @@ describe('canProceed', () => {
             ...statusDoc,
         };
         expectedStatusDoc.reports.lighthouse.attempts = retryCount + 1;
-        expectedStatusDoc.reports.lighthouse.startTime = currentTime;
+        expectedStatusDoc.reports.lighthouse.start_datetime = currentTime;
         expect(firestoreSet).toHaveBeenCalledWith(`Status/${statusDoc.id}`, expectedStatusDoc);
     });
 
@@ -95,7 +95,7 @@ describe('canProceed', () => {
             reports: {
                 lighthouse: {
                     attempts: 0,
-                    startTime: 1,
+                    start_datetime: 1,
                 },
             },
         };
@@ -107,7 +107,7 @@ describe('canProceed', () => {
             reports: {
                 lighthouse: {
                     attempts: 1,
-                    startTime: timeNow,
+                    start_datetime: timeNow,
                 },
             },
         });
@@ -127,7 +127,7 @@ describe('canProceed', () => {
             reports: {
                 lighthouse: {
                     attempts: 1,
-                    startTime: 1,
+                    start_datetime: 1,
                 },
             },
         };
@@ -153,7 +153,7 @@ describe('canProceed', () => {
             reports: {
                 lighthouse: {
                     attempts: 3,
-                    startTime: 1,
+                    start_datetime: 1,
                     status: 'pending',
                 },
             },
@@ -178,7 +178,7 @@ describe('canProceed', () => {
             reports: {
                 lighthouse: {
                     attempts: 1,
-                    startTime: 1000,
+                    start_datetime: 1000,
                     status: 'complete',
                 },
             },
@@ -203,7 +203,7 @@ describe('canProceed', () => {
                 reports: {
                     lighthouse: {
                         attempts: 1,
-                        startTime: 1000,
+                        start_datetime: 1000,
                         status: 'failed',
                     },
                 },

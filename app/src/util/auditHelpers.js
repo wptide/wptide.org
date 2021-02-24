@@ -23,6 +23,7 @@ const sendAuditMessages = async (audit) => {
         slug: audit.slug,
         type: audit.type,
         version: audit.version,
+        source_url: audit.source_url,
     };
 
     /* istanbul ignore else */
@@ -57,10 +58,11 @@ const createNewAudit = async (id, params) => {
             version: params.version,
             created_datetime: timeNow,
             modified_datetime: timeNow,
+            source_url: sourceUrl,
             reports: {},
         };
         const statusObj = {
-            startTime: timeNow,
+            start_datetime: timeNow,
             attempts: 0,
             status: 'pending',
         };
@@ -71,6 +73,7 @@ const createNewAudit = async (id, params) => {
             version: params.version,
             created_datetime: timeNow,
             modified_datetime: timeNow,
+            source_url: sourceUrl,
             reports: {
                 phpcs_phpcompatibilitywp: {
                     ...statusObj,
@@ -177,7 +180,7 @@ const addMissingAuditReports = async (existingAuditData) => {
             existingStatusData.reports[report] = {
                 attempts: 0,
                 status: 'pending',
-                startTime: dateTime(),
+                start_datetime: dateTime(),
             };
         }
     });

@@ -10,4 +10,4 @@ dotenv.config();
 process.chdir('app');
 
 // Local development only, simply bootstraps the various services dynamically.
-exports.tide = async (req, res) => require(process.env.SERVER_PATH)[process.env.SERVER_TARGET](req, res); // eslint-disable-line
+exports.tide = async (req, res) => require(process.env.SERVER_PATH).tide(req, res); // eslint-disable-line

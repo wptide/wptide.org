@@ -263,6 +263,7 @@ describe('The getAudit route handler', () => {
             id: 'f4d5b369004513a9eeb691e19f1c17c2f05888485b4342f31ee5ec981c8f60c0',
             created_datetime: currentTime,
             modified_datetime: currentTime,
+            source_url: 'https://downloads.wordpress.org/plugin/fooslug.2.zip',
             reports: {
                 phpcs_phpcompatibilitywp: null,
             },
@@ -271,6 +272,7 @@ describe('The getAudit route handler', () => {
         const expectedMessage = {
             ...req.params,
             id: expectedAudit.id,
+            source_url: 'https://downloads.wordpress.org/plugin/fooslug.2.zip',
         };
 
         expect(firestoreSet).toHaveBeenCalledWith(`Audit/${expectedAudit.id}`, expectedAudit);
@@ -298,6 +300,7 @@ describe('The getAudit route handler', () => {
             id: 'd29213d0e05c8669ece2f68ce995e19407212debcdc6519f79b1208aa07c0b27',
             created_datetime: currentTime,
             modified_datetime: currentTime,
+            source_url: 'https://downloads.wordpress.org/theme/fooslug.2.0.1.zip',
             reports: {
                 lighthouse: null,
                 phpcs_phpcompatibilitywp: null,
@@ -307,17 +310,19 @@ describe('The getAudit route handler', () => {
         const expectedMessage = {
             ...req.params,
             id: expectedAudit.id,
+            source_url: 'https://downloads.wordpress.org/theme/fooslug.2.0.1.zip',
         };
 
         const expectedStatus = {
             ...req.params,
             id: 'd29213d0e05c8669ece2f68ce995e19407212debcdc6519f79b1208aa07c0b27',
+            source_url: 'https://downloads.wordpress.org/theme/fooslug.2.0.1.zip',
             created_datetime: currentTime,
             modified_datetime: currentTime,
         };
         const statusObj = {
             attempts: 0,
-            startTime: currentTime,
+            start_datetime: currentTime,
             status: 'pending',
         };
         expectedStatus.reports = {
@@ -352,7 +357,7 @@ describe('The getAudit route handler', () => {
         };
         const statusObj = {
             attempts: 0,
-            startTime: currentTime,
+            start_datetime: currentTime,
             status: 'pending',
         };
         const expectedStatus = {
