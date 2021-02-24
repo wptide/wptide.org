@@ -6,7 +6,9 @@ const dotenv = require('dotenv');
 /**
  * Internal Dependencies.
  */
-const { get, set } = require('../services/firestore');
+const {
+    get, set, remove, snapshot,
+} = require('../services/firestore');
 
 dotenv.config({ path: `${process.cwd()}/../.env` });
 
@@ -14,6 +16,7 @@ const auditCollection = 'Audit';
 const reportCollection = 'Report';
 const statusCollection = 'Status';
 const syncCollection = 'Sync';
+const ingestCollection = 'Ingest';
 
 /**
  * Gets an audit document for a given ID.
@@ -54,7 +57,7 @@ const setAuditDoc = async (id, data) => set(`${auditCollection}/${id}`, data);
  * Gets a status document.
  *
  * @param   {string}        id Status ID.
- * @returns {object | null}    Sync document if it exists.
+ * @returns {object | null}    Status document if it exists.
  */
 const getStatusDoc = async (id) => get(`${statusCollection}/${id}`);
 
@@ -83,6 +86,31 @@ const setSyncDoc = async (id, data) => set(`${syncCollection}/${id}`, data);
  * @returns {object | null}    Sync document if it exists.
  */
 const getSyncDoc = async (id) => get(`${syncCollection}/${id}`);
+
+/**
+ * Gets a limited number of docs from the ingest collection.
+ *
+ * @param   {number} limit The query limit.
+ * @returns {Array}        Ingest documents snapshot.
+ */
+const getIngestSnapshot = async (limit) => snapshot(ingestCollection, limit);
+
+/**
+ * Sets an ingest document.
+ *
+ * @param   {string} id   Ingest ID.
+ * @param   {object} data Ingest contents.
+ * @returns {string}      Key
+ */
+const setIngestDoc = async (id, data) => set(`${ingestCollection}/${id}`, data);
+
+/**
+ * Deletes an ingest document.
+ *
+ * @param   {string}        id Ingest ID.
+ * @returns {object | null}    Ingest document if it exists.
+ */
+const deleteIngestDoc = async (id) => remove(`${ingestCollection}/${id}`);
 
 /**
  * Gets a report document.
@@ -128,4 +156,7 @@ module.exports = {
     setSyncDoc,
     getReportDoc,
     setReportDoc,
+    getIngestSnapshot,
+    setIngestDoc,
+    deleteIngestDoc,
 };

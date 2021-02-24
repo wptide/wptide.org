@@ -171,6 +171,7 @@ jobs:
         run: |
           make build.lighthouse
           make build.phpcs
+          make build.sync
 
       - name: Push images
         env:
@@ -179,6 +180,7 @@ jobs:
         run: |
           make push.lighthouse
           make push.phpcs
+          make push.sync
 
       - name: Deploy to Cloud Run
         env:
@@ -189,6 +191,7 @@ jobs:
         run: |
           make deploy.lighthouse
           make deploy.phpcs
+          make deploy.sync
 
       - name: Deploy to Firebase
         uses: FirebaseExtended/action-hosting-deploy@v0

@@ -59,7 +59,7 @@ deploy.phpcs: setup
 	@gcloud run deploy phpcs-server --no-allow-unauthenticated --image gcr.io/${GOOGLE_CLOUD_PROJECT}/phpcs:${VERSION} --memory ${GOOGLE_CLOUD_RUN_PHPCS_MEMORY} --concurrency 1
 
 deploy.sync: setup
-	@gcloud run deploy sync-server --no-allow-unauthenticated --image gcr.io/${GOOGLE_CLOUD_PROJECT}/sync:${VERSION} --memory ${GOOGLE_CLOUD_RUN_SYNC_MEMORY} --concurrency 1 --timeout 15m
+	@gcloud run deploy sync-server --no-allow-unauthenticated --image gcr.io/${GOOGLE_CLOUD_PROJECT}/sync:${VERSION} --memory ${GOOGLE_CLOUD_RUN_SYNC_MEMORY} --concurrency 1 --timeout 10m
 
 deploy.iam: setup
 	@gcloud run services add-iam-policy-binding lighthouse-server \
@@ -93,11 +93,11 @@ deploy.pubsub: setup.iam deploy.iam deploy.topics
 		--push-auth-service-account=tide-run-server@${GOOGLE_CLOUD_PROJECT}.iam.gserviceaccount.com
 	@gcloud beta pubsub subscriptions create sync-server --topic MESSAGE_TYPE_SYNC_REQUEST \
 		--push-endpoint=${GOOGLE_CLOUD_RUN_SYNC} \
-		--ack-deadline 30 \
+		--ack-deadline 600 \
 		--push-auth-service-account=tide-run-server@${GOOGLE_CLOUD_PROJECT}.iam.gserviceaccount.com
 
 deploy.scheduler: setup
-	@gcloud scheduler jobs create pubsub sync-server --schedule "*/5 * * * *" --topic MESSAGE_TYPE_SYNC_REQUEST
+	@gcloud scheduler jobs create pubsub sync-server --schedule "*/60 * * * *" --topic MESSAGE_TYPE_SYNC_REQUEST
 
 describe.lighthouse: setup
 	@gcloud run services describe lighthouse-server --format 'value(status.url)'

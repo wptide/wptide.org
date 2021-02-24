@@ -10,13 +10,24 @@ const {
     apiUrl, cleanApiResponse, getSyncList, makeAuditRequest,
 } = require('../../../src/util/syncHelpers');
 const { getAuditData } = require('../../../src/util/auditHelpers');
+const { get, set } = require('../../../src/services/firestore');
 
 jest.mock('../../../src/util/auditHelpers',
     () => ({
         getAuditData: jest.fn(),
     }));
+jest.mock('../../../src/services/firestore',
+    () => ({
+        get: jest.fn(),
+        set: jest.fn(),
+    }));
+
+const firestoreGet = get;
+const firestoreSet = set;
 
 beforeEach(() => {
+    firestoreGet.mockClear();
+    firestoreSet.mockClear();
     getAuditData.mockClear();
 });
 
@@ -115,7 +126,16 @@ describe('syncHelpers', () => {
             slug: 'fooslug',
             version: '2',
         };
+        firestoreGet.mockResolvedValueOnce(null);
         getAuditData.mockResolvedValue(null);
         expect(await makeAuditRequest(mockParams)).toBeFalsy();
+        expect(firestoreSet).toBeCalledWith('Sync/failed', {
+            plugin: [
+                {
+                    ...mockParams,
+                    id: '827050500b39b475547fd1867e453b4091e05c01ec62a824b84b43c3eaad6eb7',
+                },
+            ],
+        });
     });
 });

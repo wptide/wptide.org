@@ -63,7 +63,38 @@ const set = async (documentPath, data) => getFirestore()
         return false;
     });
 
+/**
+ * Deletes an entity for a given key.
+ *
+ * @param   {string}        documentPath Path to the document: example `collection/id`.
+ *
+ * @returns {object | null}              Entity or null.
+ */
+const remove = async (documentPath) => getFirestore()
+    .doc(documentPath)
+    .delete()
+    .then(() => true)
+    .catch((err) => {
+        console.log(err);
+        return false;
+    });
+
+/**
+ * Gets a limited number of entities for a given collection.
+ *
+ * @param   {string}        collection Path to the collection: example `collection`.
+ * @param   {number}        limit      The query limit.
+ *
+ * @returns {object | null}            Entity or null.
+ */
+const snapshot = async (collection, limit) => getFirestore()
+    .collection(collection)
+    .limit(limit)
+    .get();
+
 module.exports = {
     get,
     set,
+    remove,
+    snapshot,
 };

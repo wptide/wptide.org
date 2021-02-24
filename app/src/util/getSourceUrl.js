@@ -19,6 +19,8 @@ const getSourceUrl = async (type, slug, version) => {
         }
         const original = `https://downloads.wordpress.org/${type}/${slug}.${version}.zip`;
         const fallback = `https://downloads.wordpress.org/${type}/${slug}.zip`;
+        const removeTrail = `https://downloads.wordpress.org/${type}/${slug}.${version.replace(/\.0$/, '')}.zip`;
+        const addTrail = `https://downloads.wordpress.org/${type}/${slug}.${version}.0.zip`;
         const exists = async (url) => {
             const response = await fetch(url, {
                 method: 'HEAD',
@@ -30,6 +32,12 @@ const getSourceUrl = async (type, slug, version) => {
         }
         if (await exists(fallback)) {
             return fallback;
+        }
+        if (/\d\.\d\.0/.test(version) === true && await exists(removeTrail)) {
+            return removeTrail;
+        }
+        if (/\d\.0/.test(version) === true && await exists(addTrail)) {
+            return addTrail;
         }
         throw new Error(`Invalid Source URL ${fallback}:`);
     } catch (err) {

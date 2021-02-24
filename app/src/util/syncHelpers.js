@@ -7,6 +7,8 @@ const fetch = require('node-fetch');
  * Internal Dependencies.
  */
 const { getAuditData } = require('./auditHelpers');
+const { getSyncDoc, setSyncDoc } = require('../integrations/firestore');
+const { getProjectId } = require('./identifiers');
 
 /**
  * Generates a query URL from the provided parameters for the WordPress Themes/Plugins API.
@@ -146,6 +148,16 @@ const getSyncList = async (urlParams, type, versions) => {
  */
 const makeAuditRequest = async (auditParams) => {
     const auditResponse = await getAuditData(auditParams);
+
+    if (!auditResponse) {
+        const failed = await getSyncDoc('failed') || {};
+        failed[auditParams.type] = failed[auditParams.type] || [];
+        failed[auditParams.type].push({
+            id: getProjectId(auditParams),
+            ...auditParams,
+        });
+        await setSyncDoc('failed', failed);
+    }
 
     return !!auditResponse;
 };

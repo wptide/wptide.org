@@ -1,7 +1,9 @@
 /**
  * Internal Dependencies.
  */
-const { getSyncDoc, setSyncDoc } = require('../integrations/firestore');
+const {
+    getSyncDoc, setSyncDoc, getIngestSnapshot, setIngestDoc, deleteIngestDoc,
+} = require('../integrations/firestore');
 const { getSyncList, makeAuditRequest } = require('./syncHelpers');
 const { getProjectId } = require('./identifiers');
 
@@ -21,7 +23,7 @@ const doSync = async () => {
     };
     const ingest = delta.ingest || false;
     const limitPageOne = (!ingest && !delta.theme && !delta.plugin);
-    const versions = limitPageOne ? 2 : ingest ? -1 : 0; /* eslint-disable-line no-nested-ternary */
+    const versions = limitPageOne ? 1 : ingest ? -1 : 0; /* eslint-disable-line no-nested-ternary */
 
     const getSyncListPage = async (page, type) => getSyncList({
         'request[browse]': 'updated',
@@ -30,26 +32,26 @@ const doSync = async () => {
         'request[page]': page,
     }, type, versions);
 
+    /**
+     * Create counter generator.
+     *
+     * @param  {number} start    The first iterator number.
+     * @param  {number} end      The last iterator number, greater than or equal to start.
+     * @yields          (number}
+     */
+    async function* counter(start, end) {
+        let i = start;
+        while (i <= end) {
+            yield i;
+            i += 1;
+        }
+    }
+
     const loopList = async (type) => {
         const initialRequest = await getSyncListPage(1, type);
 
-        /**
-         * Create generator.
-         *
-         * @param  {number} start    The first iterator number.
-         * @param  {number} end      The last iterator number, greater than or equal to start.
-         * @yields          (number}
-         */
-        async function* pages(start, end) {
-            let i = start;
-            while (i <= end) {
-                yield i;
-                i += 1;
-            }
-        }
-
         /* eslint-disable no-restricted-syntax */
-        for await (const page of pages(1, initialRequest.pages)) {
+        for await (const page of counter(1, initialRequest.pages)) {
             const syncList = page === 1 ? initialRequest : await getSyncListPage(page, type);
             let doBreak = false;
 
@@ -58,7 +60,7 @@ const doSync = async () => {
             }
 
             for await (const project of syncList.queue) {
-                if (!project || project.slug === state[type]) {
+                if (!project || (project.slug === state[type] && !ingest)) {
                     doBreak = true;
                     break;
                 }
@@ -68,17 +70,10 @@ const doSync = async () => {
                         newDelta[type] = project.slug;
                     }
 
-                    const madeAudit = await makeAuditRequest(project);
-
-                    // This should really never happen, but we need to know if it does.
-                    if (!madeAudit) {
-                        const failed = await getSyncDoc('failed') || {};
-                        failed[type] = failed[type] || [];
-                        failed[type].push({
-                            id: getProjectId(project),
-                            ...project,
-                        });
-                        await setSyncDoc('failed', failed);
+                    if (ingest) {
+                        await setIngestDoc(getProjectId(project), project);
+                    } else {
+                        await makeAuditRequest(project);
                     }
                 }
             }
@@ -91,8 +86,9 @@ const doSync = async () => {
     };
 
     // Loop over each queue.
-    await loopList('plugin');
-    await loopList('theme');
+    for await (const type of ['plugin', 'theme']) {
+        await loopList(type);
+    }
 
     // Fallback when empty.
     if (!newDelta.theme) {
@@ -103,6 +99,26 @@ const doSync = async () => {
     }
 
     await setSyncDoc('delta', newDelta);
+
+    // Process and remove upto 500 items from the ingest queue.
+    if (!ingest) {
+        const queue = [];
+        const snapshot = await getIngestSnapshot(500);
+        if (snapshot && !snapshot.empty) {
+            snapshot.forEach((doc) => {
+                queue.push({
+                    id: doc.id,
+                    project: doc.data(),
+                });
+            });
+            for await (const item of queue) {
+                /* istanbul ignore else */
+                if (await makeAuditRequest(item.project)) {
+                    await deleteIngestDoc(item.id);
+                }
+            }
+        }
+    }
 };
 
 module.exports = {
