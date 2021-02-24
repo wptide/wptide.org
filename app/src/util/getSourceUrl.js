@@ -17,17 +17,18 @@ const getSourceUrl = async (type, slug, version) => {
         if (!type || !slug || !version) {
             return false;
         }
-        const url = `https://downloads.wordpress.org/${type}/${slug}.${version}.zip`;
+        const original = `https://downloads.wordpress.org/${type}/${slug}.${version}.zip`;
         const fallback = `https://downloads.wordpress.org/${type}/${slug}.zip`;
-        const opts = {
-            method: 'HEAD',
+        const exists = async (url) => {
+            const response = await fetch(url, {
+                method: 'HEAD',
+            });
+            return response.status && (response.ok || /4\d\d/.test(response.status) === false);
         };
-        let response = await fetch(url, opts);
-        if (response.ok) {
-            return url;
+        if (await exists(original)) {
+            return original;
         }
-        response = await fetch(fallback, opts);
-        if (response.ok) {
+        if (await exists(fallback)) {
             return fallback;
         }
         throw new Error(`Invalid Source URL ${fallback}:`);
