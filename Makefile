@@ -97,7 +97,7 @@ deploy.pubsub: setup.iam deploy.iam deploy.topics
 		--push-auth-service-account=tide-run-server@${GOOGLE_CLOUD_PROJECT}.iam.gserviceaccount.com
 
 deploy.scheduler: setup
-	@gcloud scheduler jobs create pubsub sync-server --schedule "*/60 * * * *" --topic MESSAGE_TYPE_SYNC_REQUEST
+	@gcloud scheduler jobs create pubsub sync-server --schedule "*/5 * * * *" --topic MESSAGE_TYPE_SYNC_REQUEST
 
 describe.lighthouse: setup
 	@gcloud run services describe lighthouse-server --format 'value(status.url)'
