@@ -2,16 +2,18 @@ body {
     background: #fff;
     font-size: 16px;
     color: #2c3e50;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
 
 .swagger-ui {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+
 }
 
 .swagger-ui .wrapper {
     padding: 0;
+    max-width: 1160px;
 }
 
 .swagger-ui .topbar {
@@ -44,15 +46,42 @@ body {
 .swagger-ui .scheme-container { box-shadow: none }
 .swagger-ui .is-open .opblock-tag { border-bottom-color: transparent }
 .swagger-ui select { border-width: 1px; padding: 12px 40px 12px 10px }
-.swagger-ui .info { margin: 30px 0 }
+.swagger-ui .info { margin: 0 0 2em 0 }
+
+.swagger-ui .info h2.title  {
+    color: #2c3e50;
+    font-size: 2.2rem;
+    font-weight: 600;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+}
 
 .swagger-ui .errors-wrapper {
     margin: 20px 0;
     border: 1px solid #f93e3e;
 }
 
-.swagger-ui .renderedMarkdown {
-    line-height: 1.5;
+.swagger-ui .scheme-container {
+    padding: 0 0 1rem 0;
+    display: none;
+}
+.swagger-ui .servers-title {
+    display: none;
+}
+
+.swagger-ui .info .renderedMarkdown {
+    line-height: 1.7;
+    font-size: 16px;
+    margin-top: 2rem;
+}
+
+.swagger-ui .info .renderedMarkdown p {
+    display: block;
+    line-height: 1.7;
+    font-size: 16px;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
 }
 
 .swagger-ui .markdown code, .swagger-ui .renderedMarkdown code {
@@ -63,4 +92,36 @@ body {
     background-color: rgba(27,31,35,.05);
     border-radius: 3px;
     font-family: source-code-pro, Menlo, Monaco, Consolas, Courier New, monospace;
+}
+
+.swagger-ui .opblock {
+    margin-bottom: 7px;
+}
+
+.swagger-ui .opblock .opblock-summary {
+    padding: 14px;
+}
+
+.swagger-ui section.models h4 {
+    padding: 18px 24px 17px 14px;
+}
+
+.swagger-ui section.models.is-open {
+    padding-bottom: 14px;
+}
+
+.swagger-ui section.models .model-container {
+    margin: 0 14px 14px;
+}
+
+.swagger-ui section.models .model-container:first-of-type {
+    margin: 14px;
+}
+
+.swagger-ui section.models .model-container:last-of-type {
+    margin: 0 14px;
+}
+
+.swagger-ui .model-box > .model-box {
+    padding-top: 4px;
 }

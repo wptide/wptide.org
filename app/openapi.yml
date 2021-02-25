@@ -11,9 +11,9 @@ info:
     name: MIT
     url: 'https://opensource.org/licenses/MIT'
 servers:
-  - url: /api/v1
+  - url: /
 paths:
-  /:
+  /api/v1/:
     get:
       tags:
         - Public
@@ -27,7 +27,7 @@ paths:
           $ref: '#/components/responses/200Schema'
         500:
           $ref: '#/components/responses/500InternalServerError'
-  '/audit/wporg/{type}/{slug}/{version}':
+  '/api/v1/audit/wporg/{type}/{slug}/{version}':
     get:
       tags:
         - Public
@@ -54,7 +54,7 @@ paths:
         - $ref: '#/components/parameters/slugParam'
         - $ref: '#/components/parameters/versionParam'
         - $ref: '#/components/parameters/reportsParam'
-  '/status/{id}':
+  '/api/v1/status/{id}':
     get:
       tags:
         - Public
@@ -73,7 +73,7 @@ paths:
           $ref: '#/components/responses/500InternalServerError'
       parameters:
         - $ref: '#/components/parameters/idParam'
-  '/report/{id}':
+  '/api/v1/report/{id}':
     get:
       tags:
         - Public

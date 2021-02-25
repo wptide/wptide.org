@@ -60,12 +60,8 @@ module.exports = {
     logo: '/assets/img/logo.svg',
     nav: [
       {
-        text: 'Documentation',
+        text: 'Docs',
         link: '/docs/'
-      },
-      {
-        text: 'Specification',
-        link: '/spec/'
       },
       {
         text: 'WordPress.org',
@@ -93,6 +89,13 @@ module.exports = {
             'code-of-conduct/',
             'roadmap/',
             'sponsors/',
+          ]
+        },
+        {
+          title: 'API v1',
+          collapsable: false,
+          children: [
+            ['specification/', 'Specification'],
           ]
         }
       ],

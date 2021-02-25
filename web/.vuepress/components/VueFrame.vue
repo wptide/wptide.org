@@ -17,13 +17,16 @@ export default {
 <style lang="stylus">
 .spec .page
   padding-bottom 0
+  padding-top 0
 .spec .theme-default-content:not(.custom)
   max-width calc(100% - 2.5rem)
   padding-bottom 0
 .spec iframe
-  height calc(100vh - 6.1rem)
+  min-height calc(100vh - 227px)
 .spec .iframe
-  height calc(100vh - 6.1rem)
+  top -7px
+  position relative
+  min-height calc(100vh - 227px)
   position relative
 .spec .iframe.loading
   visibility hidden
@@ -45,6 +48,4 @@ export default {
   border 2px solid #eaecef
   border-top-color #1728f6
   animation spinner .8s linear infinite
-.spec .page-edit
-  display none
 </style>

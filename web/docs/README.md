@@ -18,7 +18,7 @@ Progress can be followed in the WordPress Meta issue tracker (ticket [#4309](htt
 
 Tide services are responsible for the following:
 
-* The [wptide.org](../README.md) website includes both the documentation you are reading built with VuePress and serves the [Tide API](services/README.md#api) JSON endpoints. Visit the [Specification](../spec/README.md) page to see examples of the API response.
+* The [wptide.org](../README.md) website includes both the documentation you are reading built with VuePress and serves the [Tide API](services/README.md#api) JSON endpoints. Visit the [Specification](specification/README.md) page to see examples of the API response.
 * The [Lighthouse Server](services/README.md#lighthouse-server) reads messages from a queue and runs Google Lighthouse reports against the themes only, then writes the results back to the Tide API.
 * The [PHPCS Server](services/README.md#phpcs-server) reads messages from a queue and runs reports against both plugins and themes, then writes the results back to the Tide API.
 
