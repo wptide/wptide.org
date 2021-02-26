@@ -2,4 +2,4 @@
 title: OpenAPI Specification
 pageClass: spec
 ---
-<VueFrame/>
+<SpecFrame/>
