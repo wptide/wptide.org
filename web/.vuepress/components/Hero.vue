@@ -96,7 +96,7 @@ export default {
 
 .hero__canvas
   position absolute
-  bottom -6.55rem
+  bottom 0
   left 50%
   z-index 0
   transform translateX(-50%)

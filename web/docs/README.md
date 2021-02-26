@@ -30,7 +30,7 @@ You can also run your own Tide instance and do your own customized reports if yo
 
 The following diagram notes which Google Cloud Platform (GCP) components are used to represent the four Tide services, and how the themes and plugins API on WP.org connects to the Sync Server. The basic flow is that a User or an API Client will make a request to the Tide REST API, which sends back a response. The request could create messages in the queue where one or more services process them by running automated scripts and witting the results back to the API. Additionally, the Sync Server will poll the WP.org API's for new themes and plugins to add to the message queue.
 
-![](../.vuepress/public/assets/img/architecture-diagram.png)
+@todo
 
 ### WordPress.org components
 
