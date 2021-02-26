@@ -45,6 +45,12 @@ start.phpcs:
 start.sync:
 	@docker run -v $(PWD)/app/src:/app/src --rm -p 5012:8080 --env-file .env.server gcr.io/${GOOGLE_CLOUD_PROJECT}/sync:${VERSION}
 
+deploy.api: setup
+	@gcloud functions deploy api --source app --allow-unauthenticated --runtime nodejs12 --trigger-http
+
+deploy.spec: setup
+	@gcloud functions deploy spec --source app --allow-unauthenticated --runtime nodejs12 --trigger-http
+
 deploy.firestore: setup
 	@gcloud app create --region=us-central
 	@gcloud firestore databases create --region=us-central
@@ -97,7 +103,7 @@ deploy.pubsub: setup.iam deploy.iam deploy.topics
 		--push-auth-service-account=tide-run-server@${GOOGLE_CLOUD_PROJECT}.iam.gserviceaccount.com
 
 deploy.scheduler: setup
-	@gcloud scheduler jobs create pubsub sync-server --schedule "*/5 * * * *" --topic MESSAGE_TYPE_SYNC_REQUEST
+	@gcloud scheduler jobs create pubsub sync-server --schedule "*/5 * * * *" --topic MESSAGE_TYPE_SYNC_REQUEST --message-body "Start Sync/Ingest" --max-retry-attempts 0
 
 describe.lighthouse: setup
 	@gcloud run services describe lighthouse-server --format 'value(status.url)'
