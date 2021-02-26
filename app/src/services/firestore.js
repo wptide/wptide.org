@@ -1,10 +1,7 @@
 /**
  * External Dependencies.
  */
-const { Firestore } = require('@google-cloud/firestore');
-const dotenv = require('dotenv');
-
-dotenv.config({ path: `${process.cwd()}/../.env` });
+const admin = require('firebase-admin');
 
 let firestoreInstance;
 
@@ -15,12 +12,13 @@ let firestoreInstance;
  */
 const getFirestore = () => {
     if (!firestoreInstance) {
-        const options = {};
-        if (process.env.NODE_ENV !== 'production') {
-            options.projectId = process.env.GOOGLE_CLOUD_PROJECT;
-            options.ssl = false;
+        const opts = {};
+        if (process.env.NODE_ENV === 'production') {
+            opts.credential = admin.credential.applicationDefault();
+            opts.databaseURL = `https://${process.env.GOOGLE_CLOUD_PROJECT}.firebaseio.com`;
         }
-        firestoreInstance = new Firestore(options);
+        admin.initializeApp(opts);
+        firestoreInstance = admin.firestore();
     }
     return firestoreInstance;
 };
