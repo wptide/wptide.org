@@ -27,8 +27,7 @@
     "test:coverage": "NODE_ENV=test jest --detectOpenHandles --forceExit --coverage --coverageDirectory ./app/tests/coverage"
   },
   "dependencies": {
-    "dotenv": "^8.2.0",
-    "moment": "^2.29.1"
+    "dotenv": "^8.2.0"
   },
   "devDependencies": {
     "@google-cloud/functions-framework": "^1.7.1",

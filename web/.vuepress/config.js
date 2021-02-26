@@ -1,5 +1,4 @@
 const { description } = require('../../package');
-const moment = require('moment');
 
 module.exports = {
   /**
