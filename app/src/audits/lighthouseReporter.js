@@ -27,6 +27,7 @@ const lighthouseReporter = async (message) => {
     const args = {
         args: options.chromeFlags,
     };
+    /* istanbul ignore else */
     if (process.env.CHROMIUM_PATH) {
         args.executablePath = process.env.CHROMIUM_PATH;
     }

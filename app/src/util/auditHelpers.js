@@ -5,10 +5,12 @@ const { dateTime } = require('./dateTime');
 const { getAuditId } = require('./identifiers');
 const { getSourceUrl } = require('./getSourceUrl');
 const {
-    getAuditDoc, setAuditDoc, getReportDoc, setStatusDoc,
-} = require('../integrations/datastore');
+    getAuditDoc, getReportDoc, getStatusDoc, setAuditDoc, setStatusDoc,
+} = require('../integrations/firestore');
 const { publish, messageTypes } = require('../integrations/pubsub');
 const { shouldLighthouseAudit } = require('./shouldLighthouseAudit');
+
+const validReportTypes = ['lighthouse', 'phpcs_phpcompatibilitywp'];
 
 /**
  * Send Audit Messages for audits that need to occur.
@@ -21,8 +23,10 @@ const sendAuditMessages = async (audit) => {
         slug: audit.slug,
         type: audit.type,
         version: audit.version,
+        source_url: audit.source_url,
     };
 
+    /* istanbul ignore else */
     if (audit.reports) {
         if (audit.reports.phpcs_phpcompatibilitywp === null) {
             await publish(messageBody, messageTypes.MESSAGE_TYPE_PHPCS_REQUEST);
@@ -44,6 +48,7 @@ const sendAuditMessages = async (audit) => {
 const createNewAudit = async (id, params) => {
     const sourceUrl = await getSourceUrl(params.type, params.slug, params.version);
 
+    /* istanbul ignore else */
     if (sourceUrl) {
         const timeNow = dateTime();
         const audit = {
@@ -53,10 +58,11 @@ const createNewAudit = async (id, params) => {
             version: params.version,
             created_datetime: timeNow,
             modified_datetime: timeNow,
+            source_url: sourceUrl,
             reports: {},
         };
         const statusObj = {
-            startTime: timeNow,
+            start_datetime: timeNow,
             attempts: 0,
             status: 'pending',
         };
@@ -67,6 +73,7 @@ const createNewAudit = async (id, params) => {
             version: params.version,
             created_datetime: timeNow,
             modified_datetime: timeNow,
+            source_url: sourceUrl,
             reports: {
                 phpcs_phpcompatibilitywp: {
                     ...statusObj,
@@ -89,6 +96,7 @@ const createNewAudit = async (id, params) => {
         return getAuditDoc(audit.id);
     }
 
+    /* istanbul ignore next */
     return null; // Project not found
 };
 
@@ -101,7 +109,6 @@ const createNewAudit = async (id, params) => {
  */
 const addAuditReports = async (audit, reportTypes) => {
     const updatedAudit = { ...audit };
-    const validReportTypes = ['lighthouse', 'phpcs_phpcompatibilitywp'];
     let fetchReportTypes = [];
 
     if (reportTypes.includes('all')) {
@@ -119,6 +126,7 @@ const addAuditReports = async (audit, reportTypes) => {
             ? updatedAudit.reports[reportType].id : null;
         if (reportId) {
             const report = await getReportDoc(reportId);
+            /* istanbul ignore else */
             if (report) {
                 // Attach the audit report to the doc.
                 updatedAudit.reports[reportType] = report;
@@ -147,9 +155,51 @@ const getAuditData = async (auditParams) => {
     return existingAuditData;
 };
 
+/**
+ * Identifies missing reports and adds them to the audit.
+ *
+ * @param   {object} existingAuditData The current audit data.
+ * @returns {object}                   The updated audit data.
+ */
+const addMissingAuditReports = async (existingAuditData) => {
+    const clonedAuditData = { ...existingAuditData };
+    const existingStatusData = await getStatusDoc(existingAuditData.id);
+    const doLighthouse = existingAuditData.type === 'theme' ? await shouldLighthouseAudit(existingAuditData) : false;
+
+    clonedAuditData.reports = {};
+
+    validReportTypes.forEach((report) => {
+        if (!Object.prototype.hasOwnProperty.call(existingAuditData.reports, report)) {
+            /* istanbul ignore else */
+            if (report === 'lighthouse') {
+                if (existingAuditData.type !== 'theme' || !doLighthouse) {
+                    return;
+                }
+            }
+            clonedAuditData.reports[report] = null;
+            existingStatusData.reports[report] = {
+                attempts: 0,
+                status: 'pending',
+                start_datetime: dateTime(),
+            };
+        }
+    });
+
+    if (Object.keys(clonedAuditData.reports).length) {
+        existingStatusData.modified_datetime = dateTime();
+        existingAuditData.reports = Object.assign(existingAuditData.reports, clonedAuditData.reports); /* eslint-disable-line max-len, no-param-reassign */
+        await setAuditDoc(existingAuditData.id, existingAuditData);
+        await setStatusDoc(existingAuditData.id, existingStatusData);
+        await sendAuditMessages(clonedAuditData);
+    }
+
+    return existingAuditData;
+};
+
 module.exports = {
     sendAuditMessages,
     createNewAudit,
     addAuditReports,
     getAuditData,
+    addMissingAuditReports,
 };

@@ -16,16 +16,12 @@
     "docs:serve": "vuepress dev web",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "setup": "npm i && cd app && npm i && composer install && cd spec && npm i && cd ../../",
-    "start:emulator:datastore": "gcloud beta emulators datastore start --no-store-on-disk",
-    "start:emulator:firebase:": "firebase emulators:start",
-    "start:emulator:pubsub": "gcloud beta emulators pubsub start",
-    "start:server:api": "SERVER_PATH=./app SERVER_TARGET=tide functions-framework --target=tide --signature-type=http",
-    "start:server:docs": "functions-framework --target=docs --signature-type=http --port=8120 --source=./app/spec",
-    "start:server:lighthouse": "SERVER_PATH=./app/src/run/lighthouseServer SERVER_TARGET=lighthouseServer functions-framework --target=tide --signature-type=http --port=8090",
-    "start:server:phpcs": "SERVER_PATH=./app/src/run/phpcsServer SERVER_TARGET=phpcsServer functions-framework --target=tide --signature-type=http --port=8110",
-    "start:server:proxy": "cd app && node src/run/proxyServer.js",
-    "start:server:sync": "SERVER_PATH=./app/src/run/syncServer SERVER_TARGET=syncServer functions-framework --target=tide --signature-type=http --port=8100",
+    "setup": "npm i && cd app && npm i && composer install && cd -",
+    "start:emulator": "firebase emulators:start",
+    "start:server:lighthouse": "SERVER_PATH=./app/lighthouseServer functions-framework --target=tide --signature-type=http --port=5010",
+    "start:server:phpcs": "SERVER_PATH=./app/phpcsServer functions-framework --target=tide --signature-type=http --port=5011",
+    "start:server:proxy": "cd app && node proxyServer.js",
+    "start:server:sync": "SERVER_PATH=./app/syncServer functions-framework --target=tide --signature-type=http --port=5012",
     "test": "NODE_ENV=test jest --detectOpenHandles --forceExit --verbose",
     "test:watch": "NODE_ENV=test jest --watch",
     "test:coverage": "NODE_ENV=test jest --detectOpenHandles --forceExit --coverage --coverageDirectory ./app/tests/coverage"
@@ -62,10 +58,11 @@
     ],
     "coveragePathIgnorePatterns": [
       "<rootDir>/app/src/controllers/index.js",
-      "<rootDir>/app/src/run/phpcsServer.js",
-      "<rootDir>/app/src/run/proxyServer.js",
-      "<rootDir>/app/src/run/syncServer.js",
-      "<rootDir>/app/src/services/datastore.js"
+      "<rootDir>/app/src/services"
+    ],
+    "testMatch": [
+      "**/__tests__/**/*.[jt]s?(x)",
+      "**/?(*.)+(test).[jt]s?(x)"
     ]
   }
 }

@@ -16,7 +16,8 @@ const stream = require('stream');
 const download = async (url, path) => {
     const streamPipeline = util.promisify(stream.pipeline);
     const response = await fetch(url);
-    if (!response.ok) throw new Error(`unexpected response ${response.statusText}`); // @todo handle error.
+    /* istanbul ignore next */
+    if (!response.ok) throw new Error(`unexpected response ${response.statusText}`);
     await streamPipeline(response.body, fs.createWriteStream(path));
 };
 

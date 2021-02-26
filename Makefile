@@ -14,7 +14,6 @@ setup.cloud: setup
 	@gcloud auth configure-docker
 	@gcloud services enable containerregistry.googleapis.com
 	@gcloud services enable run.googleapis.com
-	@gcloud datastore databases create
 
 setup.iam: setup
 	@gcloud iam service-accounts create tide-run-server --display-name "Tide Cloud Run Server"
@@ -38,26 +37,26 @@ push.sync:
 	@docker push gcr.io/${GOOGLE_CLOUD_PROJECT}/sync:${VERSION}
 
 start.lighthouse:
-	@docker run -v $(PWD)/app/src:/app/src --rm -p 8090:8080 --env-file .env.server gcr.io/${GOOGLE_CLOUD_PROJECT}/lighthouse:${VERSION}
+	@docker run -v $(PWD)/app/src:/app/src --rm -p 5010:8080 --env-file .env.server gcr.io/${GOOGLE_CLOUD_PROJECT}/lighthouse:${VERSION}
 
 start.phpcs:
-	@docker run -v $(PWD)/app/src:/app/src --rm -p 8110:8080 --env-file .env.server gcr.io/${GOOGLE_CLOUD_PROJECT}/phpcs:${VERSION}
+	@docker run -v $(PWD)/app/src:/app/src --rm -p 5011:8080 --env-file .env.server gcr.io/${GOOGLE_CLOUD_PROJECT}/phpcs:${VERSION}
 
 start.sync:
-	@docker run -v $(PWD)/app/src:/app/src --rm -p 8100:8080 --env-file .env.server gcr.io/${GOOGLE_CLOUD_PROJECT}/sync:${VERSION}
+	@docker run -v $(PWD)/app/src:/app/src --rm -p 5012:8080 --env-file .env.server gcr.io/${GOOGLE_CLOUD_PROJECT}/sync:${VERSION}
 
 deploy.api: setup
-	@gcloud functions deploy tide --source app --allow-unauthenticated --runtime nodejs12 --trigger-http
+	@gcloud functions deploy api --source app --allow-unauthenticated --runtime nodejs12 --trigger-http
 
-deploy.docs: setup
-	@gcloud functions deploy docs --source app/spec --allow-unauthenticated --runtime nodejs12 --trigger-http
+deploy.spec: setup
+	@gcloud functions deploy spec --source app --allow-unauthenticated --runtime nodejs12 --trigger-http
 
-deploy.datastore: setup
+deploy.firestore: setup
 	@gcloud app create --region=us-central
-	@gcloud datastore databases create --region=us-central
+	@gcloud firestore databases create --region=us-central
 
 deploy.firebase:
-	@firebase deploy --only hosting
+	@firebase deploy
 
 deploy.lighthouse: setup
 	@gcloud run deploy lighthouse-server --no-allow-unauthenticated --image gcr.io/${GOOGLE_CLOUD_PROJECT}/lighthouse:${VERSION} --memory ${GOOGLE_CLOUD_RUN_LIGHTHOUSE_MEMORY} --concurrency 1
@@ -66,7 +65,7 @@ deploy.phpcs: setup
 	@gcloud run deploy phpcs-server --no-allow-unauthenticated --image gcr.io/${GOOGLE_CLOUD_PROJECT}/phpcs:${VERSION} --memory ${GOOGLE_CLOUD_RUN_PHPCS_MEMORY} --concurrency 1
 
 deploy.sync: setup
-	@gcloud run deploy sync-server --no-allow-unauthenticated --image gcr.io/${GOOGLE_CLOUD_PROJECT}/sync:${VERSION} --memory ${GOOGLE_CLOUD_RUN_SYNC_MEMORY} --concurrency 1
+	@gcloud run deploy sync-server --no-allow-unauthenticated --image gcr.io/${GOOGLE_CLOUD_PROJECT}/sync:${VERSION} --memory ${GOOGLE_CLOUD_RUN_SYNC_MEMORY} --concurrency 1 --timeout 10m
 
 deploy.iam: setup
 	@gcloud run services add-iam-policy-binding lighthouse-server \
@@ -100,11 +99,11 @@ deploy.pubsub: setup.iam deploy.iam deploy.topics
 		--push-auth-service-account=tide-run-server@${GOOGLE_CLOUD_PROJECT}.iam.gserviceaccount.com
 	@gcloud beta pubsub subscriptions create sync-server --topic MESSAGE_TYPE_SYNC_REQUEST \
 		--push-endpoint=${GOOGLE_CLOUD_RUN_SYNC} \
-		--ack-deadline 30 \
+		--ack-deadline 600 \
 		--push-auth-service-account=tide-run-server@${GOOGLE_CLOUD_PROJECT}.iam.gserviceaccount.com
 
 deploy.scheduler: setup
-	@gcloud scheduler jobs create pubsub sync-server --schedule "*/5 * * * *" --topic MESSAGE_TYPE_SYNC_REQUEST
+	@gcloud scheduler jobs create pubsub sync-server --schedule "*/5 * * * *" --topic MESSAGE_TYPE_SYNC_REQUEST --message-body "Start Sync/Ingest" --max-retry-attempts 0
 
 describe.lighthouse: setup
 	@gcloud run services describe lighthouse-server --format 'value(status.url)'

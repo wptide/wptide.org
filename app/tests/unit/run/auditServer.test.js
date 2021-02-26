@@ -1,19 +1,19 @@
 const { sendError } = require('../../../src/util/sendError');
 const { auditServer } = require('../../../src/run/auditServer');
-const { lighthouseServer } = require('../../../src/run/lighthouseServer');
+const { tide } = require('../../../lighthouseServer');
 const lighthouseReporter = require('../../../src/audits/lighthouseReporter');
 const { dateTime } = require('../../../src/util/dateTime');
 const { // eslint-disable-next-line no-unused-vars
     getAuditDoc, getStatusDoc, setAuditDoc, setReportDoc, setStatusDoc,
-} = require('../../../src/integrations/datastore');
+} = require('../../../src/integrations/firestore');
 const { canProceed } = require('../../../src/util/canProceed');
-const { get, set } = require('../../../src/services/datastore');
+const { get, set } = require('../../../src/services/firestore');
 
 jest.mock('../../../src/util/sendError');
 jest.mock('../../../src/audits/lighthouseReporter');
 jest.mock('../../../src/util/canProceed');
 jest.mock('../../../src/util/dateTime');
-jest.mock('../../../src/integrations/datastore',
+jest.mock('../../../src/integrations/firestore',
     () => ({
         getAuditDoc: jest.fn(),
         getStatusDoc: jest.fn(),
@@ -21,15 +21,14 @@ jest.mock('../../../src/integrations/datastore',
         setReportDoc: jest.fn(),
         setStatusDoc: jest.fn(),
     }));
-jest.mock('../../../src/services/datastore',
+jest.mock('../../../src/services/firestore',
     () => ({
-        getKey: (a, b) => b,
         get: jest.fn(),
         set: jest.fn(),
     }));
 
-const datastoreGet = get;
-const datastoreSet = set;
+const firestoreGet = get;
+const firestoreSet = set;
 
 const mock = {
     req: () => ({
@@ -49,23 +48,28 @@ const mock = {
 };
 
 beforeEach(() => {
-    datastoreGet.mockClear();
+    firestoreGet.mockClear();
     dateTime.mockClear();
-    datastoreSet.mockClear();
+    firestoreSet.mockClear();
     canProceed.mockClear();
     sendError.mockClear();
+    getAuditDoc.mockClear();
+    getStatusDoc.mockClear();
+    setAuditDoc.mockClear();
+    setReportDoc.mockClear();
+    setStatusDoc.mockClear();
 });
 
 describe('The auditServer HTTP handler', () => {
     it('Missing request body', async () => {
-        await lighthouseServer(mock.req(), mock.res());
+        await tide(mock.req(), mock.res());
         expect(sendError.mock.calls[0][1].errors[0].message).toBe('The REQUEST body is required.');
     });
 
     it('Missing request body message', async () => {
         const req = mock.req();
         req.body = {};
-        await lighthouseServer(req, mock.res());
+        await tide(req, mock.res());
         expect(sendError.mock.calls[0][1].errors[0].message).toBe('The PubSub message is required.');
     });
 
@@ -74,7 +78,7 @@ describe('The auditServer HTTP handler', () => {
         req.body = {
             message: 'hello',
         };
-        await lighthouseServer(req, mock.res());
+        await tide(req, mock.res());
         expect(sendError.mock.calls[0][1].errors[0].message).toBe('Invalid Pub/Sub message format.');
     });
 
@@ -85,7 +89,7 @@ describe('The auditServer HTTP handler', () => {
                 data: 'e30=', // Empty object.
             },
         };
-        await lighthouseServer(req, mock.res());
+        await tide(req, mock.res());
         expect(sendError.mock.calls[0][1].errors[0].message).toBe('The Pub/Sub message id is required.');
         expect(sendError.mock.calls[0][1].errors[1].message).toBe('The Pub/Sub message type is required.');
         expect(sendError.mock.calls[0][1].errors[2].message).toBe('The Pub/Sub message slug is required.');
@@ -102,7 +106,7 @@ describe('The auditServer HTTP handler', () => {
             },
         };
         getAuditDoc.mockResolvedValue(null);
-        await lighthouseServer(req, mock.res());
+        await tide(req, mock.res());
         expect(sendError.mock.calls[0][1]).toBe('Audit for fake-slug v1.0.1 is missing.');
     });
 
@@ -128,7 +132,7 @@ describe('The auditServer HTTP handler', () => {
         };
 
         getAuditDoc.mockResolvedValue(auditMock);
-        await lighthouseServer(req, res);
+        await tide(req, res);
         expect(res.send).toBeCalledTimes(1);
         expect(spy).toBeCalledWith('Skipping: Audit for fake-slug v1.0.1 already exists.');
         spy.mockRestore();
@@ -155,7 +159,7 @@ describe('The auditServer HTTP handler', () => {
 
         getAuditDoc.mockResolvedValue(auditMock);
         canProceed.mockResolvedValue(false);
-        await lighthouseServer(req, res);
+        await tide(req, res);
         expect(res.send).toBeCalledTimes(1);
         expect(spy).toBeCalledTimes(0);
         spy.mockRestore();
@@ -183,7 +187,7 @@ describe('The auditServer HTTP handler', () => {
         getAuditDoc.mockResolvedValueOnce(auditMock);
         canProceed.mockResolvedValue(true);
         getAuditDoc.mockResolvedValueOnce(null); // Simulate DB failure.
-        await lighthouseServer(req, res);
+        await tide(req, res);
         expect(spy).toBeCalledWith('Lighthouse audit for fake-slug v1.0.1 started.');
         expect(sendError.mock.calls[0][1]).toBe('Audit for fake-slug v1.0.1 is missing.');
         spy.mockRestore();
@@ -223,7 +227,7 @@ describe('The auditServer HTTP handler', () => {
         getAuditDoc.mockResolvedValueOnce(auditMock);
         canProceed.mockResolvedValue(true);
         getAuditDoc.mockResolvedValueOnce(auditMockComplete);
-        await lighthouseServer(req, res);
+        await tide(req, res);
         expect(spy).toBeCalledWith('Lighthouse audit for fake-slug v1.0.1 started.');
         expect(spy).toBeCalledWith('Warning: Audit for fake-slug v1.0.1 was already completed.');
         expect(res.send).toBeCalledTimes(1);
@@ -256,7 +260,7 @@ describe('The auditServer HTTP handler', () => {
             reports: {
                 lighthouse: {
                     attempts: 1,
-                    startTime: 500,
+                    start_datetime: 500,
                     status: 'pending',
                 },
             },
@@ -268,8 +272,8 @@ describe('The auditServer HTTP handler', () => {
         canProceed.mockResolvedValue(true);
 
         statusMock.reports.lighthouse.status = 'complete';
-        datastoreSet.mockResolvedValue(statusMock);
-        await lighthouseServer(req, res);
+        firestoreSet.mockResolvedValue(statusMock);
+        await tide(req, res);
         expect(spy).toBeCalledWith('Lighthouse audit for fake-slug v1.0.1 started.');
         expect(spy.mock.calls[1][0]).toContain('Lighthouse audit for fake-slug v1.0.1 completed successfully');
         expect(res.send).toBeCalledTimes(1);
@@ -302,7 +306,7 @@ describe('The auditServer HTTP handler', () => {
             reports: {
                 lighthouse: {
                     attempts: 1,
-                    startTime: 500,
+                    start_datetime: 500,
                     status: 'pending',
                 },
             },
@@ -314,7 +318,7 @@ describe('The auditServer HTTP handler', () => {
         canProceed.mockResolvedValue(true);
 
         statusMock.reports.lighthouse.status = 'complete';
-        datastoreSet.mockResolvedValue(statusMock);
+        firestoreSet.mockResolvedValue(statusMock);
         await auditServer(req, res, lighthouseReporter, 'lighthouse', 'Lighthouse');
         expect(spy).toBeCalledWith('Lighthouse audit for fake-slug v1.0.1 started.');
         expect(spy.mock.calls[1][0]).toContain('Lighthouse audit for fake-slug v1.0.1 completed successfully');

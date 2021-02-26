@@ -16,7 +16,6 @@ let pubsubInstance;
 const getPubsub = async () => {
     const options = {};
     if (process.env.NODE_ENV !== 'production') {
-        options.apiEndpoint = process.env.ENDPOINT_PUBSUB;
         options.projectId = process.env.GOOGLE_CLOUD_PROJECT;
     }
 
@@ -51,8 +50,7 @@ const publishMessage = async (message, topicName) => {
     const buffer = Buffer.from(JSON.stringify(message));
     const pubsub = await getPubsub();
     const messageId = await pubsub.topic(topicName).publish(buffer);
-    let debugMessage = JSON.stringify(message);
-    debugMessage = debugMessage.length > 200 ? Object.keys(message) : debugMessage;
+    const debugMessage = JSON.stringify(message);
     console.debug(`Message ${messageId} published to ${topicName} with ${debugMessage}`);
 };
 

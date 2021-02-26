@@ -7,3 +7,5 @@ composer.json
 composer.lock
 lighthouseServer.js
 phpcsServer.js
+proxyServer.js
+syncServer.js
