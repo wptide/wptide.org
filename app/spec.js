@@ -17,7 +17,7 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use('/api/spec/v1/assets', express.static(path.join(__dirname, 'public')));
+app.use('/api/spec/v1/assets', express.static(path.join(__dirname, 'spec')));
 
 const options = {
     customCssUrl: './assets/css/style.css',

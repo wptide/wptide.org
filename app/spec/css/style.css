@@ -7,10 +7,6 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
-.swagger-ui {
-
-}
-
 .swagger-ui .wrapper {
     padding: 0;
     max-width: 1160px;
@@ -18,35 +14,47 @@ body {
 
 .swagger-ui .topbar {
     display: none;
-    background-color: #fff;
-    border-bottom: 1px solid #eaecef;
-    height: 3.6rem;
-    padding: 0.7rem 1.5rem;
-    line-height: 2.2rem;
 }
-.swagger-ui .topbar a::before {
-    content: url('../images/logo.svg');
-    height: 2.2rem;
-    min-width: 2.2rem;
-    margin-right: 10px;
-}
-.swagger-ui .topbar a::after {
-    content: 'Tide';
-    font-weight: 300;
-    text-transform: lowercase;
-    font-size: 1.6rem;
-    color: #2c3e50;
-    display: inline-block;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
-}
-.swagger-ui .topbar a img { display: none }
-.swagger-ui .topbar .wrapper { padding: 0 }
 
-.info__contact, .info__license { display: none }
-.swagger-ui .scheme-container { box-shadow: none }
-.swagger-ui .is-open .opblock-tag { border-bottom-color: transparent }
-.swagger-ui select { border-width: 1px; padding: 12px 40px 12px 10px }
-.swagger-ui .info { margin: 0 0 2em 0 }
+.swagger-ui .opblock-tag-section {
+    border: 1px solid rgba(59,65,81,.3);
+    border-radius: 4px;
+}
+
+.swagger-ui .opblock-tag-section.is-open {
+    border-color: transparent;
+}
+
+.info__contact, .info__license {
+    display: none;
+}
+
+.swagger-ui .scheme-container {
+    box-shadow: none;
+}
+
+.swagger-ui .opblock-tag,
+.swagger-ui .opblock-tag:hover {
+    padding: 13px 18px 13px 13px;
+    margin: 0;
+    border: none;
+}
+.swagger-ui .opblock-tag {
+    background: none;
+}
+
+.swagger-ui .is-open .opblock-tag {
+    background: none;
+    border-bottom-color: transparent;
+}
+
+.swagger-ui select {
+    border-width: 1px; padding: 12px 40px 12px 10px;
+}
+
+.swagger-ui .info {
+    margin: 0 0 2em 0;
+}
 
 .swagger-ui .info h2.title  {
     color: #2c3e50;
