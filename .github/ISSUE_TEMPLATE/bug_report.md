@@ -1,5 +1,5 @@
 ---
-name: "U+1F41B Bug report"
+name: "🐛 Bug report"
 about: "Something isn't working"
 labels: bug, needs triage
 ---
