@@ -4,7 +4,7 @@
 const { dateTime } = require('../util/dateTime');
 const {
     getAuditDoc, getStatusDoc, setAuditDoc, setReportDoc, setStatusDoc,
-} = require('../integrations/datastore');
+} = require('../integrations/firestore');
 const { getHash } = require('../util/identifiers');
 const { canProceed } = require('../util/canProceed');
 const { sendError } = require('../util/sendError');
@@ -50,6 +50,7 @@ exports.auditServer = async (req, res, reporter, type, name) => {
         }
 
         const pubSubMessage = req.body.message;
+        /* istanbul ignore next */
         const message = pubSubMessage.data
             ? JSON.parse(Buffer.from(pubSubMessage.data, 'base64').toString('utf-8').trim())
             : {};
@@ -113,7 +114,7 @@ exports.auditServer = async (req, res, reporter, type, name) => {
         // Get a fresh copy of the Audit.
         audit = await getAuditDoc(message.id);
 
-        // Don't update a missing Audit (failure to read Datastore).
+        // Don't update a missing Audit (failure to read Firestore).
         if (Object.prototype.toString.call(audit) !== '[object Object]') {
             throw new Error(`Audit for ${message.slug} v${message.version} is missing.`);
         }
@@ -161,6 +162,7 @@ exports.auditServer = async (req, res, reporter, type, name) => {
 
     // Catch and log all errors.
     } catch (error) {
+        /* istanbul ignore next */
         return sendError(res, error.message || error, 500);
     }
 };

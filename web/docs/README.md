@@ -18,7 +18,7 @@ Progress can be followed in the WordPress Meta issue tracker (ticket [#4309](htt
 
 Tide services are responsible for the following:
 
-* The [wptide.org](../README.md) website includes both the documentation you are reading built with VuePress and serves the [Tide API](services/README.md#api) JSON endpoints. Visit [API Specification v1](https://staging.wptide.org/api/spec/v1/) to see examples of the API response.
+* The [wptide.org](../README.md) website includes both the documentation you are reading built with VuePress and serves the [Tide API](services/README.md#api) JSON endpoints. Visit the [Specification](specification/README.md) page to see examples of the API response.
 * The [Lighthouse Server](services/README.md#lighthouse-server) reads messages from a queue and runs Google Lighthouse reports against the themes only, then writes the results back to the Tide API.
 * The [PHPCS Server](services/README.md#phpcs-server) reads messages from a queue and runs reports against both plugins and themes, then writes the results back to the Tide API.
 
@@ -55,8 +55,7 @@ Please read our [Contributing](contributing/README.md) guide for details on the 
 
 ## Maintainers
 
-[Derek Herman (@derekherman)](https://github.com/derekherman),
-[Ivan Kruchkoff (@ivankruchkoff)](https://github.com/ivankruchkoff), and
+[Derek Herman (@derekherman)](https://github.com/derekherman), and
 [Jeff Paul (@jeffpaul)](https://github.com/jeffpaul)
 
 ## Contributors
@@ -69,6 +68,7 @@ Props: [Bartek Makoś (@MakiBM)](https://github.com/MakiBM),
 [David Lonjon (@davidlonjon)](https://github.com/davidlonjon),
 [Derek Herman (@derekherman)](https://github.com/derekherman),
 [Dušan D. Majkić (@dmajkic)](https://github.com/dmajkic),
+[Ivan Kruchkoff (@ivankruchkoff)](https://github.com/ivankruchkoff),
 [Janki Moradiya (@jankimoradiya)](https://github.com/jankimoradiya),
 [Jeff Paul (@jeffpaul)](https://github.com/jeffpaul),
 [Jonathan Wold (@sirjonathan)](https://github.com/sirjonathan),

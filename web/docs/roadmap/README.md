@@ -1,6 +1,6 @@
 # Roadmap
 
-We're using [ZenHub](https://www.zenhub.com/) to manage Tide and you will need to install the [ZenHub Browser Extension](https://www.zenhub.com/extension) to see our agile board. Feel free to view our backlog on [GitHub](https://github.com/wptide/wptide.org/projects). The following items are not an exhaustive list but are currently planned as part of the upcoming Tide roadmap. This page is evolving and expect to see more changes soon.
+Feel free to view our backlog on [GitHub](https://github.com/wptide/wptide.org/projects). The following items are not an exhaustive list but are currently planned as part of the upcoming Tide roadmap. This page is evolving and expect to see more changes soon.
 
 ## Tide version 1.0.0
 

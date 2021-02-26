@@ -46,8 +46,7 @@ const publish = async (message, topicName) => {
 
 const subscribe = async (subscriptionName, options) => {
     await maybeCreateTopics();
-    const subscription = await subscribeTopic(subscriptionName, options);
-    return subscription;
+    return await subscribeTopic(subscriptionName, options); // eslint-disable-line no-return-await
 };
 
 module.exports = {

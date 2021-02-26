@@ -6,8 +6,8 @@ on:
       - develop
       - main
   pull_request:
-    # Run workflow whenever a PR is opened, updated (synchronized), or marked ready for review.
-    types: [ opened, synchronize, ready_for_review ]
+    # Run workflow whenever a PR is opened, or updated (synchronized).
+    types: [ opened, synchronize ]
 
 jobs:
 
@@ -46,7 +46,7 @@ jobs:
         run: cd app && composer --no-interaction validate --no-check-all && cd -
 
       - name: Install Node dependencies
-        run: npm ci && cd app && npm ci && cd spec && npm ci && cd ../../
+        run: npm ci && cd app && npm ci && cd -
         env:
           PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: true
           CI: true
@@ -171,6 +171,7 @@ jobs:
         run: |
           make build.lighthouse
           make build.phpcs
+          make build.sync
 
       - name: Push images
         env:
@@ -179,13 +180,7 @@ jobs:
         run: |
           make push.lighthouse
           make push.phpcs
-
-      - name: Deploy to Cloud Functions
-        env:
-          GOOGLE_CLOUD_PROJECT: ${{ secrets.GOOGLE_CLOUD_PROJECT_STAGING }}
-        run: |
-          make deploy.api
-          make deploy.docs
+          make push.sync
 
       - name: Deploy to Cloud Run
         env:
@@ -196,6 +191,7 @@ jobs:
         run: |
           make deploy.lighthouse
           make deploy.phpcs
+          make deploy.sync
 
       - name: Deploy to Firebase
         uses: FirebaseExtended/action-hosting-deploy@v0

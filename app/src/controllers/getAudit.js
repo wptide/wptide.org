@@ -1,7 +1,7 @@
 /**
  * Internal Dependencies.
  */
-const { getAuditData, addAuditReports } = require('../util/auditHelpers');
+const { getAuditData, addAuditReports, addMissingAuditReports } = require('../util/auditHelpers');
 
 /**
  * Gets an existing Audit.
@@ -10,6 +10,8 @@ const { getAuditData, addAuditReports } = require('../util/auditHelpers');
  * @param {object} res The HTTP response.
  */
 const getAudit = async (req, res) => {
+    res.set('Cache-control', 'no-store');
+
     if (!req.params.type) {
         req.validation.errors.push({
             message: 'The audit project type is required.',
@@ -60,6 +62,16 @@ const getAudit = async (req, res) => {
             }
 
             if (existingAuditData) {
+                existingAuditData = await addMissingAuditReports(existingAuditData);
+
+                const addCache = Object
+                    .keys(existingAuditData.reports)
+                    .every((report) => !!existingAuditData.reports[report]);
+
+                if (addCache) {
+                    res.set('Cache-control', 'public, max-age=86400');
+                }
+
                 res.status(200).json(existingAuditData);
             } else {
                 res.status(404).json({

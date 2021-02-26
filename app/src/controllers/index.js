@@ -4,6 +4,7 @@
 const schema = require('./schema');
 const getAudit = require('./getAudit');
 const getReport = require('./getReport');
+const getStatus = require('./getStatus');
 
 /**
  * Implements handlers for the API endpoints.
@@ -17,4 +18,5 @@ module.exports = {
     schema,
     getReport,
     getAudit,
+    getStatus,
 };

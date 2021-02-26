@@ -1,25 +1,25 @@
 /**
  * Internal Dependencies.
  */
-const { getReportDoc } = require('../integrations/firestore');
+const { getStatusDoc } = require('../integrations/firestore');
 
 /**
- * Gets an existing Audit Report.
+ * Gets an existing Audit Status.
  *
  * @param {object} req The HTTP request.
  * @param {object} res The HTTP response.
  */
-const getReport = async (req, res) => {
+const getStatus = async (req, res) => {
     res.set('Cache-control', 'no-store');
 
     if (!req.params.id) {
         req.validation.errors.push({
-            message: 'A report identifier is required.',
+            message: 'A status identifier is required.',
             parameter: 'id',
         });
     } else if (Object.prototype.toString.call(req.params.id) !== '[object String]' || !req.params.id.match(/^[a-z0-9]+$/i)) {
         req.validation.errors.push({
-            message: 'A report identifier must be an alpha-numeric string.',
+            message: 'A status identifier must be an alpha-numeric string.',
             parameter: 'id',
         });
     }
@@ -28,15 +28,22 @@ const getReport = async (req, res) => {
         res.status(400).json(req.validation);
     } else {
         try {
-            const reportId = req.params.id.replace(/[^\w.-]+/g, '');
-            const report = await getReportDoc(reportId);
+            const statusId = req.params.id.replace(/[^\w.-]+/g, '');
+            const status = await getStatusDoc(statusId);
 
-            if (report) {
-                res.set('Cache-control', 'public, max-age=86400');
-                res.status(200).json(report);
+            if (status) {
+                const addCache = Object
+                    .keys(status.reports)
+                    .every((report) => status.reports[report].status !== 'pending');
+
+                if (addCache) {
+                    res.set('Cache-control', 'public, max-age=86400');
+                }
+
+                res.status(200).json(status);
             } else {
                 res.status(404).json({
-                    message: 'The provided report identifier does not exist.',
+                    message: 'The provided status identifier does not exist.',
                     status: 404,
                 });
             }
@@ -49,4 +56,4 @@ const getReport = async (req, res) => {
     }
 };
 
-module.exports = getReport;
+module.exports = getStatus;

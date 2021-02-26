@@ -77,7 +77,8 @@ module.exports = {
           children: [
             '',
             'services/',
-            'installation/'
+            'installation/',
+            'google-cloud/',
           ]
         },
         {
@@ -91,11 +92,10 @@ module.exports = {
           ]
         },
         {
-          title: '',
+          title: 'API v1',
           collapsable: false,
           children: [
-            'google-cloud/',
-            ['https://staging.wptide.org/api/spec/v1/', 'API Specification v1']
+            ['specification/', 'Specification'],
           ]
         }
       ],
