@@ -31,10 +31,4 @@ describe('getSourceUrl', () => {
     it('Returns fallback URL for plugin that wrongly uses trunk as the source, they should use tags', async () => {
         expect(await getSourceUrl('plugin', 'xpro-addons-beaver-builder-elementor', '1.4.1')).toBe('https://downloads.wordpress.org/plugin/xpro-addons-beaver-builder-elementor.zip');
     });
-    it('Returns removeTrail URL for plugin that wrongly left the trailing zero off in the tag', async () => {
-        expect(await getSourceUrl('plugin', 'ithemeland-woo-bulk-coupons-editing-lite', '1.0.0')).toBe('https://downloads.wordpress.org/plugin/ithemeland-woo-bulk-coupons-editing-lite.1.0.zip');
-    });
-    it('Returns addTrail URL for plugin that wrongly added a trailing zero to the tag', async () => {
-        expect(await getSourceUrl('plugin', 'superb-recent-posts-with-thumbnail-images', '1.0')).toBe('https://downloads.wordpress.org/plugin/superb-recent-posts-with-thumbnail-images.1.0.0.zip');
-    });
 });

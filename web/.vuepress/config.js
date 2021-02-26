@@ -1,4 +1,4 @@
-const { description } = require('../../package')
+const { description } = require('../../package');
 
 module.exports = {
   /**
@@ -113,6 +113,22 @@ module.exports = {
         serviceWorker: true,
         updatePopup: true
       }
+    ],
+    [
+      '@vuepress/last-updated',
+      {
+        transformer: (timestamp, lang) => {
+          return new Date(timestamp).toLocaleDateString(lang, {
+            year: '2-digit',
+            month: 'numeric',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: '2-digit',
+            timeZoneName: 'short'
+          })
+        }
+      },
+      true
     ]
   ],
 

@@ -1,3 +1,5 @@
+![](web/.vuepress/public/assets/img/tide-wp.png)
+
 # [wptide.org](https://wptide.org)
 
 [![CI/CD Pipeline](https://github.com/wptide/wptide.org/workflows/CI/CD%20Pipeline/badge.svg?branch=develop)](https://github.com/wptide/wptide.org/actions?query=workflow%3A%22CI%2FCD+Pipeline%22)
