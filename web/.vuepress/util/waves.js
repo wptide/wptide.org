@@ -3,7 +3,7 @@
 function Waves (canvas) {
   var ctx = canvas.getContext('2d')
   var parentRect = canvas.parentNode.getBoundingClientRect()
-  var height = canvas.height = parentRect.height
+  var height = canvas.height = parentRect.height * .66;
   var width = canvas.width = Math.min(parentRect.width + 300, window.innerWidth - 400)
 
   // Stage
