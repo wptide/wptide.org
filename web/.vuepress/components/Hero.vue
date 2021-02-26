@@ -62,7 +62,7 @@ export default {
 <style lang="stylus">
 .hero
   position relative
-  height calc(100vh -13.1rem)
+  height calc(100vh -16.6rem)
 
 .hero__brand
   display flex
@@ -114,7 +114,7 @@ export default {
 @media (min-width: 960px)
   .hero
     padding-top 10vh
-    height calc(90vh -13.1rem)
+    height calc(90vh -16.6rem)
 
   .hero__canvas
     display block
