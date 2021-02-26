@@ -1,27 +1,27 @@
 {
     "categories": [
         {
-            "title": "## 🚀 Features",
+            "title": "## U+1F680 Features",
             "labels": ["enhancement"]
         },
         {
-            "title": "## 🐛 Bugs",
+            "title": "## U+1F41B Bugs",
             "labels": ["bug"]
         },
         {
-            "title": "## 🔥 Regressions",
+            "title": "## U+1F525 Regressions",
             "labels": ["regression"]
         },
         {
-            "title": "## 🧪 Tests",
+            "title": "## U+1F9EA Tests",
             "labels": ["test"]
         },
         {
-            "title": "## 📦 Dependencies",
+            "title": "## U+1F4E6 Dependencies",
             "labels": ["dependencies"]
         },
         {
-            "title": "## 📄 Documentation",
+            "title": "## U+1F4C4 Documentation",
             "labels": ["documentation"]
         }
     ],

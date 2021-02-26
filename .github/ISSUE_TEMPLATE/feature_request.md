@@ -1,5 +1,5 @@
 ---
-name: "🚀 Feature request"
+name: "U+1F680 Feature request"
 about: Suggest an enhancement for this project
 labels: enhancement
 ---

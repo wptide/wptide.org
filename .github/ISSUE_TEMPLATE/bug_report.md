@@ -1,7 +1,7 @@
 ---
-name: "🚀 Bug report"
+name: "U+1F41B Bug report"
 about: "Something isn't working"
-labels: bug
+labels: bug, needs triage
 ---
 
 ## Bug Description

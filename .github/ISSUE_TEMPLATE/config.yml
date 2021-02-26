@@ -1,8 +1,8 @@
 blank_issues_enabled: false
 contact_links:
-  - name: "🆘 WordPress Slack"
+  - name: "U+1F198 WordPress Slack"
     url: "https://wordpress.slack.com/messages/C7TK8FBUJ/"
     about: "For project discussions and usage questions, please visit the WordPress Slack channel."
-  - name: "📄 Tide Documentation"
+  - name: "U+1F4C4 Tide Documentation"
     url: "https://wptide.org"
     about: "Documentation for the Tide API and various services."

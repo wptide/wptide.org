@@ -1,7 +1,7 @@
 ---
-name: "🔥 Regression report"
+name: "U+1F525 Regression report"
 about: "Something stopped working"
-labels: regression
+labels: regression, needs triage
 ---
 
 ## Regression Description
