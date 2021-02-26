@@ -1,7 +1,7 @@
 /**
- * External Dependencies.
+ * Internal Dependencies.
  */
-const fetch = require('node-fetch');
+const { sourceUrlExists } = require('./sourceUrlExists');
 
 /**
  * Checks if a downloadable ZIP archive for a specific version of a
@@ -21,23 +21,17 @@ const getSourceUrl = async (type, slug, version) => {
         const fallback = `https://downloads.wordpress.org/${type}/${slug}.zip`;
         const removeTrail = `https://downloads.wordpress.org/${type}/${slug}.${version.replace(/\.0$/, '')}.zip`;
         const addTrail = `https://downloads.wordpress.org/${type}/${slug}.${version}.0.zip`;
-        const exists = async (url) => {
-            const response = await fetch(url, {
-                method: 'HEAD',
-            });
-            return response.status && (response.ok || /4\d\d/.test(response.status) === false);
-        };
-        if (await exists(original)) {
+        if (await sourceUrlExists(original)) {
             return original;
         }
-        if (await exists(fallback)) {
+        if (await sourceUrlExists(fallback)) {
             return fallback;
         }
-        if (/\d\.\d\.0/.test(version) === true && await exists(removeTrail)) {
-            return removeTrail;
-        }
-        if (/\d\.0/.test(version) === true && await exists(addTrail)) {
+        if (/\d\.0/.test(version) === true && await sourceUrlExists(addTrail)) {
             return addTrail;
+        }
+        if (/\d\.\d\.0/.test(version) === true && await sourceUrlExists(removeTrail)) {
+            return removeTrail;
         }
         throw new Error(`Invalid Source URL ${fallback}:`);
     } catch (err) {
