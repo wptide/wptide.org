@@ -4,7 +4,11 @@
         "plugin:jest/recommended",
         "plugin:jsdoc/recommended"
     ],
-    "ignorePatterns": ["**/vendor/**"],
+    "ignorePatterns": [
+        "**/vendor/**",
+        "**/node_modules/**",
+        "**/dist/**"
+    ],
     "rules": {
         "no-console": "off",
         "indent": ["error", 4],
@@ -14,8 +18,5 @@
         ],
         "jest/no-jasmine-globals": "off"
     },
-    "parser": "babel-eslint",
-    "env": {
-        "jest": true
-    }
+    "parser": "babel-eslint"
 }
