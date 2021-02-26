@@ -1,4 +1,5 @@
-const { description } = require('../../package')
+const { description } = require('../../package');
+const moment = require('moment');
 
 module.exports = {
   /**
@@ -113,6 +114,22 @@ module.exports = {
         serviceWorker: true,
         updatePopup: true
       }
+    ],
+    [
+      '@vuepress/last-updated',
+      {
+        transformer: (timestamp, lang) => {
+          return new Date(timestamp).toLocaleDateString(lang, {
+            year: '2-digit',
+            month: '2-digit',
+            day: '2-digit',
+            hour: 'numeric',
+            minute: 'numeric',
+            timeZoneName: 'short'
+          })
+        }
+      },
+      true
     ]
   ],
 
