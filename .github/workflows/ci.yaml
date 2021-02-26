@@ -6,8 +6,8 @@ on:
       - develop
       - main
   pull_request:
-    # Run workflow whenever a PR is opened, updated (synchronized), or marked ready for review.
-    types: [ opened, synchronize, ready_for_review ]
+    # Run workflow whenever a PR is opened, or updated (synchronized).
+    types: [ opened, synchronize ]
 
 jobs:
 
