@@ -121,10 +121,10 @@ module.exports = {
         transformer: (timestamp, lang) => {
           return new Date(timestamp).toLocaleDateString(lang, {
             year: '2-digit',
-            month: '2-digit',
-            day: '2-digit',
+            month: 'numeric',
+            day: 'numeric',
             hour: 'numeric',
-            minute: 'numeric',
+            minute: '2-digit',
             timeZoneName: 'short'
           })
         }
