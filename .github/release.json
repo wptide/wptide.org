@@ -1,0 +1,32 @@
+{
+    "categories": [
+        {
+            "title": "## :rocket: Features",
+            "labels": ["enhancement"]
+        },
+        {
+            "title": "## :bug: Bugs",
+            "labels": ["bug"]
+        },
+        {
+            "title": "## :fire: Regressions",
+            "labels": ["regression"]
+        },
+        {
+            "title": "## :test_tube: Tests",
+            "labels": ["test"]
+        },
+        {
+            "title": "## :package: Dependencies",
+            "labels": ["dependencies"]
+        },
+        {
+            "title": "## :page_facing_up: Documentation",
+            "labels": ["documentation"]
+        }
+    ],
+    "sort": "ASC",
+    "template": "${{CHANGELOG}}",
+    "pr_template": "- ${{TITLE}} - PR: #${{NUMBER}}",
+    "empty_template": "- no changes"
+}

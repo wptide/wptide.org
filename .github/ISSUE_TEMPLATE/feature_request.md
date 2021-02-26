@@ -1,8 +1,7 @@
 ---
-name: ✨ Feature request
-about: Suggest an idea for this project
+name: ":rocket: Feature request"
+about: Suggest an enhancement for this project
 labels: enhancement
-
 ---
 
 ## Feature description
@@ -12,6 +11,10 @@ labels: enhancement
 ---------------
 
 _Do not alter or remove anything below. The following sections will be managed by moderators only._
+
+## Changelog entry
+
+* <!-- One sentence summarizing the PR, which should be used for the PR title and automatically added to the changelog. -->
 
 ## Acceptance criteria
 
@@ -28,7 +31,3 @@ _Do not alter or remove anything below. The following sections will be managed b
 ## Demo
 
 * <!-- A video or screenshots demoing the implementation. -->
-
-## Changelog entry
-
-* <!-- One sentence summarizing the PR, to be used in the changelog. -->

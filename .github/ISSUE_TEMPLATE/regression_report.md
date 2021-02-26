@@ -1,20 +1,20 @@
 ---
-name: ":bug: Bug report"
-about: "Something isn't working"
-labels: bug
+name: ":fire: Regression report"
+about: "Something stopped working"
+labels: regression
 ---
 
-## Bug Description
+## Regression Description
 
-<!-- Please describe clearly and concisely what the bug is. -->
+<!-- Please describe clearly and concisely what the regression is. -->
 
 ## Expected Behaviour
 
-<!-- Please describe clearly and concisely what the expected behaviour should be. -->
+<!-- Please describe clearly and concisely what the expected behaviour use to be. -->
 
 ## Steps to reproduce
 
-<!-- Please provide detailed steps on how to reproduce the bug. Provide a URL where the issue can be seen on the frontend when possible. -->
+<!-- Please provide detailed steps on how to reproduce the regression. Provide a URL where the issue can be seen on the frontend when possible. -->
 1. Go to '...'
 2. Click on '....'
 3. Scroll down to '....'
@@ -34,7 +34,7 @@ labels: bug
 - Browser: [e.g. chrome, safari]
 - Device: [e.g. iPhone8]
 
-<!-- Please add any additional information about the bug. -->
+<!-- Please add any additional information about the regression. -->
 
 ---------------
 
