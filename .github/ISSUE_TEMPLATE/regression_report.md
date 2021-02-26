@@ -1,5 +1,5 @@
 ---
-name: ":fire: Regression report"
+name: "🔥 Regression report"
 about: "Something stopped working"
 labels: regression
 ---
