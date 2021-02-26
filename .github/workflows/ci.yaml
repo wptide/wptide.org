@@ -188,6 +188,7 @@ jobs:
           VERSION: ${{ steps.package-version.outputs.current-version}}
           GOOGLE_CLOUD_RUN_LIGHTHOUSE_MEMORY: ${{ secrets.GOOGLE_CLOUD_RUN_LIGHTHOUSE_MEMORY }}
           GOOGLE_CLOUD_RUN_PHPCS_MEMORY: ${{ secrets.GOOGLE_CLOUD_RUN_PHPCS_MEMORY }}
+          GOOGLE_CLOUD_RUN_SYNC_MEMORY: ${{ secrets.GOOGLE_CLOUD_RUN_SYNC_MEMORY }}
         run: |
           make deploy.lighthouse
           make deploy.phpcs
