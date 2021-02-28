@@ -3,16 +3,19 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - develop
-      - main
+      - '**'
+      - '!main'
+      - '![0-9]+.[0-9]+'
   pull_request:
-    # Run workflow whenever a PR is opened, or updated (synchronized).
-    types: [ opened, synchronize ]
+    types: [ closed ]
+    branches:
+      - 'main'
+      - '[0-9]+.[0-9]+'
 
 jobs:
 
   lint-js:
-    name: 'Lint: JS'
+    name: Lint JS
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -55,7 +58,7 @@ jobs:
         run: npm run lint
 
   unit-test-js:
-    name: 'Unit test: JS'
+    name: Unit test JS
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -108,10 +111,61 @@ jobs:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
           path-to-lcov: "./app/tests/coverage/lcov.info"
 
-  deploy-staging:
-    if: github.ref == 'refs/heads/develop'
+  release-tag:
     needs: [lint-js, unit-test-js]
-    name: "Deploy: Staging"
+    if: ${{ github.event.pull_request.merged == true }}
+    name: Release Tag
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Get npm cache directory
+        id: npm-cache
+        run: echo "::set-output name=dir::$(npm config get cache)"
+
+      - name: Configure npm cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.npm-cache.outputs.dir }}
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: ${{ runner.os }}-npm-
+
+      - name: Install Node dependencies
+        run: npm ci
+
+      - name: Set the tag version
+        id: package-version
+        uses: martinbeentjes/npm-get-version-action@master
+
+      - name: Prepare Release
+        id: prepare-release
+        continue-on-error: true
+        uses: derekherman/prepare-release@1.0
+        with:
+          baseRef: ${{ github.base_ref }}
+          headRef: ${{ github.head_ref }}
+          tagRef: ${{ steps.package-version.outputs.current-version }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create Release
+        uses: actions/create-release@v1
+        if: steps.prepare-release.outcome == 'success' && steps.prepare-release.conclusion == 'success'
+        with:
+          tag_name: ${{ steps.package-version.outputs.current-version }}
+          release_name: ${{ steps.package-version.outputs.current-version }}
+          body: |
+            ${{ steps.prepare-release.outputs.changelog }}
+            ${{ steps.prepare-release.outputs.props }}
+          prerelease: ${{ contains(github.ref, '-rc') || contains(github.ref, '-b') || contains(github.ref, '-a') }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  deploy-staging:
+    if: ${{ github.event.pull_request.merged == true && github.ref == 'refs/heads/develop' }}
+    needs: [lint-js, unit-test-js]
+    name: Deploy Staging
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
