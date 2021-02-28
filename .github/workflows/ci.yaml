@@ -149,7 +149,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   deploy-staging:
-    if: ${{ github.event.pull_request.merged == true && github.ref == 'refs/heads/develop' }}
+    if: ${{ github.ref == 'refs/heads/develop' }}
     needs: [lint-js, unit-test-js]
     name: Deploy Staging
     runs-on: ubuntu-latest
