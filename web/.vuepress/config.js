@@ -104,6 +104,7 @@ module.exports = {
                     collapsable: false,
                     children: [
                         ['specification/', 'Specification'],
+                        'status/',
                     ],
                 },
             ],
