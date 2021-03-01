@@ -10,21 +10,27 @@
       </div>
     </div>
     <div class="status-table__rows">
-      <StatusRow />
-      <StatusRow />
-      <StatusRow />
-      <StatusRow />
-      <StatusRow />
-      <StatusRow />
+      <StatusRow status="completed" status-label="Completed" />
+      <StatusRow status="failed" status-label="Failed" />
+      <StatusRow status="in-progress" status-label="In Progress" />
+      <StatusRow status="pending" status-label="Pending" />
+      <StatusRow status="completed" status-label="Completed" />
+      <StatusRow status="completed" status-label="Completed" />
+      <StatusRow status="completed" status-label="Completed" />
+      <StatusRow status="completed" status-label="Completed" />
+      <StatusRow status="completed" status-label="Completed" />
+      <StatusRow status="completed" status-label="Completed" />
     </div>
+    <StatusPagination :page="2" :pages="5" />
   </div>
 </template>
 
 <script>
 import StatusSelect from './status/StatusSelect';
 import StatusRow from './status/StatusRow';
+import StatusPagination from "./status/StatusPagination";
 export default {
-  components: { StatusSelect, StatusRow },
+  components: {StatusPagination, StatusSelect, StatusRow },
   mounted () {
     console.log('loaded');
   }
@@ -61,6 +67,10 @@ export default {
 
 .status-table__select.status-table__select {
   margin-bottom: 24px;
+}
+
+.status-table__rows {
+  margin-bottom: 32px;
 }
 
 @media (min-width: 1024px) {

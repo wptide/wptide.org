@@ -40,7 +40,14 @@
 <script>
 export default {
   name: 'StatusSelect',
-  data: () => ( { isOpen: false } )
+  data: () => ( { isOpen: false } ),
+  mounted() {
+    window.addEventListener('click', (e) => {
+      if (!this.$el.contains(e.target)){
+        this.isOpen = false
+      }
+    })
+  },
 };
 </script>
 
