@@ -10,16 +10,16 @@
       </div>
     </div>
     <div class="status-table__rows">
-      <StatusRow status="completed" status-label="Completed" />
-      <StatusRow status="failed" status-label="Failed" />
-      <StatusRow status="in-progress" status-label="In Progress" />
-      <StatusRow status="pending" status-label="Pending" />
-      <StatusRow status="completed" status-label="Completed" />
-      <StatusRow status="completed" status-label="Completed" />
-      <StatusRow status="completed" status-label="Completed" />
-      <StatusRow status="completed" status-label="Completed" />
-      <StatusRow status="completed" status-label="Completed" />
-      <StatusRow status="completed" status-label="Completed" />
+      <StatusRow status="completed" />
+      <StatusRow status="failed" />
+      <StatusRow status="in-progress" />
+      <StatusRow status="pending" />
+      <StatusRow status="unknown" />
+      <StatusRow status="completed" />
+      <StatusRow status="completed" />
+      <StatusRow status="completed" />
+      <StatusRow status="completed" />
+      <StatusRow status="completed" />
     </div>
     <StatusPagination :page="2" :pages="5" />
   </div>

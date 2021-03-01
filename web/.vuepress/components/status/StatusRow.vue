@@ -2,14 +2,13 @@
   <div class="status-row" v-bind:class="{ 'is-open': isOpen }" v-on:click.stop="isOpen = !isOpen">
     <div class="status-row__header">
       <div class="status-row__header-title">
-        <img class="status-row__header-title-icon" src="/assets/img/icon-wordpress.svg" alt="" width="16" height="16">
+        <StatusRowStatus class="status-row__header-title-icon" :status="status" />
         <span class="status-row__header-title-text">/api/v1/audit/wporg/theme/<strong>twentytwenty/1.6</strong></span>
       </div>
       <hr class="status-row__separator">
       <div class="status-row__header-time">
         <span class="status-row__header-time-label">Process time:&nbsp;</span>15s
       </div>
-      <StatusRowStatus class="status-row__header-status" :label="statusLabel" :status="status" />
     </div>
     <div class="status-row__body">
       <hr class="status-row__separator">
