@@ -1,5 +1,5 @@
 /**
- * Load an array of scripts in order.
+ * Load a single script and return a resolved promise.
  *
  * @param   {string} url URL to the JS file.
  * @returns {*}          Resolved promises.
