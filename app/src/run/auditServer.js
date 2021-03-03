@@ -144,6 +144,7 @@ exports.auditServer = async (req, res, reporter, type, name) => {
         // Set the Status.
         const status = await getStatusDoc(message.id);
         status.modified_datetime = createdDate;
+        status.reports[type].end_datetime = createdDate;
         status.reports[type].status = 'complete';
         await setStatusDoc(message.id, status);
 

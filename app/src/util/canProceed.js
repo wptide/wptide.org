@@ -42,8 +42,12 @@ const canProceed = async (type, id) => {
 
     if (statusDoc.reports[type].attempts === 0) {
         statusDoc.reports[type].attempts = 1;
+        statusDoc.reports[type].status = 'in-progress';
         statusDoc.reports[type].start_datetime = timeNow;
-    } else if (statusDoc.reports[type].start_datetime < minTime) {
+    } else if (
+        statusDoc.reports[type].start_datetime
+        && statusDoc.reports[type].start_datetime < minTime
+    ) {
         statusDoc.reports[type].attempts += 1;
         statusDoc.reports[type].start_datetime = timeNow;
         if (statusDoc.reports[type].attempts <= MAX_ATTEMPTS) {

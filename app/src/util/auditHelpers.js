@@ -62,8 +62,9 @@ const createNewAudit = async (id, params) => {
             reports: {},
         };
         const statusObj = {
-            start_datetime: timeNow,
             attempts: 0,
+            end_datetime: null,
+            start_datetime: null,
             status: 'pending',
         };
         const status = {
@@ -179,8 +180,9 @@ const addMissingAuditReports = async (existingAuditData) => {
             clonedAuditData.reports[report] = null;
             existingStatusData.reports[report] = {
                 attempts: 0,
+                end_datetime: null,
+                start_datetime: null,
                 status: 'pending',
-                start_datetime: dateTime(),
             };
         }
     });

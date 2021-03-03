@@ -1,36 +1,100 @@
 <template>
-  <div class="select" v-bind:class="{ 'is-open': isOpen }">
-    <button class="select__trigger" v-on:click="isOpen = !isOpen" type="button">
-      <svg class="select__trigger-icon" width="18" height="12" viewBox="0 0 18 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <div
+    class="select"
+    :class="{ 'is-open': isOpen }"
+  >
+    <button
+      class="select__trigger"
+      @click="isOpen = !isOpen"
+      type="button"
+    >
+      <svg
+        class="select__trigger-icon"
+        width="18"
+        height="12"
+        viewBox="0 0 18 12"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
         <path d="M7 12H11V10H7V12ZM0 0V2H18V0H0ZM3 7H15V5H3V7Z" />
       </svg>
       <span class="select__trigger-value">
         Themes, Completed
       </span>
-      <svg class="select__trigger-chevron" width="14" height="7" viewBox="0 0 14 7" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M2 2L6.96463 6L12 2" stroke="#2C3E50" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="round"/>
+      <svg
+        class="select__trigger-chevron"
+        width="14"
+        height="7"
+        viewBox="0 0 14 7"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M2 2L6.96463 6L12 2"
+          stroke="#2C3E50"
+          stroke-width="1.5"
+          stroke-linecap="square"
+          stroke-linejoin="round"
+        />
       </svg>
     </button>
     <form class="select__body">
-      <div class="select__fieldset" role="group">
-        <div class="select__fieldset-legend">Status</div>
+      <div
+        class="select__fieldset"
+        role="group"
+      >
+        <div class="select__fieldset-legend">
+          Status
+        </div>
         <label class="select__value">
-          <input class="select__value-radio" type="radio" name="status" value="1" checked> Completed
+          <input
+            class="select__value-radio"
+            type="radio"
+            name="status"
+            value="1"
+            checked
+          > Completed
         </label>
         <label class="select__value">
-          <input class="select__value-radio" type="radio" name="status" value="2"> Pending
+          <input
+            class="select__value-radio"
+            type="radio"
+            name="status"
+            value="2"
+          > Pending
         </label>
         <label class="select__value">
-          <input class="select__value-radio" type="radio" name="status" value="3"> Failed
+          <input
+            class="select__value-radio"
+            type="radio"
+            name="status"
+            value="3"
+          > Failed
         </label>
       </div>
-      <div class="select__fieldset" role="group">
-        <div class="select__fieldset-legend">Type</div>
+      <div
+        class="select__fieldset"
+        role="group"
+      >
+        <div class="select__fieldset-legend">
+          Type
+        </div>
         <label class="select__value">
-          <input class="select__value-checkbox" type="checkbox" name="type[]" value="1" checked> Themes
+          <input
+            class="select__value-checkbox"
+            type="checkbox"
+            name="type[]"
+            value="1"
+            checked
+          > Themes
         </label>
         <label class="select__value">
-          <input class="select__value-checkbox" type="checkbox" name="type[]" value="2"> Plugins
+          <input
+            class="select__value-checkbox"
+            type="checkbox"
+            name="type[]"
+            value="2"
+          > Plugins
         </label>
       </div>
     </form>
@@ -39,15 +103,15 @@
 
 <script>
 export default {
-  name: 'StatusSelect',
-  data: () => ( { isOpen: false } ),
-  mounted() {
-    window.addEventListener('click', (e) => {
-      if (!this.$el.contains(e.target)){
-        this.isOpen = false
-      }
-    })
-  },
+    name: 'Select',
+    data: () => ({ isOpen: false }),
+    mounted() {
+        window.addEventListener('click', (e) => {
+            if (!this.$el.contains(e.target)) {
+                this.isOpen = false;
+            }
+        });
+    },
 };
 </script>
 
@@ -58,6 +122,7 @@ export default {
   border 1px solid #dcdde0
   border-radius 4px
   background-color #fff
+
   &.is-open
     z-index 1
     border-bottom 0

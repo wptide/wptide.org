@@ -2,7 +2,8 @@
     "extends": [
         "airbnb-base",
         "plugin:jest/recommended",
-        "plugin:jsdoc/recommended"
+        "plugin:jsdoc/recommended",
+        "plugin:vue/strongly-recommended"
     ],
     "ignorePatterns": [
         "**/vendor/**",
@@ -16,7 +17,12 @@
             "error",
             "always"
         ],
-        "jest/no-jasmine-globals": "off"
+        "jest/no-jasmine-globals": "off",
+        "vue/prop-name-casing": ["error", "snake_case"]
     },
-    "parser": "babel-eslint"
+    "parser": "vue-eslint-parser",
+    "parserOptions": {
+        "parser": "babel-eslint",
+        "sourceType": "module"
+    }
 }
