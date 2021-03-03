@@ -234,6 +234,13 @@ jobs:
           make deploy.phpcs
           make deploy.sync
 
+      - name: Deploy to Cloud Functions
+        env:
+          GOOGLE_CLOUD_PROJECT: ${{ secrets.GOOGLE_CLOUD_PROJECT_STAGING }}
+        run: |
+          make deploy.api
+          make deploy.spec
+
       - name: Deploy to Firebase
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:

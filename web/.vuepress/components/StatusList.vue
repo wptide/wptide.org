@@ -11,7 +11,7 @@
         class="custom-block tip status-list__projects--none"
         v-if="!projects.length"
       >
-        <p>Sorry, no audits could found.</p>
+        <p>Sorry, no audits could be found.</p>
       </li>
     </ul>
   </div>
@@ -45,7 +45,7 @@ export default {
             that.db
                 .collection('Status')
                 .orderBy('created_datetime', 'desc')
-                .limit(50)
+                .limit(100)
                 .onSnapshot((snap) => {
                     const testCollection = [];
                     snap.forEach((doc) => {
