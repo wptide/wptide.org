@@ -45,7 +45,7 @@ export default {
             that.db
                 .collection('Status')
                 .orderBy('created_datetime', 'desc')
-                .limit(50)
+                .limit(100)
                 .onSnapshot((snap) => {
                     const testCollection = [];
                     snap.forEach((doc) => {
