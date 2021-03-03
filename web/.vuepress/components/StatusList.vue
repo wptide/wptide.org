@@ -11,7 +11,7 @@
         class="custom-block tip status-list__projects--none"
         v-if="!projects.length"
       >
-        <p>Sorry, no audits could found.</p>
+        <p>Sorry, no audits could be found.</p>
       </li>
     </ul>
   </div>
