@@ -1,17 +1,22 @@
 <template>
   <div class="iframe loading">
-    <iframe width="100%" src="/api/spec/v1/" frameBorder="0"></iframe>
+    <iframe
+      width="100%"
+      src="/api/spec/v1/"
+      frameBorder="0"
+    />
   </div>
 </template>
 
 <script>
 export default {
-  mounted () {
-    document.getElementsByTagName('iframe')[0].addEventListener('load', () => {
-      document.getElementsByClassName('iframe')[0].classList.remove('loading');
-    }, true);
-  }
-}
+    name: 'SpecFrame',
+    mounted() {
+        document.getElementsByTagName('iframe')[0].addEventListener('load', () => {
+            document.getElementsByClassName('iframe')[0].classList.remove('loading');
+        }, true);
+    },
+};
 </script>
 
 <style lang="stylus">

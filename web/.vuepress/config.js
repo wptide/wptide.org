@@ -52,6 +52,7 @@ module.exports = {
         ['meta', { name: 'msapplication-TileColor', content: '#000000' }],
         ['meta', { name: 'viewport', content: 'width=device-width, initial-scale=1' }],
         ['meta', { property: 'og:image', content: '/assets/img/tide-wp.png' }],
+        ['script', { src: '/assets/script-loader.js' }],
     ],
 
     /**
@@ -104,6 +105,7 @@ module.exports = {
                     collapsable: false,
                     children: [
                         ['specification/', 'Specification'],
+                        'status/',
                     ],
                 },
             ],
