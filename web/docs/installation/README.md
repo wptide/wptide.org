@@ -16,7 +16,7 @@ If you run into any issues while getting Tide installed please [contact us](../R
 
 ## Prerequisites
 
-There are several CLI tools that need to be installed on your system before you can meaningfully contribute to the Tide Component. Docker is optional, but required in you plan to build the images and test them locally, and `make` and the Google Cloud SDK are needed if you are building images and/or deploying to GCP.
+There are several CLI tools that need to be installed on your system before you can meaningfully contribute to the Tide Component. Docker is optional, but required if you plan to build the images and test them locally, and `make` and the Google Cloud SDK are needed if you are building images and/or deploying to GCP.
 
 * Install [Composer](https://getcomposer.org/)
 * Install [Node](https://nodejs.org/en/download/)
@@ -27,7 +27,7 @@ There are several CLI tools that need to be installed on your system before you 
 
 ## Firebase Project
 
-If you don't have a Firebase project, start by creating a new project from the [Firebase Console](https://console.firebase.google.com/). Later we'll connect your cloned version of Tide to your Firebase project—we don't need to actually use the project, just authenticate with it. Meaning, setting up a Firebase project will not cost you anything, it just needs to exist. Make a note of the Project ID you choose, you will need it later.
+If you don't have a Firebase project, then start by creating a new project from the [Firebase Console](https://console.firebase.google.com/). Later we'll connect your cloned version of Tide to your Firebase project—we don't need to actually use the project, just authenticate with it. Setting up a Firebase project will not cost you anything, it just needs to exist for authentication purposes. Make a note of the Project ID you choose, you will need it later.
 
 ## Clone Tide
 
