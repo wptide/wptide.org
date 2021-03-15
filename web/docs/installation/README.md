@@ -83,7 +83,7 @@ The following command should only be used once.
 
 The new `.env` is for the Firebase Functions API and the `.env.server` is for the Docker based Cloud Run Servers. Both files are for local development only and likely do not require any changes, except for the project ID that you created above.
 
-Also, make sure to update `.firebaserc` with the project ID after this command is executed, as well.  The project ID will be the value associated to the `default` key in `.firebaserc`.
+Also, make sure to update `.firebaserc` with the project ID after this command is executed, as well. The project ID will be the value associated to the `default` key in `.firebaserc`.
 
 :::
 
