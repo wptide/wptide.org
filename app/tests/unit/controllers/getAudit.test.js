@@ -319,6 +319,7 @@ describe('The getAudit route handler', () => {
             source_url: 'https://downloads.wordpress.org/theme/fooslug.2.0.1.zip',
             created_datetime: currentTime,
             modified_datetime: currentTime,
+            status: 'pending',
         };
         const statusObj = {
             attempts: 0,
@@ -364,6 +365,7 @@ describe('The getAudit route handler', () => {
         };
         const expectedStatus = {
             ...expectedAudit,
+            status: 'pending',
         };
         expectedStatus.reports = {
             phpcs_phpcompatibilitywp: { ...statusObj },
@@ -381,6 +383,7 @@ describe('The getAudit route handler', () => {
         expectedNewAudit.reports.lighthouse = null;
         const expectedNewStatus = {
             ...expectedAudit,
+            status: 'pending',
         };
         expectedNewStatus.reports = {
             lighthouse: { ...statusObj },

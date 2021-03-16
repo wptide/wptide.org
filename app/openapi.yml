@@ -141,6 +141,8 @@ components:
           type: integer
         source_url:
           type: string
+        status:
+          type: string
         reports:
           type: object
           required:
@@ -195,6 +197,8 @@ components:
     StatusRef:
       type: object
       properties:
+        end_datetime:
+          type: integer
         start_datetime:
           type: integer
         attempts:

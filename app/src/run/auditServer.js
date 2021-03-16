@@ -8,6 +8,7 @@ const {
 const { getHash } = require('../util/identifiers');
 const { canProceed } = require('../util/canProceed');
 const { sendError } = require('../util/sendError');
+const { setAuditStatus } = require('../util/setAuditStatus');
 
 /**
  * Audit Server helper to handle Pub/Sub HTTP requests.
@@ -146,6 +147,7 @@ exports.auditServer = async (req, res, reporter, type, name) => {
         status.modified_datetime = createdDate;
         status.reports[type].end_datetime = createdDate;
         status.reports[type].status = 'complete';
+        status.status = setAuditStatus(status);
         await setStatusDoc(message.id, status);
 
         // Save the Audit.
