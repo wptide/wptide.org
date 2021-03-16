@@ -16,7 +16,7 @@ If you run into any issues while getting Tide installed please [contact us](../R
 
 ## Prerequisites
 
-There are several CLI tools that need to be installed on your system before you can meaningfully contribute to the Tide Component. Docker is optional, but required in you plan to build the images and test them locally, and `make` and the Google Cloud SDK are needed if you are building images and/or deploying to GCP.
+There are several CLI tools that need to be installed on your system before you can meaningfully contribute to the Tide Component. Docker is optional, but required if you plan to build the images and test them locally, and `make` and the Google Cloud SDK are needed if you are building images and/or deploying to GCP.
 
 * Install [Composer](https://getcomposer.org/)
 * Install [Node](https://nodejs.org/en/download/)
@@ -27,7 +27,7 @@ There are several CLI tools that need to be installed on your system before you 
 
 ## Firebase Project
 
-If you don't have a Firebase project, start by creating a new project from the [Firebase Console](https://console.firebase.google.com/). Later we'll connect your cloned version of Tide to your Firebase project—we don't need to actually use the project, just authenticate with it. Meaning, setting up a Firebase project will not cost you anything, it just needs to exist. Make a note of the Project ID you choose, you will need it later.
+If you don't have a Firebase project, then start by creating a new project from the [Firebase Console](https://console.firebase.google.com/). Later we'll connect your cloned version of Tide to your Firebase project—we don't need to actually use the project, just authenticate with it. Setting up a Firebase project will not cost you anything, it just needs to exist for authentication purposes. Make a note of the Project ID you choose, you will need it later.
 
 ## Clone Tide
 
@@ -77,11 +77,13 @@ Copy the hidden files:
 
 ::: tip IMPORTANT
 
-This command should only be used once. The new `.env` is for the Firebase Functions API and the `.env.server` is for the Docker based Cloud Run Servers. Both files are for local development only and likely do not require any changes, except for the project ID that you created above.
-
-Also, make sure to update the `.firebaserc` with the project ID after this command is executed, as well.
+The following command should only be used once.
 
     npm run copy
+
+The new `.env` is for the Firebase Functions API and the `.env.server` is for the Docker based Cloud Run Servers. Both files are for local development only and likely do not require any changes, except for the project ID that you previously created should now be used as the value for the `GOOGLE_CLOUD_PROJECT` environment variable.
+
+Also, make sure to update `.firebaserc` with the project ID after this command is executed. The project ID will be the value associated to the `default` key in `.firebaserc`.
 
 :::
 
