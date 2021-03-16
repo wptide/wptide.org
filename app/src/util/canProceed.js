@@ -3,6 +3,7 @@
  */
 const { dateTime } = require('./dateTime');
 const { getStatusDoc, setStatusDoc } = require('../integrations/firestore');
+const { setAuditStatus } = require('./setAuditStatus');
 
 const MAX_DURATION = 300; // Max audit duration in seconds.
 const MAX_ATTEMPTS = 3; // Max number of times we can attempt the same audit
@@ -58,12 +59,14 @@ const canProceed = async (type, id) => {
     }
 
     if (statusDoc.reports[type].attempts > MAX_ATTEMPTS) {
+        statusDoc.status = 'failed';
         statusDoc.reports[type].status = 'failed';
         await setStatusDoc(id, statusDoc);
         console.log(`Too many attempts, not proceeding ${JSON.stringify(statusDoc)}`);
         return false;
     }
 
+    statusDoc.status = setAuditStatus(statusDoc);
     await setStatusDoc(id, statusDoc);
     return true;
 };

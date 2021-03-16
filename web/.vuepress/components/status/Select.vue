@@ -19,7 +19,7 @@
         <path d="M7 12H11V10H7V12ZM0 0V2H18V0H0ZM3 7H15V5H3V7Z" />
       </svg>
       <span class="select__trigger-value">
-        Themes, Completed
+        {{ status }}: {{ splitType }}
       </span>
       <svg
         class="select__trigger-chevron"
@@ -50,25 +50,40 @@
           <input
             class="select__value-radio"
             type="radio"
-            name="status"
-            value="1"
-            checked
-          > Completed
+            value="Any"
+            v-model="status"
+          > Any
         </label>
         <label class="select__value">
           <input
             class="select__value-radio"
             type="radio"
-            name="status"
-            value="2"
+            value="Pending"
+            v-model="status"
           > Pending
         </label>
         <label class="select__value">
           <input
             class="select__value-radio"
             type="radio"
-            name="status"
-            value="3"
+            value="In-Progress"
+            v-model="status"
+          > In-Progress
+        </label>
+        <label class="select__value">
+          <input
+            class="select__value-radio"
+            type="radio"
+            value="Complete"
+            v-model="status"
+          > Complete
+        </label>
+        <label class="select__value">
+          <input
+            class="select__value-radio"
+            type="radio"
+            value="Failed"
+            v-model="status"
           > Failed
         </label>
       </div>
@@ -83,18 +98,17 @@
           <input
             class="select__value-checkbox"
             type="checkbox"
-            name="type[]"
-            value="1"
-            checked
-          > Themes
+            value="Plugin"
+            v-model="type"
+          > Plugin
         </label>
         <label class="select__value">
           <input
             class="select__value-checkbox"
             type="checkbox"
-            name="type[]"
-            value="2"
-          > Plugins
+            value="Theme"
+            v-model="type"
+          > Theme
         </label>
       </div>
     </form>
@@ -104,13 +118,31 @@
 <script>
 export default {
     name: 'Select',
-    data: () => ({ isOpen: false }),
+    data: () => ({
+        isOpen: false,
+        status: 'Any',
+        type: ['Plugin', 'Theme'],
+    }),
     mounted() {
         window.addEventListener('click', (e) => {
             if (!this.$el.contains(e.target)) {
                 this.isOpen = false;
             }
         });
+    },
+    computed: {
+        splitType() {
+            return this.type.length ? this.type.join(' or ') : 'Plugin or Theme';
+        },
+    },
+    watch: {
+        status() {
+            this.$emit('update:status', this.status.toLowerCase());
+        },
+        type() {
+            const type = this.type.length ? this.type : ['Plugin', 'Theme'];
+            this.$emit('update:type', type.map((item) => item.toLowerCase()));
+        },
     },
 };
 </script>
@@ -122,6 +154,7 @@ export default {
   border 1px solid #dcdde0
   border-radius 4px
   background-color #fff
+  min-width 300px
 
   &.is-open
     z-index 1

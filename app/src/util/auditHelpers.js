@@ -9,6 +9,7 @@ const {
 } = require('../integrations/firestore');
 const { publish, messageTypes } = require('../integrations/pubsub');
 const { shouldLighthouseAudit } = require('./shouldLighthouseAudit');
+const { setAuditStatus } = require('./setAuditStatus');
 
 const validReportTypes = ['lighthouse', 'phpcs_phpcompatibilitywp'];
 
@@ -75,6 +76,7 @@ const createNewAudit = async (id, params) => {
             created_datetime: timeNow,
             modified_datetime: timeNow,
             source_url: sourceUrl,
+            status: 'pending',
             reports: {
                 phpcs_phpcompatibilitywp: {
                     ...statusObj,
@@ -188,6 +190,7 @@ const addMissingAuditReports = async (existingAuditData) => {
     });
 
     if (Object.keys(clonedAuditData.reports).length) {
+        existingStatusData.status = setAuditStatus(existingStatusData);
         existingStatusData.modified_datetime = dateTime();
         existingAuditData.reports = Object.assign(existingAuditData.reports, clonedAuditData.reports); /* eslint-disable-line max-len, no-param-reassign */
         await setAuditDoc(existingAuditData.id, existingAuditData);

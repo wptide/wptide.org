@@ -137,6 +137,11 @@ export default {
             required: true,
             default: 0,
         },
+        status: {
+            type: String,
+            required: true,
+            default: 'pending',
+        },
         reports: {
             type: Array,
             required: true,
@@ -149,12 +154,9 @@ export default {
         intervalTime: null,
         time: 'pending',
         date: '',
-        status: 'pending',
         audit: null,
     }),
     mounted() {
-        this.updateStatus();
-
         this.intervalDate = setInterval(() => {
             this.updateTime();
         }, 60000);
@@ -169,7 +171,6 @@ export default {
         this.audit = `/api/v1/audit/wporg/${this.type}/${this.slug}/${this.version}`;
     },
     updated() {
-        this.updateStatus();
         this.updateTime();
     },
     destroyed() {
@@ -177,31 +178,6 @@ export default {
         clearInterval(this.intervalTime);
     },
     methods: {
-        updateStatus() {
-            const isFailed = Object
-                .keys(this.reports)
-                .some((report) => this.reports[report].status === 'failed');
-
-            const isInProgress = Object
-                .keys(this.reports)
-                .some((report) => this.reports[report].status === 'in-progress');
-
-            const isComplete = Object
-                .keys(this.reports)
-                .every((report) => this.reports[report].status === 'complete');
-
-            const isPending = Object
-                .keys(this.reports)
-                .every((report) => this.reports[report].status === 'pending');
-
-            if (isFailed) {
-                this.status = 'failed';
-            } else if (isComplete) {
-                this.status = 'complete';
-            } else if (isInProgress || !isPending) {
-                this.status = 'in-progress';
-            }
-        },
         updateDate() {
             this.date = timeAgo.format(this.created_datetime * 1000, 'twitter-minute-now');
         },

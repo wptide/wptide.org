@@ -8,20 +8,6 @@
     <div class="status-row__report-results">
       <div class="status-row__report-result">
         <svg
-          viewBox="0 0 24 24"
-          version="1.1"
-          height="16"
-          width="16"
-          aria-hidden="true"
-        >
-          <title>Audit attempts</title>
-          <path d="M12.25,2A9.81,9.81,0,0,0,4.77,5.46L3.41,4.25a1,1,0,0,0-1.07-.16A1,1,0,0,0,1.75,5V9a1,1,0,0,0,1,1h4.5a1,1,0,0,0,.93-.64,1,1,0,0,0-.27-1.11L6.26,6.78a7.86,7.86,0,0,1,6-2.78A8,8,0,1,1,4.72,14.67a1,1,0,0,0-1.89.66A10,10,0,1,0,12.25,2Z" />
-          <path d="M16,16a1,1,0,0,1-.6-.2l-4-3A1,1,0,0,1,11,12V8a1,1,0,0,1,2,0v3.5l3.6,2.7a1,1,0,0,1,.2,1.4A1,1,0,0,1,16,16Z" />
-        </svg>
-        {{ attempts }}
-      </div>
-      <div class="status-row__report-result">
-        <svg
           viewBox="0 0 16 16"
           version="1.1"
           height="16"
@@ -35,6 +21,20 @@
           />
         </svg>
         {{ time }}
+      </div>
+      <div class="status-row__report-result">
+        <svg
+          viewBox="0 0 24 24"
+          version="1.1"
+          height="16"
+          width="16"
+          aria-hidden="true"
+        >
+          <title>Audit attempts</title>
+          <path d="M12.25,2A9.81,9.81,0,0,0,4.77,5.46L3.41,4.25a1,1,0,0,0-1.07-.16A1,1,0,0,0,1.75,5V9a1,1,0,0,0,1,1h4.5a1,1,0,0,0,.93-.64,1,1,0,0,0-.27-1.11L6.26,6.78a7.86,7.86,0,0,1,6-2.78A8,8,0,1,1,4.72,14.67a1,1,0,0,0-1.89.66A10,10,0,1,0,12.25,2Z" />
+          <path d="M16,16a1,1,0,0,1-.6-.2l-4-3A1,1,0,0,1,11,12V8a1,1,0,0,1,2,0v3.5l3.6,2.7a1,1,0,0,1,.2,1.4A1,1,0,0,1,16,16Z" />
+        </svg>
+        {{ attempts }}
       </div>
     </div>
     <hr class="status-row__separator">

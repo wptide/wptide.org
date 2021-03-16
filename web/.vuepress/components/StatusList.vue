@@ -1,5 +1,10 @@
 <template>
   <div class="status-list">
+    <Select
+      class="status-list__select"
+      :status.sync="status"
+      :type.sync="type"
+    />
     <ul class="status-list__projects">
       <li
         :key="project.key"
@@ -19,33 +24,56 @@
 
 <script>
 import Project from './status/Project.vue';
+import Select from './status/Select.vue';
 
 export default {
     name: 'StatusList',
     components: {
+        Select,
         Project,
     },
     data: () => ({
         projects: [],
         interval: null,
         db: null,
+        status: 'any',
+        type: ['plugin', 'theme'],
     }),
     destroyed() {
         clearInterval(this.interval);
     },
     mounted() {
         window.addEventListener('load', () => {
-            this.db = window.firebase.firestore();
-            this.update();
+            this.load();
         });
+
+        setTimeout(() => {
+            this.load();
+        }, 1000);
     },
     methods: {
+        load() {
+            this.db = window.firebase.firestore();
+            this.update();
+        },
         update() {
             const that = this;
-            that.db
-                .collection('Status')
-                .orderBy('created_datetime', 'desc')
-                .limit(100)
+            let collectionRef;
+
+            if (this.status !== 'any') {
+                collectionRef = this.db.collection('Status')
+                    .where('status', '==', this.status)
+                    .where('type', 'in', this.type)
+                    .orderBy('created_datetime', 'desc')
+                    .limit(50);
+            } else {
+                collectionRef = this.db.collection('Status')
+                    .where('type', 'in', this.type)
+                    .orderBy('created_datetime', 'desc')
+                    .limit(50);
+            }
+
+            collectionRef
                 .onSnapshot((snap) => {
                     const testCollection = [];
                     snap.forEach((doc) => {
@@ -58,6 +86,14 @@ export default {
                 });
         },
     },
+    watch: {
+        status() {
+            this.update();
+        },
+        type() {
+            this.update();
+        },
+    },
 };
 </script>
 
@@ -66,8 +102,8 @@ export default {
   position relative
   padding-top 2rem
 
-.status-list__select.status-list__select
-  margin-bottom 0.75rem
+.status-list .status-list__select
+  margin-bottom 2rem
 
 .status-list__projects
   padding 0
@@ -89,8 +125,11 @@ export default {
     opacity 1
 
 @media (min-width: 1024px)
-  .status-list__select.status-list__select
+  .status-list .status-list__select
     position absolute
     right 0
-    top -7rem
+    top -10.675rem
+@media (min-width: 1084px)
+  .status-list .status-list__select
+    top -9rem
 </style>
