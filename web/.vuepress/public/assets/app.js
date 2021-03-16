@@ -36,4 +36,7 @@ const loadScript = async (url) => Promise.resolve(new Promise((resolve) => {
 
     // Initialize Firebase Analytics.
     firebase.analytics();
+
+    // Initialize Firebase Performance Monitoring.
+    firebase.performance();
 })();
