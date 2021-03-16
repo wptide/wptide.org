@@ -55,40 +55,52 @@ Please read our [Contributing](contributing/README.md) guide for details on the 
 
 ## Maintainers
 
-[Derek Herman (@derekherman)](https://github.com/derekherman), and
-[Jeff Paul (@jeffpaul)](https://github.com/jeffpaul)
+Derek Herman ([@derekherman](https://github.com/derekherman)), and
+Jeff Paul ([@jeffpaul](https://github.com/jeffpaul))
 
 ## Contributors
 
-Props: [Bartek Makoś (@MakiBM)](https://github.com/MakiBM),
-[Brendan Woods (@brendanwoods-xwp)](https://github.com/brendanwoods-xwp),
-[Cathi Bosco (@cathibosco)](https://github.com/cathibosco),
-[Daniel Louw (@danlouw)](https://github.com/danlouw),
-[David Cramer (@davidcramer)](https://github.com/davidcramer),
-[David Lonjon (@davidlonjon)](https://github.com/davidlonjon),
-[Derek Herman (@derekherman)](https://github.com/derekherman),
-[Dušan D. Majkić (@dmajkic)](https://github.com/dmajkic),
-[Ivan Kruchkoff (@ivankruchkoff)](https://github.com/ivankruchkoff),
-[Janki Moradiya (@jankimoradiya)](https://github.com/jankimoradiya),
-[Jeff Paul (@jeffpaul)](https://github.com/jeffpaul),
-[Jonathan Wold (@sirjonathan)](https://github.com/sirjonathan),
-[Joshua Wold (@jwold)](https://github.com/jwold),
-[Justin Kopepasah (@kopepasah)](https://github.com/kopepasah),
-[Keanan Koppenhaver (@kkoppenhaver)](https://github.com/kkoppenhaver),
-[Leo Postovoit (@postphotos)](https://github.com/postphotos),
-[Lubos Kmetko (@luboskmetko)](https://github.com/luboskmetko),
-[Luke Carbis (@lukecarbis)](https://github.com/lukecarbis),
-[Meet Makadia (@mrmakadia94)](https://github.com/mrmakadia94),
-[Miina Sikk (@miina)](https://github.com/miina),
-[Mike Crantea (@mehigh)](https://github.com/mehigh),
-[Otto Kekäläinen (@ottok)](https://github.com/ottok),
-[Pierre Gordon (@pierlon)](https://github.com/pierlon),
-[Scott Reilly (@coffee2code)](https://github.com/coffee2code),
-[Rheinard Korf (@rheinardkorf)](https://github.com/rheinardkorf),
-[Rob Stinson (@robstino)](https://github.com/robstino),
-[Sayed Taqui (@sayedtaqui)](https://github.com/sayedtaqui),
-[Ulrich Pogson (@grappler)](https://github.com/grappler),
-[Utkarsh Patel (@PatelUtkarsh)](https://github.com/PatelUtkarsh)
+**Props**: Anthony Burchell ([@antpb](https://github.com/antpb)),
+Derek Herman ([@derekherman](https://github.com/derekherman)),
+Jeff Paul ([@jeffpaul](https://github.com/jeffpaul)),
+Jozef Benko ([joe-xwp](https://github.com/joe-xwp)),
+Ivan Kruchkoff ([@ivankruchkoff](https://github.com/ivankruchkoff)),
+Piotr Bajer ([@piotr-bajer](https://github.com/piotr-bajer))
+
+---
+
+The following contributors are those that helped support, manage, design, or develop Tide before the refactor to Node from Golang.
+
+**Props**: Alberto A. Medina ([@amedina](https://github.com/amedina)),
+Bartek Makoś ([@MakiBM](https://github.com/MakiBM)),
+Brendan Woods ([@brendanwoods-xwp](https://github.com/brendanwoods-xwp)),
+Cathi Bosco ([@cathibosco](https://github.com/cathibosco)),
+Daniel Louw ([@danlouw](https://github.com/danlouw)),
+David Cramer ([@davidcramer](https://github.com/davidcramer)),
+David Lonjon ([@davidlonjon](https://github.com/davidlonjon)),
+Derek Herman ([@derekherman](https://github.com/derekherman)),
+Dušan D. Majkić ([@dmajkic](https://github.com/dmajkic)),
+Ilya Grigorik ([@igrigorik](https://github.com/igrigorik)),
+Janki Moradiya ([@jankimoradiya](https://github.com/jankimoradiya)),
+Jeff Paul ([@jeffpaul](https://github.com/jeffpaul)),
+Jonathan Wold ([@sirjonathan](https://github.com/sirjonathan)),
+Joshua Wold ([@jwold](https://github.com/jwold)),
+Justin Kopepasah ([@kopepasah](https://github.com/kopepasah)),
+Keanan Koppenhaver ([@kkoppenhaver](https://github.com/kkoppenhaver)),
+Leo Postovoit ([@postphotos](https://github.com/postphotos)),
+Lubos Kmetko ([@luboskmetko](https://github.com/luboskmetko)),
+Luke Carbis ([@lukecarbis](https://github.com/lukecarbis)),
+Meet Makadia ([@mrmakadia94](https://github.com/mrmakadia94)),
+Miina Sikk ([@miina](https://github.com/miina)),
+Mike Crantea ([@mehigh](https://github.com/mehigh)),
+Otto Kekäläinen ([@ottok](https://github.com/ottok)),
+Pierre Gordon ([@pierlon](https://github.com/pierlon)),
+Scott Reilly ([@coffee2code](https://github.com/coffee2code)),
+Rheinard Korf ([@rheinardkorf](https://github.com/rheinardkorf)),
+Rob Stinson ([@robstino](https://github.com/robstino)),
+Sayed Taqui ([@sayedtaqui](https://github.com/sayedtaqui)),
+Ulrich Pogson ([@grappler](https://github.com/grappler)),
+Utkarsh Patel ([@PatelUtkarsh](https://github.com/PatelUtkarsh))
 
 ## Contact Us
 
