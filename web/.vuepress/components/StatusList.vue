@@ -35,11 +35,18 @@ export default {
     },
     mounted() {
         window.addEventListener('load', () => {
-            this.db = window.firebase.firestore();
-            this.update();
+            this.load();
         });
+
+        setTimeout(() => {
+            this.load();
+        }, 1000);
     },
     methods: {
+        load() {
+            this.db = window.firebase.firestore();
+            this.update();
+        },
         update() {
             const that = this;
             that.db
