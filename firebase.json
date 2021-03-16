@@ -3,7 +3,8 @@
     "source": "app"
   },
   "firestore": {
-    "rules": "firestore.rules"
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
   },
   "hosting": {
     "public": "web/.vuepress/dist",
