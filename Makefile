@@ -56,7 +56,10 @@ deploy.firestore: setup
 	@gcloud firestore databases create --region=us-central
 
 deploy.firebase:
-	@firebase deploy
+	@firebase --project=${GOOGLE_CLOUD_PROJECT} deploy --only hosting
+
+deploy.firestore:
+	@firebase --project=${GOOGLE_CLOUD_PROJECT} deploy --only firestore
 
 deploy.lighthouse: setup
 	@gcloud run deploy lighthouse-server --no-allow-unauthenticated --image gcr.io/${GOOGLE_CLOUD_PROJECT}/lighthouse:${VERSION} --memory ${GOOGLE_CLOUD_RUN_LIGHTHOUSE_MEMORY} --concurrency 1
@@ -113,3 +116,6 @@ describe.phpcs: setup
 
 describe.sync: setup
 	@gcloud run services describe sync-server --format 'value(status.url)'
+
+delete.firestore:
+	@firebase --project=${GOOGLE_CLOUD_PROJECT} firestore:delete --all-collections
