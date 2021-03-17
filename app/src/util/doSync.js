@@ -23,7 +23,7 @@ const doSync = async () => {
     };
     const ingest = delta.ingest || false;
     const limitPageOne = (!ingest && !delta.theme && !delta.plugin);
-    const versions = limitPageOne ? 1 : ingest ? -1 : 0; /* eslint-disable-line no-nested-ternary */
+    const versions = limitPageOne || ingest ? 1 : 0;
 
     const getSyncListPage = async (page, type) => getSyncList({
         'request[browse]': 'updated',
