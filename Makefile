@@ -15,6 +15,10 @@ setup.cloud: setup
 	@gcloud services enable containerregistry.googleapis.com
 	@gcloud services enable run.googleapis.com
 
+setup.firestore: setup
+	@gcloud app create --region=us-central
+	@gcloud firestore databases create --region=us-central
+
 setup.iam: setup
 	@gcloud iam service-accounts create tide-run-server --display-name "Tide Cloud Run Server"
 
@@ -50,10 +54,6 @@ deploy.api: setup
 
 deploy.spec: setup
 	@gcloud functions deploy spec --source app --allow-unauthenticated --runtime nodejs12 --trigger-http
-
-deploy.firestore: setup
-	@gcloud app create --region=us-central
-	@gcloud firestore databases create --region=us-central
 
 deploy.firebase:
 	@firebase --project=${GOOGLE_CLOUD_PROJECT} deploy --only hosting
