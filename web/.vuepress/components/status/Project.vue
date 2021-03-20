@@ -193,6 +193,10 @@ export default {
                 }
             });
 
+            if (this.status === 'failed') {
+                datetime.push(this.created_datetime);
+            }
+
             if (this.status === 'in-progress') {
                 datetime.push(Math.floor(Date.now() / 1000));
             } else {
