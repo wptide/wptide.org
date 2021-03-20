@@ -75,6 +75,8 @@ describe('canProceed', () => {
             },
         };
         firestoreGet.mockResolvedValue(statusDoc);
+        firestoreSet.mockResolvedValueOnce(false);
+        firestoreSet.mockResolvedValueOnce(true);
         await canProceed('lighthouse', statusDoc.id);
         const expectedStatusDoc = {
             ...statusDoc,
@@ -95,13 +97,14 @@ describe('canProceed', () => {
             reports: {
                 lighthouse: {
                     attempts: 0,
-                    start_datetime: 1,
+                    start_datetime: null,
                 },
             },
         };
         const timeNow = 1000;
         dateTime.mockReturnValue(timeNow);
         firestoreGet.mockResolvedValue(statusDoc);
+        firestoreSet.mockResolvedValue(true);
         const returnStatus = await canProceed(statusDoc.type, statusDoc.id);
         const expectedDoc = Object.assign(statusDoc, {
             reports: {
@@ -161,6 +164,7 @@ describe('canProceed', () => {
         const currentTime = 1000;
         dateTime.mockReturnValue(currentTime);
         firestoreGet.mockResolvedValueOnce(statusDoc);
+        firestoreSet.mockResolvedValue(true);
         const returnStatus = await canProceed(statusDoc.type, statusDoc.id);
         expect(returnStatus).toEqual(false);
         statusDoc.reports.lighthouse.status = 'failed';

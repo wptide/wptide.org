@@ -23,9 +23,19 @@ beforeEach(() => {
  */
 describe('firestore', () => {
     it('setReportDoc responds with correct data', async () => {
+        firestoreSet.mockResolvedValueOnce(true);
         await setReportDoc('12345', {});
 
         expect(firestoreSet).toBeCalledWith('Report/12345', {});
         expect(firestoreSet).toBeCalledTimes(1);
+    });
+
+    it('setReportDoc responds with correct data after first failed write attempt', async () => {
+        firestoreSet.mockResolvedValueOnce(false);
+        firestoreSet.mockResolvedValueOnce(true);
+        await setReportDoc('12345', {});
+
+        expect(firestoreSet).toBeCalledWith('Report/12345', {});
+        expect(firestoreSet).toBeCalledTimes(2);
     });
 });
