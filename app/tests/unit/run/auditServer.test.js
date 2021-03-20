@@ -234,7 +234,7 @@ describe('The auditServer HTTP handler', () => {
         spy.mockRestore();
     });
 
-    it('Successfully performs the an audit', async () => {
+    it('Successfully performs the audit', async () => {
         const spy = jest.spyOn(console, 'log').mockImplementation();
         const req = mock.req();
         const res = mock.res();
@@ -280,7 +280,7 @@ describe('The auditServer HTTP handler', () => {
         spy.mockRestore();
     });
 
-    it('Successfully performs the an audit using the Lighthouse Reporter', async () => {
+    it('Successfully performs the audit using the Lighthouse Reporter', async () => {
         const spy = jest.spyOn(console, 'log').mockImplementation();
         const req = mock.req();
         const res = mock.res();
