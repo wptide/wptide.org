@@ -64,11 +64,7 @@ const getAudit = async (req, res) => {
             if (existingAuditData) {
                 existingAuditData = await addMissingAuditReports(existingAuditData);
 
-                const addCache = Object
-                    .keys(existingAuditData.reports)
-                    .every((report) => !!existingAuditData.reports[report]);
-
-                if (addCache) {
+                if (existingAuditData.status === 'complete') {
                     res.set('Cache-control', 'public, max-age=86400');
                 }
 

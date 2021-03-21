@@ -84,6 +84,7 @@ describe('doSync', () => {
         getSyncList.mockResolvedValueOnce(theme);
         makeAuditRequest.mockResolvedValueOnce(true);
         makeAuditRequest.mockResolvedValueOnce(true);
+        firestoreSet.mockResolvedValue(true);
         await doSync();
 
         expect(makeAuditRequest).toBeCalledWith({ type: 'plugin', slug: 'custom-plugin-10', version: '1.1.0' });
@@ -142,6 +143,7 @@ describe('doSync', () => {
             queue: [{ type: 'theme', slug: 'custom-theme-2', version: '2.0.0' }],
         });
         getSyncList.mockResolvedValueOnce(null);
+        firestoreSet.mockResolvedValue(true);
 
         await doSync();
 

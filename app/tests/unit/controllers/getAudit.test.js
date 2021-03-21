@@ -264,6 +264,7 @@ describe('The getAudit route handler', () => {
             created_datetime: currentTime,
             modified_datetime: currentTime,
             source_url: 'https://downloads.wordpress.org/plugin/fooslug.2.zip',
+            status: 'pending',
             reports: {
                 phpcs_phpcompatibilitywp: null,
             },
@@ -277,7 +278,7 @@ describe('The getAudit route handler', () => {
 
         expect(firestoreSet).toHaveBeenCalledWith(`Audit/${expectedAudit.id}`, expectedAudit);
         expect(publishMessage).toHaveBeenCalledWith(expectedMessage, 'MESSAGE_TYPE_PHPCS_REQUEST');
-        expect(res.set).toHaveBeenCalledWith('Cache-control', 'public, max-age=86400');
+        expect(res.set).toHaveBeenCalledWith('Cache-control', 'no-store');
     });
 
     it('Publishes a phpcs and lighthouse audit message when we have the latest valid theme', async () => {
@@ -301,6 +302,7 @@ describe('The getAudit route handler', () => {
             created_datetime: currentTime,
             modified_datetime: currentTime,
             source_url: 'https://downloads.wordpress.org/theme/fooslug.2.0.1.zip',
+            status: 'pending',
             reports: {
                 lighthouse: null,
                 phpcs_phpcompatibilitywp: null,
@@ -399,5 +401,30 @@ describe('The getAudit route handler', () => {
         expect(firestoreSet).toHaveBeenCalledWith(`Status/${expectedAudit.id}`, expectedNewStatus);
         expect(publishMessage).toHaveBeenCalledWith(expectedMessage, 'MESSAGE_TYPE_LIGHTHOUSE_REQUEST');
         expect(res.set).toHaveBeenCalledWith('Cache-control', 'no-store');
+    });
+
+    it('Responds with a cached result', async () => {
+        const req = mock.req();
+        const res = mock.res();
+        req.params = {
+            type: 'plugin',
+            slug: 'fooslug',
+            version: '2',
+        };
+        const currentTime = 1000;
+        dateTime.mockReturnValue(currentTime);
+        firestoreGet.mockResolvedValueOnce({
+            ...req.params,
+            id: 'f4d5b369004513a9eeb691e19f1c17c2f05888485b4342f31ee5ec981c8f60c0',
+            created_datetime: currentTime,
+            modified_datetime: currentTime,
+            source_url: 'https://downloads.wordpress.org/plugin/fooslug.2.zip',
+            status: 'complete',
+            reports: {
+                phpcs_phpcompatibilitywp: 12345,
+            },
+        });
+        await getAudit(req, res);
+        expect(res.set).toHaveBeenCalledWith('Cache-control', 'public, max-age=86400');
     });
 });

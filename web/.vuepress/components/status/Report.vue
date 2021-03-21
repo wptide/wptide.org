@@ -72,11 +72,6 @@ export default {
             required: false,
             default: 0,
         },
-        status_datetime: {
-            type: Number,
-            required: true,
-            default: 0,
-        },
         end_datetime: {
             type: Number,
             required: false,
@@ -111,8 +106,6 @@ export default {
                 datetime.push(Math.floor(Date.now() / 1000));
             } else if (this.end_datetime) {
                 datetime.push(this.end_datetime);
-            } else {
-                datetime.push(this.status_datetime);
             }
 
             const time = processTime(Math.floor(Math.abs(Math.max(...datetime) - Math.min(...datetime))));

@@ -35,4 +35,21 @@ describe('phpcsReporter', () => {
         });
         expect(data.source_url).toBe('https://downloads.wordpress.org/theme/twentytwenty.1.6.zip');
     });
+
+    it('report is not generated', async () => {
+        const spy = jest.spyOn(console, 'log').mockImplementation();
+        phpcsDownloader.mockImplementation(() => {
+            throw new Error('Something bad happened');
+        });
+        phpcsProcessor.mockResolvedValue(false);
+        phpcsRemover.mockResolvedValue(true);
+        const data = await phpcsReporter({
+            slug: 'fake',
+            version: '0',
+            type: 'plugin',
+        });
+
+        expect(data).toBe(false);
+        spy.mockRestore();
+    });
 });

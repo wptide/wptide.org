@@ -6,13 +6,13 @@ const { getStatusDoc, setStatusDoc } = require('../integrations/firestore');
 const { setAuditStatus } = require('./setAuditStatus');
 
 const MAX_DURATION = 300; // Max audit duration in seconds.
-const MAX_ATTEMPTS = 3; // Max number of times we can attempt the same audit
+const MAX_ATTEMPTS = 2; // Max number of times we can attempt the same audit, must be > 1.
 
 /**
  * A gatekeeper for whether or not we can proceed with an audit
  *
  * @param   {string}  type Audit type being performed (e.g. lighthouse)
- * @param   {string}  id   The audit params.
+ * @param   {string}  id   The audit ID.
  * @returns {boolean}      True if we can proceed or throws error if we cannot.
  */
 const canProceed = async (type, id) => {
@@ -31,44 +31,42 @@ const canProceed = async (type, id) => {
     }
 
     const minTime = timeNow - MAX_DURATION;
+    const report = statusDoc.reports[type];
 
     statusDoc.modified_datetime = timeNow;
 
-    if (statusDoc.reports[type].status === 'complete') {
+    if (report.status === 'complete') {
         console.log(`Audit ${statusDoc.id} has already been completed.`);
         return false;
-    } if (statusDoc.reports[type].status === 'failed') {
-        throw new Error(`Audit ${statusDoc.id} has already failed.`);
     }
 
-    if (statusDoc.reports[type].attempts === 0) {
-        statusDoc.reports[type].attempts = 1;
-        statusDoc.reports[type].status = 'in-progress';
-        statusDoc.reports[type].start_datetime = timeNow;
-    } else if (
-        statusDoc.reports[type].start_datetime
-        && statusDoc.reports[type].start_datetime < minTime
-    ) {
-        statusDoc.reports[type].attempts += 1;
-        statusDoc.reports[type].start_datetime = timeNow;
-        if (statusDoc.reports[type].attempts <= MAX_ATTEMPTS) {
-            console.log(`Running too long, incrementing attempts ${JSON.stringify(statusDoc)}`);
-        }
-    } else {
-        throw new Error(`Audit ${statusDoc.id} is still in progress.`);
+    if (report.status === 'failed' && report.attempts >= MAX_ATTEMPTS) {
+        console.log(`Audit ${statusDoc.id} has already failed.`);
+        return false;
     }
 
-    if (statusDoc.reports[type].attempts > MAX_ATTEMPTS) {
+    if (report.attempts >= MAX_ATTEMPTS) {
         statusDoc.status = 'failed';
         statusDoc.reports[type].status = 'failed';
+        statusDoc.reports[type].end_datetime = timeNow;
         await setStatusDoc(id, statusDoc);
         console.log(`Too many attempts, not proceeding ${JSON.stringify(statusDoc)}`);
         return false;
     }
 
+    if (report.attempts === 0 || report.start_datetime === null) {
+        statusDoc.reports[type].attempts = 1;
+        statusDoc.reports[type].status = 'in-progress';
+        statusDoc.reports[type].start_datetime = timeNow;
+    } else if (report.status === 'failed' || report.start_datetime < report.attempts * minTime) {
+        statusDoc.reports[type].attempts += 1;
+        console.log(`Incrementing attempts ${JSON.stringify(statusDoc)}`);
+    } else {
+        throw new Error(`Audit ${statusDoc.id} is still in progress.`);
+    }
+
     statusDoc.status = setAuditStatus(statusDoc);
-    await setStatusDoc(id, statusDoc);
-    return true;
+    return setStatusDoc(id, statusDoc);
 };
 
 module.exports = {

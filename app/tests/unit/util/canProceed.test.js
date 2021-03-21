@@ -57,12 +57,12 @@ describe('canProceed', () => {
         expect(errorMessage).toEqual('The status doc does not exist');
     });
 
-    it.each([1, 2])('Can retry after %s attempts', async (retryCount) => {
+    it.each([0, 1])('Can proceed when attempts is set to %s', async (retryCount) => {
         const currentTime = 1000 * (retryCount + 1);
         dateTime.mockReturnValue(currentTime);
         const statusDoc = {
             id: '12345abced',
-            type: 'lighthouse',
+            type: 'theme',
             slug: 'fake-slug',
             version: '1.0.0',
             created_datetime: 1,
@@ -70,39 +70,43 @@ describe('canProceed', () => {
             reports: {
                 lighthouse: {
                     attempts: retryCount,
-                    start_datetime: 1,
+                    start_datetime: null,
                 },
             },
         };
         firestoreGet.mockResolvedValue(statusDoc);
-        await canProceed('lighthouse', statusDoc.id);
+        firestoreSet.mockResolvedValue(true);
+        const returnStatus = await canProceed('lighthouse', statusDoc.id);
         const expectedStatusDoc = {
             ...statusDoc,
         };
         expectedStatusDoc.reports.lighthouse.attempts = retryCount + 1;
         expectedStatusDoc.reports.lighthouse.start_datetime = currentTime;
         expect(firestoreSet).toHaveBeenCalledWith(`Status/${statusDoc.id}`, expectedStatusDoc);
+        expect(returnStatus).toBe(true);
     });
 
     it('Returns true when we first run an audit', async () => {
         const statusDoc = {
             id: '12345abced',
-            type: 'lighthouse',
+            type: 'theme',
             slug: 'fake-slug',
             version: '1.0.0',
             created_datetime: 1,
             modified_datetime: 1,
+            status: 'pending',
             reports: {
                 lighthouse: {
                     attempts: 0,
-                    start_datetime: 1,
+                    start_datetime: null,
                 },
             },
         };
         const timeNow = 1000;
         dateTime.mockReturnValue(timeNow);
         firestoreGet.mockResolvedValue(statusDoc);
-        const returnStatus = await canProceed(statusDoc.type, statusDoc.id);
+        firestoreSet.mockResolvedValue(true);
+        const returnStatus = await canProceed('lighthouse', statusDoc.id);
         const expectedDoc = Object.assign(statusDoc, {
             reports: {
                 lighthouse: {
@@ -112,14 +116,14 @@ describe('canProceed', () => {
             },
         });
         expect(firestoreSet).toHaveBeenCalledWith(`Status/${statusDoc.id}`, expectedDoc);
-        expect(returnStatus).toEqual(true);
+        expect(returnStatus).toBe(true);
     });
 
     it('Throws an error when we want to run an audit while one is in progress', async () => {
         let errorMessage;
         const statusDoc = {
             id: '12345abced',
-            type: 'lighthouse',
+            type: 'theme',
             slug: 'fake-slug',
             version: '1.0.0',
             created_datetime: 1,
@@ -135,24 +139,24 @@ describe('canProceed', () => {
         dateTime.mockReturnValue(timeNow);
         firestoreGet.mockResolvedValue(statusDoc);
         try {
-            await canProceed(statusDoc.type, statusDoc.id);
+            await canProceed('lighthouse', statusDoc.id);
         } catch (error) {
             errorMessage = error.message;
         }
         expect(errorMessage).toEqual('Audit 12345abced is still in progress.');
     });
 
-    it('Returns false when we try and run an audit a fourth time', async () => {
+    it('Returns false when we try and run an audit a third time', async () => {
         const statusDoc = {
             id: '12345abced',
-            type: 'lighthouse',
+            type: 'theme',
             slug: 'fake-slug',
             version: '1.0.0',
             created_datetime: 1,
             modified_datetime: 1,
             reports: {
                 lighthouse: {
-                    attempts: 3,
+                    attempts: 2,
                     start_datetime: 1,
                     status: 'pending',
                 },
@@ -161,7 +165,8 @@ describe('canProceed', () => {
         const currentTime = 1000;
         dateTime.mockReturnValue(currentTime);
         firestoreGet.mockResolvedValueOnce(statusDoc);
-        const returnStatus = await canProceed(statusDoc.type, statusDoc.id);
+        firestoreSet.mockResolvedValue(true);
+        const returnStatus = await canProceed('lighthouse', statusDoc.id);
         expect(returnStatus).toEqual(false);
         statusDoc.reports.lighthouse.status = 'failed';
         expect(firestoreSet).toHaveBeenCalledWith(`Status/${statusDoc.id}`, statusDoc);
@@ -170,7 +175,7 @@ describe('canProceed', () => {
     it('Returns false when we have already completed the audit', async () => {
         const statusDoc = {
             id: '12345abced',
-            type: 'lighthouse',
+            type: 'theme',
             slug: 'fake-slug',
             version: '1.0.0',
             created_datetime: 1,
@@ -186,35 +191,30 @@ describe('canProceed', () => {
         const currentTime = 1000;
         dateTime.mockReturnValue(currentTime);
         firestoreGet.mockResolvedValue(statusDoc);
-        const returnStatus = await canProceed(statusDoc.type, statusDoc.id);
+        const returnStatus = await canProceed('lighthouse', statusDoc.id);
         expect(returnStatus).toEqual(false);
     });
 
-    it('Throws an error when the audit previously failed', async () => {
-        let errorMessage;
-        try {
-            const statusDoc = {
-                id: '12345abced',
-                type: 'lighthouse',
-                slug: 'fake-slug',
-                version: '1.0.0',
-                created_datetime: 1,
-                modified_datetime: 1,
-                reports: {
-                    lighthouse: {
-                        attempts: 1,
-                        start_datetime: 1000,
-                        status: 'failed',
-                    },
+    it('Returns false when the audit previously failed', async () => {
+        const statusDoc = {
+            id: '12345abced',
+            type: 'theme',
+            slug: 'fake-slug',
+            version: '1.0.0',
+            created_datetime: 1,
+            modified_datetime: 1,
+            reports: {
+                lighthouse: {
+                    attempts: 2,
+                    start_datetime: 1000,
+                    status: 'failed',
                 },
-            };
-            const currentTime = 1000;
-            dateTime.mockReturnValue(currentTime);
-            firestoreGet.mockResolvedValue(statusDoc);
-            await canProceed(statusDoc.type, statusDoc.id);
-        } catch (error) {
-            errorMessage = error.message;
-        }
-        expect(errorMessage).toEqual('Audit 12345abced has already failed.');
+            },
+        };
+        const currentTime = 1000;
+        dateTime.mockReturnValue(currentTime);
+        firestoreGet.mockResolvedValue(statusDoc);
+        const returnStatus = await canProceed('lighthouse', statusDoc.id);
+        expect(returnStatus).toEqual(false);
     });
 });

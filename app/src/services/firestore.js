@@ -55,7 +55,7 @@ const get = async (documentPath) => getFirestore()
 const set = async (documentPath, data) => getFirestore()
     .doc(documentPath)
     .set(data)
-    .then((res) => !!res.updateTime)
+    .then((res) => !!res.updateTime || Object.keys(res).includes('_writeTime'))
     .catch((err) => {
         console.log(err);
         return false;
