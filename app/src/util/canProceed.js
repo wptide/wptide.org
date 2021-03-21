@@ -38,8 +38,11 @@ const canProceed = async (type, id) => {
     if (report.status === 'complete') {
         console.log(`Audit ${statusDoc.id} has already been completed.`);
         return false;
-    } if (report.status === 'failed') {
-        throw new Error(`Audit ${statusDoc.id} has already failed.`);
+    }
+
+    if (report.status === 'failed' && report.attempts >= MAX_ATTEMPTS) {
+        console.log(`Audit ${statusDoc.id} has already failed.`);
+        return false;
     }
 
     if (report.attempts >= MAX_ATTEMPTS) {
@@ -55,9 +58,9 @@ const canProceed = async (type, id) => {
         statusDoc.reports[type].attempts = 1;
         statusDoc.reports[type].status = 'in-progress';
         statusDoc.reports[type].start_datetime = timeNow;
-    } else if (report.start_datetime < report.attempts * minTime) {
+    } else if (report.status === 'failed' || report.start_datetime < report.attempts * minTime) {
         statusDoc.reports[type].attempts += 1;
-        console.log(`Running too long, incrementing attempts ${JSON.stringify(statusDoc)}`);
+        console.log(`Incrementing attempts ${JSON.stringify(statusDoc)}`);
     } else {
         throw new Error(`Audit ${statusDoc.id} is still in progress.`);
     }

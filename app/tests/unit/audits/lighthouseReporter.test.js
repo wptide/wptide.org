@@ -33,4 +33,14 @@ describe('lighthouseReporter', () => {
         const LH = await lighthouseReporter({ slug: 'twentytwenty' });
         expect(LH).toHaveProperty('source_url');
     });
+
+    it('report is not generated', async () => {
+        const spy = jest.spyOn(console, 'log').mockImplementation();
+        lighthouse.mockImplementation(() => {
+            throw new Error('Something bad happened');
+        });
+        const data = await lighthouseReporter({ slug: 'twentytwenty' });
+        expect(data).toBe(false);
+        spy.mockRestore();
+    });
 });

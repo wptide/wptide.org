@@ -11,6 +11,37 @@ const { sendError } = require('../util/sendError');
 const { setAuditStatus } = require('../util/setAuditStatus');
 
 /**
+ * Delay processing the next line of code with a promise.
+ *
+ * @param   {number}        min The minimum time to delay.
+ * @param   {number}        max The maximum time to delay.
+ * @returns {Promise<void>}     The delayed promise.
+ */
+const delay = async (min, max) => {
+    const ms = Math.floor(Math.random() * (max - min + 1)) + min;
+    await new Promise((resolve) => setTimeout(resolve, ms));
+};
+
+/**
+ * Helper to set the status.
+ *
+ * @param   {string} id       The status doc ID.
+ * @param   {string} type     The audit type.
+ * @param   {string} status   The status to set.
+ * @param   {number} datetime The value of a call to dateTime().
+ * @returns {string}          The current status.
+ */
+const setStatus = async (id, type, status, datetime) => {
+    const data = await getStatusDoc(id);
+    data.modified_datetime = datetime;
+    data.reports[type].end_datetime = datetime;
+    data.reports[type].status = status;
+    data.status = setAuditStatus(data);
+    await setStatusDoc(id, data);
+    return data.status;
+};
+
+/**
  * Audit Server helper to handle Pub/Sub HTTP requests.
  *
  * @param   {object}   req      The HTTP Request.
@@ -22,6 +53,13 @@ const { setAuditStatus } = require('../util/setAuditStatus');
  */
 exports.auditServer = async (req, res, reporter, type, name) => {
     try {
+        /**
+         * We need to add some randomness because there's a chance of a race condition
+         * on the resource with multiple audit servers attempting to do simultaneous
+         * synchronous writes.
+         */
+        await delay(1, 1000);
+
         const now = Date.now();
         const validation = {
             message: 'Request has validation errors',
@@ -128,6 +166,29 @@ exports.auditServer = async (req, res, reporter, type, name) => {
 
         const createdDate = dateTime();
         const processTime = Date.now() - now;
+        const hasPhpcs = (
+            type === 'phpcs_phpcompatibilitywp'
+            && reportData
+            && reportData.report
+            && (
+                reportData.report.compatible.length !== 0
+                || reportData.report.incompatible.length !== 0
+            )
+        );
+        const hasLighthouse = (
+            type === 'lighthouse'
+            && reportData
+            && reportData.report
+        );
+
+        if (!(hasPhpcs || hasLighthouse)) {
+            console.log(`${name} audit for ${message.slug} v${message.version} failed in ${processTime}ms.`);
+            audit.status = await setStatus(message.id, type, 'failed', createdDate);
+            audit.modified_datetime = createdDate;
+            await setAuditDoc(message.id, audit);
+            return res.status(500).send();
+        }
+
         const report = {
             id: reportId,
             type,
@@ -142,15 +203,8 @@ exports.auditServer = async (req, res, reporter, type, name) => {
             ...reportData,
         };
 
-        // Set the Status.
-        const status = await getStatusDoc(message.id);
-        status.modified_datetime = createdDate;
-        status.reports[type].end_datetime = createdDate;
-        status.reports[type].status = 'complete';
-        status.status = setAuditStatus(status);
-        await setStatusDoc(message.id, status);
-
         // Save the Audit.
+        audit.status = await setStatus(message.id, type, 'complete', createdDate);
         audit.modified_datetime = createdDate;
         audit.reports[type] = {
             id: reportId,

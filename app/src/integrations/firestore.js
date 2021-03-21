@@ -38,45 +38,11 @@ const getAuditDoc = async (id) => {
             source_url: audit.source_url,
             created_datetime: audit.created_datetime,
             modified_datetime: audit.modified_datetime,
+            status: audit.status,
         }, audit);
     }
 
     return null;
-};
-
-/**
- * Delay processing the next line of code with a promise.
- *
- * @param   {number}        min The minimum time to delay.
- * @param   {number}        max The maximum time to delay.
- * @returns {Promise<void>}     The delayed promise.
- */
-const delay = async (min, max) => {
-    const ms = Math.floor(Math.random() * (max - min + 1)) + min;
-    await new Promise((resolve) => setTimeout(resolve, ms));
-};
-
-/**
- * Wrapper to set the document data.
- *
- * We need to add some randomness and a second write request on failure, because
- * there's a chance of a race condition on the resource with multiple audit servers
- * attempting to do simultaneous synchronous writes.
- *
- * @param   {string}  id   The document ID.
- * @param   {object}  data The document data.
- * @returns {boolean}      Document was successful set.
- */
-const setData = async (id, data) => {
-    // Add some randomness of 1-50ms delay.
-    await delay(1, 50);
-    if (await set(id, data)) {
-        return true;
-    }
-
-    // Try again on failure with a higher 50-150ms delay.
-    await delay(50, 150);
-    return set(id, data);
 };
 
 /**
@@ -86,7 +52,7 @@ const setData = async (id, data) => {
  * @param   {object} data Audit contents.
  * @returns {string}      Key
  */
-const setAuditDoc = async (id, data) => setData(`${auditCollection}/${id}`, data);
+const setAuditDoc = async (id, data) => set(`${auditCollection}/${id}`, data);
 
 /**
  * Gets a status document.
@@ -103,7 +69,7 @@ const getStatusDoc = async (id) => get(`${statusCollection}/${id}`);
  * @param   {object} data Status contents.
  * @returns {string}      Key
  */
-const setStatusDoc = async (id, data) => setData(`${statusCollection}/${id}`, data);
+const setStatusDoc = async (id, data) => set(`${statusCollection}/${id}`, data);
 
 /**
  * Sets a sync document
@@ -112,7 +78,7 @@ const setStatusDoc = async (id, data) => setData(`${statusCollection}/${id}`, da
  * @param   {object} data Sync contents.
  * @returns {string}      Key
  */
-const setSyncDoc = async (id, data) => setData(`${syncCollection}/${id}`, data);
+const setSyncDoc = async (id, data) => set(`${syncCollection}/${id}`, data);
 
 /**
  * Gets a sync document.
@@ -137,7 +103,7 @@ const getIngestSnapshot = async (limit) => snapshot(ingestCollection, limit);
  * @param   {object} data Ingest contents.
  * @returns {string}      Key
  */
-const setIngestDoc = async (id, data) => setData(`${ingestCollection}/${id}`, data);
+const setIngestDoc = async (id, data) => set(`${ingestCollection}/${id}`, data);
 
 /**
  * Deletes an ingest document.
@@ -180,7 +146,7 @@ const getReportDoc = async (id) => {
  * @param   {object} data Report contents.
  * @returns {string}      Key
  */
-const setReportDoc = async (id, data) => setData(`${reportCollection}/${id}`, data);
+const setReportDoc = async (id, data) => set(`${reportCollection}/${id}`, data);
 
 module.exports = {
     getAuditDoc,

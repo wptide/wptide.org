@@ -60,6 +60,7 @@ const createNewAudit = async (id, params) => {
             created_datetime: timeNow,
             modified_datetime: timeNow,
             source_url: sourceUrl,
+            status: 'pending',
             reports: {},
         };
         const statusObj = {

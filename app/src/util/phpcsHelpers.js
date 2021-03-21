@@ -19,7 +19,7 @@ const { download } = require('./download');
  * @returns {object}         The phpcs report.
  */
 const phpcsRunner = (version, dir, app) => {
-    const command = `${app}/vendor/bin/phpcs -q -p . --standard=PHPCompatibilityWP --extensions=php --runtime-set testVersion ${version} --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1 --report=json`;
+    const command = `${app}/vendor/bin/phpcs -q -n -d memory_limit=-1 --standard=PHPCompatibilityWP --extensions=php --parallel=16 --report=json --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1 --runtime-set testVersion ${version} .`;
     return execSync(command, { cwd: dir }).toString();
 };
 
@@ -35,7 +35,7 @@ const phpcsRunner = (version, dir, app) => {
 const phpcsDownloader = async (url, dir, filename) => {
     fs.mkdirSync(dir, { recursive: true });
     await download(url, `${dir}${filename}`);
-    execSync(`unzip ${filename}`, { cwd: dir });
+    execSync(`unzip -o ${filename}`, { cwd: dir });
 };
 
 /**
@@ -88,27 +88,35 @@ const phpcsProcessor = (url, dir, app) => {
 
     // Generate & store PHPCS reports.
     ['5.6', '7.0', '7.1', '7.2', '7.3', '7.4', '8.0'].forEach((version) => {
-        const output = phpcsRunner(version, dir, app);
-        const parsedOutput = JSON.parse(output);
+        try {
+            const output = phpcsRunner(version, dir, app);
+            const parsedOutput = JSON.parse(output);
 
-        // Remove the file path.
-        Object.keys(parsedOutput.files).forEach((key) => {
-            const newKey = key.replace(dir, '');
-            parsedOutput.files[newKey] = parsedOutput.files[key];
-            delete parsedOutput.files[key];
-        });
+            if (!['files', 'totals'].every((v) => Object.keys(parsedOutput).includes(v))) {
+                throw new Error(`Missing data for PHP v${version}`);
+            }
 
-        // Add versions to compatible/incompatible arrays.
-        const status = parsedOutput.totals.errors === 0 ? 'compatible' : 'incompatible';
-        data.report[status].push(version);
+            // Remove the file path.
+            Object.keys(parsedOutput.files).forEach((key) => {
+                const newKey = key.replace(dir, '');
+                parsedOutput.files[newKey] = parsedOutput.files[key];
+                delete parsedOutput.files[key];
+            });
 
-        // Add parsed report.
-        data.report.versions[version] = parsedOutput;
+            // Add versions to compatible/incompatible arrays.
+            const status = parsedOutput.totals.errors === 0 ? 'compatible' : 'incompatible';
+            data.report[status].push(version);
 
-        // Update the totals.
-        Object.keys(data.report.totals).forEach((key) => {
-            data.report.totals[key] += parsedOutput.totals[key];
-        });
+            // Add parsed report.
+            data.report.versions[version] = parsedOutput;
+
+            // Update the totals.
+            Object.keys(data.report.totals).forEach((key) => {
+                data.report.totals[key] += parsedOutput.totals[key];
+            });
+        } catch (err) {
+            console.log(err);
+        }
     });
 
     return data;

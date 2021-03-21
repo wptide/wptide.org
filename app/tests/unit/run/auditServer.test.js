@@ -1,16 +1,20 @@
 const { sendError } = require('../../../src/util/sendError');
 const { auditServer } = require('../../../src/run/auditServer');
 const { tide } = require('../../../lighthouseServer');
+// eslint-disable-next-line no-unused-vars
 const lighthouseReporter = require('../../../src/audits/lighthouseReporter');
 const { dateTime } = require('../../../src/util/dateTime');
-const { // eslint-disable-next-line no-unused-vars
+const {
     getAuditDoc, getStatusDoc, setAuditDoc, setReportDoc, setStatusDoc,
 } = require('../../../src/integrations/firestore');
 const { canProceed } = require('../../../src/util/canProceed');
 const { get, set } = require('../../../src/services/firestore');
 
 jest.mock('../../../src/util/sendError');
-jest.mock('../../../src/audits/lighthouseReporter');
+jest.mock('../../../src/audits/lighthouseReporter',
+    () => jest.fn().mockReturnValue({
+        report: {},
+    }));
 jest.mock('../../../src/util/canProceed');
 jest.mock('../../../src/util/dateTime');
 jest.mock('../../../src/integrations/firestore',
@@ -234,6 +238,160 @@ describe('The auditServer HTTP handler', () => {
         spy.mockRestore();
     });
 
+    it('Successfully performs the audit using the Lighthouse Reporter', async () => {
+        const spy = jest.spyOn(console, 'log').mockImplementation();
+        const req = mock.req();
+        const res = mock.res();
+        req.body = {
+            message: {
+                data: 'eyJpZCI6ICIxMjM0NWFiY2RlIiwgInR5cGUiOiAidGhlbWUiLCAic2x1ZyI6ICJmYWtlLXNsdWciLCAidmVyc2lvbiI6ICIxLjAuMSIsICJyZXBvcnRzIjogeyJsaWdodGhvdXNlIjogeyJpZCI6ICJlZGNiYTU0MzIxIn19fQ==',
+            },
+        };
+        const auditMock = {
+            id: '12345abcde',
+            type: 'theme',
+            slug: 'fake-slug',
+            version: '1.0.1',
+            reports: {
+                lighthouse: null,
+            },
+        };
+        const statusMock = {
+            id: '12345abcde',
+            type: 'theme',
+            slug: 'fake-slug',
+            version: '1.0.1',
+            reports: {
+                lighthouse: {
+                    attempts: 1,
+                    start_datetime: 500,
+                    status: 'pending',
+                },
+            },
+        };
+
+        dateTime.mockReturnValueOnce(1000);
+        getStatusDoc.mockResolvedValueOnce(statusMock);
+        getAuditDoc.mockResolvedValue(auditMock);
+        canProceed.mockResolvedValue(true);
+
+        statusMock.reports.lighthouse.end_datetime = 1000;
+        statusMock.reports.lighthouse.status = 'complete';
+        firestoreSet.mockResolvedValue(statusMock);
+        await auditServer(req, res, async () => ({
+            report: {},
+        }), 'lighthouse', 'Lighthouse');
+        expect(spy).toBeCalledWith('Lighthouse audit for fake-slug v1.0.1 started.');
+        expect(spy.mock.calls[1][0]).toContain('Lighthouse audit for fake-slug v1.0.1 completed successfully');
+        expect(res.send).toBeCalledTimes(1);
+        spy.mockRestore();
+    });
+
+    it('Successfully performs the audit using the PHPCS Reporter', async () => {
+        const spy = jest.spyOn(console, 'log').mockImplementation();
+        const req = mock.req();
+        const res = mock.res();
+        req.body = {
+            message: {
+                data: 'eyJpZCI6ICIxMjM0NWFiY2RlIiwgInR5cGUiOiAidGhlbWUiLCAic2x1ZyI6ICJmYWtlLXNsdWciLCAidmVyc2lvbiI6ICIxLjAuMSIsICJyZXBvcnRzIjogeyJwaHBjc19waHBjb21wYXRpYmlsaXR5d3AiOiB7ImlkIjogImVkY2JhNTQzMjEifX19',
+            },
+        };
+        const auditMock = {
+            id: '12345abcde',
+            type: 'theme',
+            slug: 'fake-slug',
+            version: '1.0.1',
+            reports: {
+                phpcs_phpcompatibilitywp: null,
+            },
+        };
+        const statusMock = {
+            id: '12345abcde',
+            type: 'theme',
+            slug: 'fake-slug',
+            version: '1.0.1',
+            reports: {
+                phpcs_phpcompatibilitywp: {
+                    attempts: 1,
+                    start_datetime: 500,
+                    status: 'pending',
+                },
+            },
+        };
+
+        dateTime.mockReturnValueOnce(1000);
+        getStatusDoc.mockResolvedValueOnce(statusMock);
+        getAuditDoc.mockResolvedValue(auditMock);
+        canProceed.mockResolvedValue(true);
+
+        statusMock.reports.phpcs_phpcompatibilitywp.end_datetime = 1000;
+        statusMock.reports.phpcs_phpcompatibilitywp.status = 'complete';
+        firestoreSet.mockResolvedValue(statusMock);
+        await auditServer(req, res, async () => ({
+            report: {
+                compatible: ['5.6'],
+                incompatible: [],
+            },
+        }), 'phpcs_phpcompatibilitywp', 'PHPCS');
+        expect(spy).toBeCalledWith('PHPCS audit for fake-slug v1.0.1 started.');
+        console.log(spy.mock.calls);
+        expect(spy.mock.calls[1][0]).toContain('PHPCS audit for fake-slug v1.0.1 completed successfully');
+        expect(res.send).toBeCalledTimes(1);
+        spy.mockRestore();
+    });
+
+    it('Fails to performs the audit using the PHPCS Reporter', async () => {
+        const spy = jest.spyOn(console, 'log').mockImplementation();
+        const req = mock.req();
+        const res = mock.res();
+        req.body = {
+            message: {
+                data: 'eyJpZCI6ICIxMjM0NWFiY2RlIiwgInR5cGUiOiAidGhlbWUiLCAic2x1ZyI6ICJmYWtlLXNsdWciLCAidmVyc2lvbiI6ICIxLjAuMSIsICJyZXBvcnRzIjogeyJwaHBjc19waHBjb21wYXRpYmlsaXR5d3AiOiB7ImlkIjogImVkY2JhNTQzMjEifX19',
+            },
+        };
+        const auditMock = {
+            id: '12345abcde',
+            type: 'theme',
+            slug: 'fake-slug',
+            version: '1.0.1',
+            reports: {
+                phpcs_phpcompatibilitywp: null,
+            },
+        };
+        const statusMock = {
+            id: '12345abcde',
+            type: 'theme',
+            slug: 'fake-slug',
+            version: '1.0.1',
+            reports: {
+                phpcs_phpcompatibilitywp: {
+                    attempts: 1,
+                    start_datetime: 500,
+                    status: 'pending',
+                },
+            },
+        };
+
+        dateTime.mockReturnValueOnce(1000);
+        getStatusDoc.mockResolvedValueOnce(statusMock);
+        getAuditDoc.mockResolvedValue(auditMock);
+        canProceed.mockResolvedValue(true);
+
+        statusMock.reports.phpcs_phpcompatibilitywp.end_datetime = 1000;
+        statusMock.reports.phpcs_phpcompatibilitywp.status = 'failed';
+        firestoreSet.mockResolvedValue(statusMock);
+        await auditServer(req, res, async () => ({
+            report: {
+                compatible: [],
+                incompatible: [],
+            },
+        }), 'phpcs_phpcompatibilitywp', 'PHPCS');
+        expect(spy).toBeCalledWith('PHPCS audit for fake-slug v1.0.1 started.');
+        expect(spy.mock.calls[1][0]).toContain('PHPCS audit for fake-slug v1.0.1 failed in');
+        expect(res.send).toBeCalledTimes(1);
+        spy.mockRestore();
+    });
+
     it('Successfully performs the audit', async () => {
         const spy = jest.spyOn(console, 'log').mockImplementation();
         const req = mock.req();
@@ -274,52 +432,6 @@ describe('The auditServer HTTP handler', () => {
         statusMock.reports.lighthouse.status = 'complete';
         firestoreSet.mockResolvedValue(statusMock);
         await tide(req, res);
-        expect(spy).toBeCalledWith('Lighthouse audit for fake-slug v1.0.1 started.');
-        expect(spy.mock.calls[1][0]).toContain('Lighthouse audit for fake-slug v1.0.1 completed successfully');
-        expect(res.send).toBeCalledTimes(1);
-        spy.mockRestore();
-    });
-
-    it('Successfully performs the audit using the Lighthouse Reporter', async () => {
-        const spy = jest.spyOn(console, 'log').mockImplementation();
-        const req = mock.req();
-        const res = mock.res();
-        req.body = {
-            message: {
-                data: 'eyJpZCI6ICIxMjM0NWFiY2RlIiwgInR5cGUiOiAidGhlbWUiLCAic2x1ZyI6ICJmYWtlLXNsdWciLCAidmVyc2lvbiI6ICIxLjAuMSIsICJyZXBvcnRzIjogeyJsaWdodGhvdXNlIjogeyJpZCI6ICJlZGNiYTU0MzIxIn19fQ==',
-            },
-        };
-        const auditMock = {
-            id: '12345abcde',
-            type: 'theme',
-            slug: 'fake-slug',
-            version: '1.0.1',
-            reports: {
-                lighthouse: null,
-            },
-        };
-        const statusMock = {
-            id: '12345abcde',
-            type: 'theme',
-            slug: 'fake-slug',
-            version: '1.0.1',
-            reports: {
-                lighthouse: {
-                    attempts: 1,
-                    start_datetime: 500,
-                    status: 'pending',
-                },
-            },
-        };
-
-        dateTime.mockReturnValueOnce(1000);
-        getStatusDoc.mockResolvedValueOnce(statusMock);
-        getAuditDoc.mockResolvedValue(auditMock);
-        canProceed.mockResolvedValue(true);
-
-        statusMock.reports.lighthouse.status = 'complete';
-        firestoreSet.mockResolvedValue(statusMock);
-        await auditServer(req, res, lighthouseReporter, 'lighthouse', 'Lighthouse');
         expect(spy).toBeCalledWith('Lighthouse audit for fake-slug v1.0.1 started.');
         expect(spy.mock.calls[1][0]).toContain('Lighthouse audit for fake-slug v1.0.1 completed successfully');
         expect(res.send).toBeCalledTimes(1);
