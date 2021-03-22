@@ -218,6 +218,10 @@ describe('canProceed', () => {
         firestoreGet.mockResolvedValue(statusDoc);
         const returnStatus = await canProceed('lighthouse', statusDoc.id);
         expect(returnStatus).toEqual(true);
+        statusDoc.reports.lighthouse.attempts = 2;
+        statusDoc.reports.lighthouse.status = 'in-progress';
+        statusDoc.status = 'in-progress';
+        expect(firestoreSet).toHaveBeenCalledWith(`Status/${statusDoc.id}`, statusDoc);
     });
 
     it('Returns false when the audit previously failed twice', async () => {
