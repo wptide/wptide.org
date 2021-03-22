@@ -67,6 +67,7 @@ describe('canProceed', () => {
             version: '1.0.0',
             created_datetime: 1,
             modified_datetime: 1,
+            status: 'pending',
             reports: {
                 lighthouse: {
                     attempts: retryCount,
@@ -195,7 +196,7 @@ describe('canProceed', () => {
         expect(returnStatus).toEqual(false);
     });
 
-    it('Returns false when the audit previously failed', async () => {
+    it('Returns true when the audit previously failed once', async () => {
         const statusDoc = {
             id: '12345abced',
             type: 'theme',
@@ -203,6 +204,31 @@ describe('canProceed', () => {
             version: '1.0.0',
             created_datetime: 1,
             modified_datetime: 1,
+            status: 'failed',
+            reports: {
+                lighthouse: {
+                    attempts: 1,
+                    start_datetime: 1000,
+                    status: 'failed',
+                },
+            },
+        };
+        const currentTime = 1000;
+        dateTime.mockReturnValue(currentTime);
+        firestoreGet.mockResolvedValue(statusDoc);
+        const returnStatus = await canProceed('lighthouse', statusDoc.id);
+        expect(returnStatus).toEqual(true);
+    });
+
+    it('Returns false when the audit previously failed twice', async () => {
+        const statusDoc = {
+            id: '12345abced',
+            type: 'theme',
+            slug: 'fake-slug',
+            version: '1.0.0',
+            created_datetime: 1,
+            modified_datetime: 1,
+            status: 'failed',
             reports: {
                 lighthouse: {
                     attempts: 2,
