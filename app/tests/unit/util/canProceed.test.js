@@ -23,6 +23,10 @@ beforeEach(() => {
 
 global.console.log = jest.fn();
 
+afterEach(() => {
+    global.console.log.mockRestore();
+});
+
 /**
  * Tests for canProceed.
  */
