@@ -27,7 +27,7 @@
     "test:coverage": "NODE_ENV=test jest --detectOpenHandles --forceExit --coverage --coverageDirectory ./app/tests/coverage"
   },
   "dependencies": {
-    "dotenv": "^8.2.0",
+    "dotenv": "^9.0.0",
     "javascript-time-ago": "^2.3.4"
   },
   "devDependencies": {
