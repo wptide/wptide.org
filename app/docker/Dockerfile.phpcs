@@ -1,5 +1,5 @@
 # PHP
-FROM php:7.4-cli-alpine3.12 as backend
+FROM php:8.0-cli-alpine3.12 as backend
 
 MAINTAINER XWP <technology@xwp.co>
 
