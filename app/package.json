@@ -20,7 +20,7 @@
     "@google-cloud/functions-framework": "^1.7.1",
     "@google-cloud/pubsub": "^2.10.0",
     "cors": "^2.8.5",
-    "dotenv": "^8.2.0",
+    "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "firebase-admin": "^9.5.0",
     "firebase-functions": "^3.13.2",
