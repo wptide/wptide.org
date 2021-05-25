@@ -13,7 +13,7 @@ const api = path.resolve(__dirname, '../../openapi.yml');
 /**
  * Get the api spec from the yaml file.
  *
- * @returns {object}  Native object of yaml file contents.
+ * @returns {object} Native object of yaml file contents.
  */
 const apiSpec = () => yaml.load(fs.readFileSync(api, 'utf8'));
 

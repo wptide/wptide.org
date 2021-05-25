@@ -9,7 +9,6 @@ const { auditServer } = require('./src/run/auditServer');
  *
  * @param   {object} req The HTTP request.
  * @param   {object} res The HTTP response.
- *
  * @returns {res}        The modified HTTP response.
  */
 exports.tide = async (req, res) => auditServer(req, res, lighthouseReporter, 'lighthouse', 'Lighthouse');

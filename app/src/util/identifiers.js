@@ -7,7 +7,6 @@ const crypto = require('crypto');
  * Get a hash for a given input.
  *
  * @param   {string | object | Array} input A string or any input that can be coverted to JSON.
- *
  * @returns {string}                        Hash for given input.
  */
 const getHash = (input) => {
@@ -21,7 +20,6 @@ const getHash = (input) => {
  * @param   {object} params      Audit Project params
  * @param   {string} params.type Type of project theme or plugin.
  * @param   {string} params.slug Project slug per WordPress.org.
- *
  * @returns {string}             Audit ID, a hash of type, slug and version concatenated.
  */
 const getAuditId = (params) => {
@@ -35,7 +33,6 @@ const getAuditId = (params) => {
  * @param   {object} params      Audit Project params
  * @param   {string} params.type Type of project theme or plugin.
  * @param   {string} params.slug Project slug per WordPress.org.
- *
  * @returns {string}             Project ID, a hash of type and slug concatenated.
  */
 const getProjectId = (params) => {

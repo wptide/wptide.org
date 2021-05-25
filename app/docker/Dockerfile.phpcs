@@ -1,5 +1,5 @@
 # PHP
-FROM php:7.4-cli-alpine3.12 as backend
+FROM php:8.0-cli-alpine3.12 as backend
 
 MAINTAINER XWP <technology@xwp.co>
 
@@ -22,6 +22,8 @@ COPY openapi.yml openapi.yml
 COPY package.json package.json
 COPY package-lock.json package-lock.json
 COPY phpcsServer.js index.js
+COPY --from=backend /app/composer.json composer.json
+COPY --from=backend /app/composer.lock composer.lock
 COPY --from=backend /usr/ /usr/
 COPY --from=backend /app/vendor/ ./vendor/
 

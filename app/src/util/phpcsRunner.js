@@ -9,7 +9,6 @@ const { execSync } = require('child_process');
  * @param   {string} version The project version.
  * @param   {string} dir     The absolute path to the report directory.
  * @param   {string} app     The app working directory.
- *
  * @returns {object}         The phpcs report.
  */
 const phpcsRunner = (version, dir, app) => {

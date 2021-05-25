@@ -9,6 +9,7 @@ const fs = require('fs');
  */
 const { download } = require('./download');
 const { phpcsRunner } = require('./phpcsRunner');
+const composerConfig = require('../../composer.json');
 
 /**
  * Downloads the project to the local disk.
@@ -16,7 +17,6 @@ const { phpcsRunner } = require('./phpcsRunner');
  * @param   {string} url      The public ZIP archive download URL.
  * @param   {string} dir      The absolute path to the parent report directory.
  * @param   {string} filename The report ZIP archive name.
- *
  * @returns {void}
  */
 const phpcsDownloader = async (url, dir, filename) => {
@@ -29,7 +29,6 @@ const phpcsDownloader = async (url, dir, filename) => {
  * Remove the report directory from the local disk.
  *
  * @param   {string} dir The absolute path to the report directory.
- *
  * @returns {void}
  */
 const phpcsRemover = (dir) => fs.rmdirSync(dir, { recursive: true });
@@ -40,7 +39,6 @@ const phpcsRemover = (dir) => fs.rmdirSync(dir, { recursive: true });
  * @param   {string} url The public ZIP archive download URL.
  * @param   {string} dir The absolute path to the report directory.
  * @param   {string} app The app working directory.
- *
  * @returns {object}     The report.
  */
 const phpcsProcessor = (url, dir, app) => {
@@ -56,7 +54,7 @@ const phpcsProcessor = (url, dir, app) => {
                 },
                 {
                     vendor: 'phpcompatibility/phpcompatibility-wp',
-                    version: '2.1.0',
+                    version: composerConfig.require['phpcompatibility/phpcompatibility-wp'],
                 },
             ],
         },
