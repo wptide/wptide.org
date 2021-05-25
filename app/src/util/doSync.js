@@ -35,8 +35,8 @@ const doSync = async () => {
     /**
      * Create counter generator.
      *
-     * @param  {number} start    The first iterator number.
-     * @param  {number} end      The last iterator number, greater than or equal to start.
+     * @param {number} start The first iterator number.
+     * @param {number} end   The last iterator number, greater than or equal to start.
      * @yields          (number}
      */
     async function* counter(start, end) {

@@ -8,7 +8,7 @@ let firestoreInstance;
 /**
  * Returns a singleton instance of Firestore client.
  *
- * @returns {object}  Firestore instance.
+ * @returns {object} Firestore instance.
  */
 const getFirestore = () => {
     if (!firestoreInstance) {
@@ -27,7 +27,6 @@ const getFirestore = () => {
  * Gets entity for a given key.
  *
  * @param   {string}        documentPath Path to the document: example `collection/id`.
- *
  * @returns {object | null}              Entity or null.
  */
 const get = async (documentPath) => getFirestore()
@@ -49,7 +48,6 @@ const get = async (documentPath) => getFirestore()
  *
  * @param   {string} documentPath Path to the document: example `collection/id`.
  * @param   {object} data         Data to set for the given key.
- *
  * @returns {string}              Key.
  */
 const set = async (documentPath, data) => getFirestore()
@@ -65,7 +63,6 @@ const set = async (documentPath, data) => getFirestore()
  * Deletes an entity for a given key.
  *
  * @param   {string}        documentPath Path to the document: example `collection/id`.
- *
  * @returns {object | null}              Entity or null.
  */
 const remove = async (documentPath) => getFirestore()
@@ -82,7 +79,6 @@ const remove = async (documentPath) => getFirestore()
  *
  * @param   {string}        collection Path to the collection: example `collection`.
  * @param   {number}        limit      The query limit.
- *
  * @returns {object | null}            Entity or null.
  */
 const snapshot = async (collection, limit) => getFirestore()

@@ -15,7 +15,7 @@ let localTopicsExist = false;
 /**
  * Expose if topics exist.
  *
- * @returns {boolean}  The value of `localTopicsExist`.
+ * @returns {boolean} The value of `localTopicsExist`.
  */
 const topicsExist = () => localTopicsExist;
 
