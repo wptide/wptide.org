@@ -1,7 +1,7 @@
 # Node
 FROM node:12-alpine3.12
 
-MAINTAINER XWP <technology@xwp.co>
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 
 WORKDIR /app
 
@@ -11,8 +11,7 @@ COPY package.json package.json
 COPY package-lock.json package-lock.json
 COPY syncServer.js index.js
 
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
-RUN npm install --production
+RUN npm ci --only=production --ignore-scripts
 
 EXPOSE 8080
 
