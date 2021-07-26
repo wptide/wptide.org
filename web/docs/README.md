@@ -61,6 +61,7 @@ Jeff Paul ([@jeffpaul](https://github.com/jeffpaul))
 **Props**: Anthony Burchell ([@antpb](https://github.com/antpb)),
 Derek Herman ([@derekherman](https://github.com/derekherman)),
 Jeff Paul ([@jeffpaul](https://github.com/jeffpaul)),
+Jonathan Wold ([@sirjonathan](https://github.com/sirjonathan)),
 Jozef Benko ([joe-xwp](https://github.com/joe-xwp)),
 Ivan Kruchkoff ([@ivankruchkoff](https://github.com/ivankruchkoff)),
 Piotr Bajer ([@piotr-bajer](https://github.com/piotr-bajer))
