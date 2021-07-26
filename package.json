@@ -1,7 +1,7 @@
 {
   "name": "wptide.org",
   "version": "1.0.0-beta",
-  "description": "Tide is a WordPress.org Component and built as an Infrastructure as Code (IaC) monorepo that contains a Firebase hosted static documentation website built with VuePress, along with an implementation of the Tide API using the OpenAPI v3 Specification and deployed to Cloud Functions, with Cloud Run servers auditing wp.org themes & plugins, backed by Datastore, and orchestrated with Pub/Sub events.",
+  "description": "Tide is a WordPress.org Component and built as an Infrastructure as Code (IaC) monorepo that contains a Firebase hosted static documentation website built with VuePress, along with an implementation of the Tide API using the OpenAPI v3 Specification and deployed to Cloud Functions, with Cloud Run servers auditing WordPress.org themes & plugins, backed by Firestore, and orchestrated with Pub/Sub events.",
   "main": "index.js",
   "author": {
     "name": "Tide Maintainers",
@@ -29,24 +29,24 @@
   },
   "dependencies": {
     "dotenv": "^10.0.0",
-    "javascript-time-ago": "^2.3.5"
+    "javascript-time-ago": "^2.3.8"
   },
   "devDependencies": {
-    "@google-cloud/functions-framework": "^1.7.1",
+    "@google-cloud/functions-framework": "^1.9.0",
     "@vuepress/plugin-back-to-top": "^1.8.2",
     "@vuepress/plugin-pwa": "^1.8.2",
     "babel-eslint": "^10.1.0",
-    "eslint": "^7.27.0",
+    "eslint": "^7.31.0",
     "eslint-config-airbnb-base": "^14.2.1",
-    "eslint-plugin-import": "^2.23.3",
-    "eslint-plugin-jest": "^24.3.6",
-    "eslint-plugin-jsdoc": "^35.0.0",
-    "eslint-plugin-vue": "^7.9.0",
-    "husky": "^6.0.0",
-    "jest": "^27.0.0",
-    "typescript": "^4.2.4",
+    "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-jest": "^24.4.0",
+    "eslint-plugin-jsdoc": "^36.0.2",
+    "eslint-plugin-vue": "^7.14.0",
+    "husky": "^7.0.1",
+    "jest": "^27.0.6",
+    "typescript": "^4.3.5",
     "vuepress": "^1.8.2",
-    "vue-eslint-parser": "^7.6.0"
+    "vue-eslint-parser": "^7.9.0"
   },
   "jest": {
     "collectCoverageFrom": [

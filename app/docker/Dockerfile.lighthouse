@@ -1,7 +1,8 @@
 # Node
 FROM node:12-alpine3.12
 
-MAINTAINER XWP <technology@xwp.co>
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
+ENV CHROMIUM_PATH /usr/bin/chromium-browser
 
 WORKDIR /app
 
@@ -11,11 +12,18 @@ COPY package.json package.json
 COPY package-lock.json package-lock.json
 COPY lighthouseServer.js index.js
 
-RUN apk add --no-cache chromium
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
-ENV CHROMIUM_PATH /usr/bin/chromium-browser
-
-RUN npm install --production
+RUN mkdir data
+RUN echo @edge https://dl-cdn.alpinelinux.org/alpine/edge/community >> /etc/apk/repositories \
+  && echo @edge https://dl-cdn.alpinelinux.org/alpine/edge/main >> /etc/apk/repositories \
+  && apk -U upgrade \
+  && apk add --no-cache \
+    chromium@edge \
+    nss@edge \
+    freetype@edge \
+    harfbuzz@edge \
+    ttf-freefont@edge \
+    libstdc++@edge
+RUN npm ci --only=production --ignore-scripts
 
 EXPOSE 8080
 

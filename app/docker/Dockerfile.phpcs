@@ -1,8 +1,6 @@
 # PHP
 FROM php:8.0-cli-alpine3.12 as backend
 
-MAINTAINER XWP <technology@xwp.co>
-
 WORKDIR /app
 
 COPY composer.json composer.json
@@ -14,6 +12,8 @@ RUN composer install
 
 # Node
 FROM node:12-alpine3.12
+
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 
 WORKDIR /app
 
@@ -27,8 +27,8 @@ COPY --from=backend /app/composer.lock composer.lock
 COPY --from=backend /usr/ /usr/
 COPY --from=backend /app/vendor/ ./vendor/
 
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
-RUN npm install --production
+RUN mkdir data
+RUN npm ci --only=production --ignore-scripts
 
 EXPOSE 8080
 
