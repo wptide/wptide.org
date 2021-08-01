@@ -112,18 +112,19 @@ const getSyncList = async (urlParams, type, versions) => {
             slug: auditEntity.slug,
             version: auditEntity.version,
         };
+        let versionNum = versions;
 
         const versionList = Object.keys(auditEntity.versions).reverse();
 
-        if (versions === -1 && versionList.length) {
-            versions = versionList.length; /* eslint-disable-line no-param-reassign */
+        if (versionNum === -1 && versionList.length) {
+            versionNum = versionList.length;
         }
 
         syncList.queue.push(auditParams);
-        if (versions > 0) {
+        if (versionNum > 0) {
             let counter = 0;
             versionList.forEach((version) => {
-                if (version === auditEntity.version || versions <= counter) {
+                if (version === 'trunk' || version === auditEntity.version || versionNum <= counter) {
                     return;
                 }
                 const versionAuditParams = {

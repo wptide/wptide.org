@@ -1,7 +1,7 @@
 /**
  * External Dependencies.
  */
-const fetch = require('node-fetch');
+const nock = require('nock'); // eslint-disable-line import/no-extraneous-dependencies
 
 /**
  * Internal Dependencies.
@@ -11,6 +11,14 @@ const {
 } = require('../../../src/util/syncHelpers');
 const { getAuditData } = require('../../../src/util/auditHelpers');
 const { get, set } = require('../../../src/services/firestore');
+
+/**
+ * Mock JSON data.
+ */
+const pluginDataSingleWithVersions = require('../data/pluginDataSingleWithVersions.json');
+const themeDataSingle = require('../data/themeDataSingle.json');
+const themeDataSingleWithTrunk = require('../data/themeDataSingleWithTrunk.json');
+const themeDataTwoWithVersions = require('../data/themeDataTwoWithVersions.json');
 
 jest.mock('../../../src/util/auditHelpers',
     () => ({
@@ -29,6 +37,14 @@ beforeEach(() => {
     firestoreGet.mockClear();
     firestoreSet.mockClear();
     getAuditData.mockClear();
+});
+
+afterAll(() => {
+    nock.restore();
+});
+
+afterEach(() => {
+    nock.cleanAll();
 });
 
 /**
@@ -50,15 +66,7 @@ describe('syncHelpers', () => {
         expect(url).toContain('&request[page]=1');
     });
     it('cleanApiResponse: responds with cleaned data', async () => {
-        const url = apiUrl({
-            'request[browse]': 'updated',
-            'request[per_page]': '1',
-            'request[fields][versions]': '1',
-            'request[page]': 1,
-        }, 'theme');
-        const response = await fetch(url);
-        const raw = await response.json();
-        const json = cleanApiResponse(raw);
+        const json = cleanApiResponse(themeDataSingle);
         expect(json[0]).toHaveProperty('type');
         expect(json[0]).toHaveProperty('slug');
         expect(json[0]).toHaveProperty('version');
@@ -66,6 +74,10 @@ describe('syncHelpers', () => {
         expect(Object.keys(json[0]).length).toBe(4);
     });
     it('getSyncList: responds with a single plugin version', async () => {
+        nock('https://api.wordpress.org')
+            .intercept('/plugins/info/1.1/?action=query_plugins&request[fields][name]=0&request[fields][versions]=1&request[fields][sections]=0&request[fields][description]=0&request[fields][screenshot_url]=0&request[fields][compatibility]=0&request[fields][rating]=0&request[fields][ratings]=0&request[fields][num_ratings]=0&request[fields][support_threads]=0&request[fields][support_threads_resolved]=0&request[fields][last_updated]=0&request[fields][added]=0&request[fields][homepage]=0&request[fields][short_description]=0&request[fields][download_link]=0&request[fields][tags]=0&request[browse]=updated&request[per_page]=1&request[page]=1', 'GET')
+            .reply(200, pluginDataSingleWithVersions);
+
         const syncList = await getSyncList({
             'request[browse]': 'updated',
             'request[per_page]': '1',
@@ -74,9 +86,14 @@ describe('syncHelpers', () => {
         }, 'plugin', 0);
         expect(syncList).toHaveProperty('pages');
         expect(syncList).toHaveProperty('queue');
+        expect([...new Set(syncList.queue.map((o) => o.slug))].length).toBe(1);
         expect(syncList.queue.length).toBe(1);
     });
-    it('getSyncList: responds with a single theme and 0-any previous versions', async () => {
+    it('getSyncList: responds with data for 2 themes with a combined 14 versions', async () => {
+        nock('https://api.wordpress.org')
+            .intercept('/themes/info/1.1/?action=query_themes&request[fields][name]=0&request[fields][versions]=1&request[fields][sections]=0&request[fields][description]=0&request[fields][screenshot_url]=0&request[fields][compatibility]=0&request[fields][rating]=0&request[fields][ratings]=0&request[fields][num_ratings]=0&request[fields][support_threads]=0&request[fields][support_threads_resolved]=0&request[fields][last_updated]=0&request[fields][added]=0&request[fields][homepage]=0&request[fields][short_description]=0&request[fields][download_link]=0&request[fields][tags]=0&request[browse]=updated&request[per_page]=2&request[page]=1', 'GET')
+            .reply(200, themeDataTwoWithVersions);
+
         const syncList = await getSyncList({
             'request[browse]': 'updated',
             'request[per_page]': '2',
@@ -85,18 +102,24 @@ describe('syncHelpers', () => {
         }, 'theme', -1);
         expect(syncList).toHaveProperty('pages');
         expect(syncList).toHaveProperty('queue');
-        expect(syncList.queue.length > 2).toBeTruthy();
+        expect([...new Set(syncList.queue.map((o) => o.slug))].length).toBe(2);
+        expect(syncList.queue.length).toBe(14);
     });
-    it('getSyncList: responds with a single plugin and 0-2 previous versions', async () => {
+    it('getSyncList: responds with a single plugin and 2 previous versions', async () => {
+        nock('https://api.wordpress.org')
+            .intercept('/themes/info/1.1/?action=query_themes&request[fields][name]=0&request[fields][versions]=1&request[fields][sections]=0&request[fields][description]=0&request[fields][screenshot_url]=0&request[fields][compatibility]=0&request[fields][rating]=0&request[fields][ratings]=0&request[fields][num_ratings]=0&request[fields][support_threads]=0&request[fields][support_threads_resolved]=0&request[fields][last_updated]=0&request[fields][added]=0&request[fields][homepage]=0&request[fields][short_description]=0&request[fields][download_link]=0&request[fields][tags]=0&request[browse]=updated&request[per_page]=1&request[page]=1', 'GET')
+            .reply(200, themeDataSingleWithTrunk);
+
         const syncList = await getSyncList({
             'request[browse]': 'updated',
             'request[per_page]': '1',
             'request[fields][versions]': '1',
             'request[page]': 1,
-        }, 'plugin', 2);
+        }, 'theme', 2);
         expect(syncList).toHaveProperty('pages');
         expect(syncList).toHaveProperty('queue');
-        expect(syncList.queue.length > 0 && syncList.queue.length < 4).toBeTruthy();
+        expect([...new Set(syncList.queue.map((o) => o.slug))].length).toBe(1);
+        expect(syncList.queue.length).toBe(1);
     });
     it('makeAuditRequest: creates a new audit', async () => {
         const mockParams = {
