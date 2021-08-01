@@ -225,10 +225,11 @@ jobs:
       - name: Deploy to Cloud Run
         env:
           GOOGLE_CLOUD_PROJECT: ${{ secrets.GOOGLE_CLOUD_PROJECT_STAGING }}
-          VERSION: ${{ steps.package-version.outputs.current-version}}
           GOOGLE_CLOUD_RUN_LIGHTHOUSE_MEMORY: ${{ secrets.GOOGLE_CLOUD_RUN_LIGHTHOUSE_MEMORY }}
           GOOGLE_CLOUD_RUN_PHPCS_MEMORY: ${{ secrets.GOOGLE_CLOUD_RUN_PHPCS_MEMORY }}
           GOOGLE_CLOUD_RUN_SYNC_MEMORY: ${{ secrets.GOOGLE_CLOUD_RUN_SYNC_MEMORY }}
+          GOOGLE_CLOUD_STORAGE_BUCKET_NAME: ${{ secrets.GOOGLE_CLOUD_STORAGE_BUCKET_NAME }}
+          VERSION: ${{ steps.package-version.outputs.current-version}}
         run: |
           make deploy.lighthouse
           make deploy.phpcs
