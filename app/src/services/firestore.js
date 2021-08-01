@@ -13,11 +13,15 @@ let firestoreInstance;
 const getFirestore = () => {
     if (!firestoreInstance) {
         const opts = {};
+
+        /* istanbul ignore next */
         if (process.env.NODE_ENV === 'production') {
             opts.credential = admin.credential.applicationDefault();
             opts.databaseURL = `https://${process.env.GOOGLE_CLOUD_PROJECT}.firebaseio.com`;
         }
+
         admin.initializeApp(opts);
+
         firestoreInstance = admin.firestore();
     }
     return firestoreInstance;
