@@ -62,13 +62,13 @@ deploy.firestore:
 	@firebase --project=${GOOGLE_CLOUD_PROJECT} deploy --only firestore
 
 deploy.lighthouse: setup
-	@gcloud run deploy lighthouse-server --no-allow-unauthenticated --image gcr.io/${GOOGLE_CLOUD_PROJECT}/lighthouse:${VERSION} --memory ${GOOGLE_CLOUD_RUN_LIGHTHOUSE_MEMORY} --concurrency 1
+	@gcloud run deploy lighthouse-server --no-allow-unauthenticated --image gcr.io/${GOOGLE_CLOUD_PROJECT}/lighthouse:${VERSION} --memory ${GOOGLE_CLOUD_RUN_LIGHTHOUSE_MEMORY} --concurrency 1 --set-env-vars "NODE_ENV=production,GOOGLE_CLOUD_STORAGE_BUCKET_NAME=${GOOGLE_CLOUD_STORAGE_BUCKET_NAME}"
 
 deploy.phpcs: setup
-	@gcloud run deploy phpcs-server --no-allow-unauthenticated --image gcr.io/${GOOGLE_CLOUD_PROJECT}/phpcs:${VERSION} --memory ${GOOGLE_CLOUD_RUN_PHPCS_MEMORY} --concurrency 1
+	@gcloud run deploy phpcs-server --no-allow-unauthenticated --image gcr.io/${GOOGLE_CLOUD_PROJECT}/phpcs:${VERSION} --memory ${GOOGLE_CLOUD_RUN_PHPCS_MEMORY} --concurrency 1 --set-env-vars "NODE_ENV=production,GOOGLE_CLOUD_STORAGE_BUCKET_NAME=${GOOGLE_CLOUD_STORAGE_BUCKET_NAME}"
 
 deploy.sync: setup
-	@gcloud run deploy sync-server --no-allow-unauthenticated --image gcr.io/${GOOGLE_CLOUD_PROJECT}/sync:${VERSION} --memory ${GOOGLE_CLOUD_RUN_SYNC_MEMORY} --concurrency 1 --timeout 10m
+	@gcloud run deploy sync-server --no-allow-unauthenticated --image gcr.io/${GOOGLE_CLOUD_PROJECT}/sync:${VERSION} --memory ${GOOGLE_CLOUD_RUN_SYNC_MEMORY} --concurrency 1 --timeout 10m --set-env-vars "NODE_ENV=production"
 
 deploy.iam: setup
 	@gcloud run services add-iam-policy-binding lighthouse-server \
@@ -119,3 +119,11 @@ describe.sync: setup
 
 delete.firestore:
 	@firebase --project=${GOOGLE_CLOUD_PROJECT} firestore:delete --all-collections
+
+download.keys: setup
+	@gcloud iam service-accounts create local-server --display-name "Local Development Server"
+	@gcloud projects add-iam-policy-binding ${GOOGLE_CLOUD_PROJECT} \
+		--member="serviceAccount:local-server@${GOOGLE_CLOUD_PROJECT}.iam.gserviceaccount.com" \
+		--role=roles/owner
+	@gcloud iam service-accounts keys create service-account.json \
+		--iam-account=local-server@${GOOGLE_CLOUD_PROJECT}.iam.gserviceaccount.com
