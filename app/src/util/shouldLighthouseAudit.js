@@ -11,13 +11,21 @@ const fetch = require('node-fetch');
  * @returns {boolean}       True if we can should do a lighthouse audit.
  */
 const shouldLighthouseAudit = async (audit) => {
-    const url = `https://api.wordpress.org/themes/info/1.1/?action=theme_information&request[slug]=${audit.slug}`;
-    const response = await fetch(url, {
-        method: 'GET',
-    });
-    const themeInfo = await response.json();
-    // Checks whether the version supplied is equivalent to the version from themes api.
-    return themeInfo.version === audit.version && themeInfo.slug === audit.slug;
+    try {
+        const url = `https://api.wordpress.org/themes/info/1.1/?action=theme_information&request[slug]=${audit.slug}`;
+        const response = await fetch(url, {
+            method: 'GET',
+        });
+        if (!response.ok) {
+            return false;
+        }
+        const themeInfo = await response.json();
+        // Checks whether the version supplied is equivalent to the version from themes api.
+        return themeInfo.version === audit.version && themeInfo.slug === audit.slug;
+    } catch (err) {
+        console.log(err);
+        return false;
+    }
 };
 
 module.exports = {
