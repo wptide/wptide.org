@@ -56,8 +56,7 @@
       "!**/vendor/**"
     ],
     "coveragePathIgnorePatterns": [
-      "<rootDir>/app/src/controllers/index.js",
-      "<rootDir>/app/src/services"
+      "<rootDir>/app/src/controllers/index.js"
     ],
     "testMatch": [
       "**/__tests__/**/*.[jt]s?(x)",
