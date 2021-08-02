@@ -11,50 +11,53 @@ afterEach(() => {
     global.console.log.mockRestore();
 });
 
+const mockReport = 'Report/1a2b3c4d5e';
+const mockData = {
+    id: 1,
+    key: 'value',
+};
+
 /**
  * Tests for Firestore.
  */
 describe('Firestore service', () => {
-    const data = {
-        prop: 'value',
-    };
     it('The document exists.', async () => {
-        const doc = await get('collection/exists');
-        expect(doc).toStrictEqual(data);
+        const doc = await get(mockReport);
+        expect(doc).toStrictEqual(mockData);
     });
     it('The document does not exists.', async () => {
-        const doc = await get('collection/id');
+        const doc = await get('Report/e5d4c3b2a1');
         expect(doc).toBeNull();
     });
     it('The document does not exists because of an error.', async () => {
-        const doc = await get('collection/error');
+        const doc = await get(null);
         expect(doc).toBeNull();
         expect(global.console.log).toBeCalledTimes(1);
     });
     it('The document was set.', async () => {
-        const doc = await set('collection/exists', data);
+        const doc = await set(mockReport, mockData);
         expect(doc).toBeTruthy();
         expect(global.console.log).toBeCalledTimes(0);
     });
     it('The document was updated.', async () => {
-        const dataClone = data;
-        dataClone.prop = 'new-value';
-        const doc = await set('collection/exists', dataClone);
+        const mockDataClone = { ...mockData };
+        mockDataClone.key = 'new-value';
+        const doc = await set(mockReport, mockDataClone);
         expect(doc).toBeTruthy();
         expect(global.console.log).toBeCalledTimes(0);
     });
     it('The document was not set because of an error.', async () => {
-        const doc = await set('collection/error', null);
+        const doc = await set(null, null);
         expect(doc).toBeFalsy();
         expect(global.console.log).toBeCalledTimes(1);
     });
     it('The document was deleted.', async () => {
-        const doc = await remove('collection/exists');
+        const doc = await remove(mockReport);
         expect(doc).toBeTruthy();
         expect(global.console.log).toBeCalledTimes(0);
     });
     it('The document was not deleted because of an error.', async () => {
-        const doc = await remove('collection/error');
+        const doc = await remove(null);
         expect(doc).toBeFalsy();
         expect(global.console.log).toBeCalledTimes(1);
     });
@@ -66,9 +69,10 @@ describe('Firestore service', () => {
         expect(statusSnapshot.empty).toBeFalsy();
         statusSnapshot.forEach((doc) => {
             counter += 1;
-            expect(doc).toStrictEqual(counter);
+            expect(doc.data().id).toBe(counter);
+            expect(doc.data().key).toBe(mockData.key);
         });
-        expect(counter).toStrictEqual(limit);
+        expect(counter).toBe(limit);
     });
 });
 
@@ -84,9 +88,9 @@ jest.mock('firebase-admin', () => ({
     firestore: () => ({
         doc: (documentPath) => ({
             get: () => new Promise((resolve, reject) => {
-                const exists = documentPath !== 'collection/id';
+                const exists = documentPath === mockReport;
 
-                if (documentPath === 'collection/error') {
+                if (!documentPath) {
                     reject(new Error('something went wrong'));
                 }
 
@@ -96,9 +100,7 @@ jest.mock('firebase-admin', () => ({
                         if (!exists) {
                             return null;
                         }
-                        return {
-                            prop: 'value',
-                        };
+                        return mockData;
                     },
                 });
             }),
@@ -107,18 +109,18 @@ jest.mock('firebase-admin', () => ({
                     _writeTime: 'timeString',
                 };
 
-                if (!data || !data.prop) {
+                if (!data) {
                     reject(new Error('something went wrong'));
                 }
 
-                if (data.prop !== 'value') {
+                if (data.key !== mockData.key) {
                     res.updateTime = 'timeString';
                 }
 
                 resolve(res);
             }),
             delete: () => new Promise((resolve, reject) => {
-                if (documentPath === 'collection/error') {
+                if (!documentPath) {
                     reject(new Error('something went wrong'));
                 }
 
@@ -128,11 +130,19 @@ jest.mock('firebase-admin', () => ({
         collection: (collection) => ({
             limit: (limit) => ({
                 get: () => new Promise((resolve, reject) => {
-                    if (collection === 'error') {
+                    if (!collection) {
                         reject(new Error('something went wrong'));
                     }
                     resolve({
-                        forEach: (cb) => Array.from({ length: limit }, (_, i) => i + 1).forEach(cb),
+                        /* eslint-disable max-len */
+                        forEach: (cb) => Array.from({ length: limit }, (_, i) => i + 1).forEach((id) => {
+                            cb({
+                                data: () => ({
+                                    id,
+                                    key: mockData.key,
+                                }),
+                            });
+                        }),
                         empty: false,
                     });
                 }),
