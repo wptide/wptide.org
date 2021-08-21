@@ -1,4 +1,16 @@
-/* global spyOn */
+/**
+ * @param   {string} message The error message.
+ * @returns {Error}          The custom Error object.
+ */
+function CustomException(message) {
+    const error = new Error(message);
+    return {
+        ...error,
+        details: message.split(':')[1],
+    };
+}
+CustomException.prototype = Object.create(Error.prototype);
+
 class PubSubMock {
   static mockInstances = [];
 
@@ -12,21 +24,34 @@ class PubSubMock {
 
   constructor() {
       Object.getOwnPropertyNames(this.constructor.prototype).forEach((method) => {
-          spyOn(this, method).and.callThrough();
+          jest.spyOn(this, method);
       });
 
       PubSubMock.mockInstances.push(this);
   }
 
-  topic() {
+  topic(topicName) {
+      if (topicName === 'ERROR_TOPIC') {
+          throw new Error('some error happened');
+      }
       return {
-          fake: () => this,
-          subscription: () => ({
-              delete: (topic) => topic,
-          }),
           create: (topic) => topic,
-          createSubscription: (topic) => topic,
-          exists: () => [true],
+          createSubscription: (subscriptionName) => subscriptionName,
+          exists: () => [topicName === 'EXISTING_TOPIC'],
+          subscription: (subscriptionName) => ({
+              delete: () => {
+                  if (subscriptionName !== 'EXISTING_SUBSCRIPTION') {
+                      throw new CustomException('5 NOT_FOUND: Subscription does not exist');
+                  }
+                  return this;
+              },
+          }),
+          publish: () => {
+              if (topicName !== 'EXISTING_TOPIC') {
+                  throw new Error('some error happened');
+              }
+              return 1;
+          },
       };
   }
 

@@ -6,23 +6,26 @@ const dotenv = require('dotenv');
 
 dotenv.config({ path: `${process.cwd()}/../.env` });
 
-let pubsubInstance;
+let pubSubInstance;
 
 /**
  * Returns a singleton instance of PubSub client.
  *
  * @returns {object} PubSub instance.
  */
-const getPubsub = async () => {
+const getPubSub = async () => {
     const options = {};
+
+    /* istanbul ignore else */
     if (process.env.NODE_ENV !== 'production') {
         options.projectId = process.env.GOOGLE_CLOUD_PROJECT;
     }
 
-    if (!pubsubInstance) {
-        pubsubInstance = new PubSub(options);
+    if (!pubSubInstance) {
+        pubSubInstance = new PubSub(options);
     }
-    return pubsubInstance;
+
+    return pubSubInstance;
 };
 
 /**
@@ -31,27 +34,16 @@ const getPubsub = async () => {
  * @param {string} topicName The name of the topic.
  */
 const createTopic = async (topicName) => {
-    const pubsub = await getPubsub();
-    const topic = await pubsub.topic(topicName);
+    const pubSub = await getPubSub();
+    const topic = await pubSub.topic(topicName);
     const [topicExists] = await topic.exists();
 
     if (!topicExists) {
+        console.debug(
+            `Creating topic ${topicName}`,
+        );
         await topic.create();
     }
-};
-
-/**
- * Publish a message to a given topic.
- *
- * @param {string} message   Message to send.
- * @param {string} topicName Topic to which the message should be published.
- */
-const publishMessage = async (message, topicName) => {
-    const buffer = Buffer.from(JSON.stringify(message));
-    const pubsub = await getPubsub();
-    const messageId = await pubsub.topic(topicName).publish(buffer);
-    const debugMessage = JSON.stringify(message);
-    console.debug(`Message ${messageId} published to ${topicName} with ${debugMessage}`);
 };
 
 /**
@@ -62,27 +54,52 @@ const publishMessage = async (message, topicName) => {
  * @returns {Promise<*>}                  Topic Subscription.
  */
 const subscribeTopic = async (subscriptionName, options) => {
-    const pubsub = await getPubsub();
-    const topic = await pubsub.topic(subscriptionName);
-    let subscription = await topic.subscription(subscriptionName);
+    const pubSub = await getPubSub();
+    const topic = await pubSub.topic(subscriptionName);
+    const subscription = await topic.subscription(subscriptionName);
+    /* istanbul ignore else */
     if (subscription) {
         try {
             await subscription.delete();
-            // eslint-disable-next-line no-console
             console.debug(
-                `Subscription ${subscriptionName} successfully deleted`,
+                `Existing subscription to ${subscriptionName} successfully deleted`,
             );
         } catch (error) {
-            // eslint-disable-next-line no-console
             console.error(
-                `Subscription ${subscriptionName} could not be deleted: `,
+                `Existing subscription to ${subscriptionName} could not be deleted: `,
                 error.details,
             );
         }
     }
-    subscription = await topic.createSubscription(subscriptionName, options);
 
-    return subscription;
+    return topic.createSubscription(subscriptionName, options);
+};
+
+/**
+ * Publish a message to a given topic.
+ *
+ * @param   {string}      message   Message to send.
+ * @param   {string}      topicName Topic to which the message should be published.
+ * @returns {string|null}           The message ID or null.
+ */
+const publishMessage = async (message, topicName) => {
+    const messageString = JSON.stringify(message);
+    const buffer = Buffer.from(messageString);
+    const pubSub = await getPubSub();
+    try {
+        const messageId = await pubSub.topic(topicName).publish(buffer);
+        console.debug(
+            `Message ${messageId} published to ${topicName} with ${messageString}`,
+        );
+        return messageId;
+    } catch (error) {
+        console.error(
+            `Message could not be published to ${topicName} with ${messageString}`,
+            error,
+        );
+    }
+
+    return null;
 };
 
 module.exports = {
