@@ -18,19 +18,19 @@
   },
   "dependencies": {
     "@google-cloud/functions-framework": "^1.9.0",
-    "@google-cloud/pubsub": "^2.16.1",
-    "@google-cloud/storage": "^5.11.0",
+    "@google-cloud/pubsub": "^2.16.6",
+    "@google-cloud/storage": "^5.13.1",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
-    "firebase-admin": "^9.11.0",
-    "firebase-functions": "^3.14.1",
+    "firebase-admin": "^9.11.1",
+    "firebase-functions": "^3.15.4",
     "js-yaml": "^4.1.0",
-    "lighthouse": "^8.1.0",
+    "lighthouse": "^8.3.0",
     "node-fetch": "^2.6.1",
-    "puppeteer": "^10.1.0",
+    "puppeteer": "^10.2.0",
     "swagger-ui-express": "^4.1.6",
-    "swagger-parser": "^10.0.2",
-    "swagger-routes-express": "^3.3.0"
+    "swagger-parser": "^10.0.3",
+    "swagger-routes-express": "^3.3.1"
   }
 }
