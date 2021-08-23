@@ -23,8 +23,14 @@ class StorageMock {
       }
       return {
           fake: () => this,
-          file: () => ({
+          file: (fileName) => ({
               save: (data, options, callback) => callback(false),
+              download: () => {
+                  if (fileName === 'missingfile.json') {
+                      throw new Error('some error happened');
+                  }
+                  return [JSON.stringify({ key: 'value' })];
+              },
           }),
           exists: () => [true],
       };

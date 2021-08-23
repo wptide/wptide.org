@@ -1,11 +1,13 @@
 const getReport = require('../../../src/controllers/getReport');
 const { get, set } = require('../../../src/services/firestore');
+const { getReportFile } = require('../../../src/util/getReportFile');
 
 jest.mock('../../../src/services/firestore',
     () => ({
         get: jest.fn(),
         set: jest.fn(),
     }));
+jest.mock('../../../src/util/getReportFile');
 
 const firestoreGet = get;
 const firestoreSet = set;
@@ -30,6 +32,7 @@ const mock = {
 
 beforeEach(() => {
     firestoreGet.mockClear();
+    getReportFile.mockClear();
 });
 
 describe('Main index entry point getReport', () => {
@@ -53,6 +56,7 @@ describe('Main index entry point getReport', () => {
             req.params.id = 'report1';
 
             firestoreGet.mockResolvedValue(false);
+            getReportFile.mockResolvedValue(false);
 
             await getReport(req, res);
             expect(firestoreSet).toBeCalledTimes(0);
@@ -89,12 +93,21 @@ describe('Main index entry point getReport', () => {
                 id: 'report1',
                 foo: 'bar',
             };
+            const mockFile = {
+                report: {
+                    key: 'value',
+                },
+            };
 
             firestoreGet.mockResolvedValue(mockReport);
+            getReportFile.mockResolvedValue(mockFile);
 
             await getReport(req, res);
             expect(firestoreSet).toBeCalledTimes(0);
-            expect(res.json).toBeCalledWith(mockReport);
+            expect(res.json).toBeCalledWith({
+                ...mockReport,
+                ...mockFile,
+            });
             expect(res.set).toHaveBeenCalledWith('Cache-control', 'public, max-age=86400');
         });
     });

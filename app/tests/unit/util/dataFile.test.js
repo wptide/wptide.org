@@ -12,9 +12,11 @@ describe('dataFile', () => {
             report: true,
         };
         const filename = 'report-test-1a2b3c4d5e.json';
+        process.chdir('./app');
         await writeFile(filename, data);
         await expect(readFile(filename)).resolves.toEqual(JSON.stringify(data));
         await unlink(filename);
         await expect(readFile(filename)).rejects.toThrow();
+        process.chdir('../');
     });
 });

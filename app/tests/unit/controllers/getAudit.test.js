@@ -3,6 +3,7 @@ const { get, set } = require('../../../src/services/firestore');
 const { publishMessage } = require('../../../src/services/pubsub');
 const { dateTime } = require('../../../src/util/dateTime');
 const { shouldLighthouseAudit } = require('../../../src/util/shouldLighthouseAudit');
+const { getReportFile } = require('../../../src/util/getReportFile');
 
 jest.mock('../../../src/services/pubsub');
 jest.mock('../../../src/util/shouldLighthouseAudit');
@@ -16,6 +17,7 @@ jest.mock('../../../src/util/getSourceUrl',
     () => ({
         getSourceUrl: async (type, slug, version) => (slug === 'non-existent' ? null : `https://downloads.wordpress.org/${type}/${slug}.${version}.zip`),
     }));
+jest.mock('../../../src/util/getReportFile');
 
 const firestoreGet = get;
 const firestoreSet = set;
@@ -44,6 +46,7 @@ beforeEach(() => {
     firestoreSet.mockClear();
     publishMessage.mockClear();
     shouldLighthouseAudit.mockClear();
+    getReportFile.mockClear();
 });
 
 describe('The getAudit route handler', () => {
@@ -223,12 +226,18 @@ describe('The getAudit route handler', () => {
             },
         };
         firestoreGet.mockResolvedValueOnce(mockLighthouseReport);
+        getReportFile.mockResolvedValue({
+            key: 'value',
+        });
 
         await getAudit(req, res);
         expect(firestoreSet).toBeCalledTimes(0);
         expect(res.json).toBeCalledWith({
             reports: {
-                phpcs_phpcompatibilitywp: { ...mockCompatReport },
+                phpcs_phpcompatibilitywp: {
+                    ...mockCompatReport,
+                    key: 'value',
+                },
             },
             ...mockAudit,
         });
@@ -237,8 +246,14 @@ describe('The getAudit route handler', () => {
         expect(firestoreSet).toBeCalledTimes(0);
         expect(res.json).toBeCalledWith({
             reports: {
-                phpcs_phpcompatibilitywp: { ...mockCompatReport },
-                lighthouse: { ...mockLighthouseReport },
+                phpcs_phpcompatibilitywp: {
+                    ...mockCompatReport,
+                    key: 'value',
+                },
+                lighthouse: {
+                    ...mockLighthouseReport,
+                    key: 'value',
+                },
             },
             ...mockAudit,
         });

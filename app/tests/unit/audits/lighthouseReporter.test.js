@@ -22,6 +22,14 @@ afterEach(() => {
     delete process.env.CHROMIUM_PATH;
 });
 
+beforeAll(() => {
+    process.chdir('./app');
+});
+
+afterAll(() => {
+    process.chdir('../');
+});
+
 /**
  * Tests for lighthouseReporter.
  */

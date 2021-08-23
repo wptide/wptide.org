@@ -28,6 +28,8 @@ COPY --from=backend /usr/ /usr/
 COPY --from=backend /app/vendor/ ./vendor/
 
 RUN mkdir data
+RUN mkdir data/lighthouse
+RUN mkdir data/phpcs_phpcompatibilitywp
 RUN npm ci --only=production --ignore-scripts
 
 EXPOSE 8080

@@ -41,10 +41,10 @@ push.sync:
 	@docker push gcr.io/${GOOGLE_CLOUD_PROJECT}/sync:${VERSION}
 
 start.lighthouse:
-	@docker run -v $(PWD)/app/src:/app/src --rm -p 5010:8080 --env-file .env.server gcr.io/${GOOGLE_CLOUD_PROJECT}/lighthouse:${VERSION}
+	@docker run -v $(PWD)/app/src:/app/src -v $(PWD)/app/data:/app/data -v $(PWD)/app/service-account.json:/app/service-account.json --rm -p 5010:8080 --env-file .env.server gcr.io/${GOOGLE_CLOUD_PROJECT}/lighthouse:${VERSION}
 
 start.phpcs:
-	@docker run -v $(PWD)/app/src:/app/src --rm -p 5011:8080 --env-file .env.server gcr.io/${GOOGLE_CLOUD_PROJECT}/phpcs:${VERSION}
+	@docker run -v $(PWD)/app/src:/app/src -v $(PWD)/app/data:/app/data -v $(PWD)/app/service-account.json:/app/service-account.json --rm -p 5011:8080 --env-file .env.server gcr.io/${GOOGLE_CLOUD_PROJECT}/phpcs:${VERSION}
 
 start.sync:
 	@docker run -v $(PWD)/app/src:/app/src --rm -p 5012:8080 --env-file .env.server gcr.io/${GOOGLE_CLOUD_PROJECT}/sync:${VERSION}
@@ -125,5 +125,5 @@ download.keys: setup
 	@gcloud projects add-iam-policy-binding ${GOOGLE_CLOUD_PROJECT} \
 		--member="serviceAccount:local-server@${GOOGLE_CLOUD_PROJECT}.iam.gserviceaccount.com" \
 		--role=roles/owner
-	@gcloud iam service-accounts keys create service-account.json \
+	@gcloud iam service-accounts keys create app/service-account.json \
 		--iam-account=local-server@${GOOGLE_CLOUD_PROJECT}.iam.gserviceaccount.com

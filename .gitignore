@@ -52,5 +52,11 @@ vendor
 service-account.json
 
 # Local data storage
-data/*
-!data/.gitkeep
+app/data/*
+!app/data/.gitkeep
+!app/data/lighthouse
+app/data/lighthouse/*
+!app/data/lighthouse/.gitkeep
+!app/data/phpcs_phpcompatibilitywp
+app/data/phpcs_phpcompatibilitywp/*
+!app/data/phpcs_phpcompatibilitywp/.gitkeep

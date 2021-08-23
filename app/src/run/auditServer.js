@@ -1,6 +1,8 @@
 /**
  * Internal Dependencies.
  */
+const { bucketExists, saveFile } = require('../services/storage');
+const { writeFile } = require('../util/dataFile');
 const { dateTime } = require('../util/dateTime');
 const {
     getAuditDoc, getStatusDoc, setAuditDoc, setReportDoc, setStatusDoc,
@@ -9,6 +11,7 @@ const { getHash } = require('../util/identifiers');
 const { canProceed } = require('../util/canProceed');
 const { sendError } = require('../util/sendError');
 const { setAuditStatus } = require('../util/setAuditStatus');
+const { getBucketName } = require('../util/getBucketName');
 
 /**
  * Delay processing the next line of code with a promise.
@@ -25,11 +28,11 @@ const delay = async (min, max) => {
 /**
  * Helper to set the status.
  *
- * @param   {string} id       The status doc ID.
- * @param   {string} type     The audit type.
- * @param   {string} status   The status to set.
- * @param   {number} datetime The value of a call to dateTime().
- * @returns {string}          The current status.
+ * @param   {string}          id       The status doc ID.
+ * @param   {string}          type     The audit type.
+ * @param   {string}          status   The status to set.
+ * @param   {number}          datetime The value of a call to dateTime().
+ * @returns {Promise<string>}          The current status.
  */
 const setStatus = async (id, type, status, datetime) => {
     const data = await getStatusDoc(id);
@@ -60,6 +63,7 @@ exports.auditServer = async (req, res, reporter, type, name) => {
          */
         await delay(1, 1000);
 
+        const bucketName = getBucketName();
         const now = Date.now();
         const validation = {
             message: 'Request has validation errors',
@@ -189,6 +193,17 @@ exports.auditServer = async (req, res, reporter, type, name) => {
             return res.status(500).send();
         }
 
+        // Generate the name of the file to store.
+        const fileName = `${type}/${reportId}.json`;
+
+        // Write data to the local filesystem.
+        await writeFile(fileName, reportData);
+
+        // Write data to GCS.
+        if (bucketName && await bucketExists(bucketName)) {
+            await saveFile(bucketName, fileName, reportData);
+        }
+
         const report = {
             id: reportId,
             type,
@@ -200,7 +215,6 @@ exports.auditServer = async (req, res, reporter, type, name) => {
             },
             created_datetime: createdDate,
             milliseconds: processTime,
-            ...reportData,
         };
 
         // Save the Audit.

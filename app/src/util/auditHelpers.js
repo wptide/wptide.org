@@ -10,6 +10,7 @@ const {
 const { publish, messageTypes } = require('../integrations/pubsub');
 const { shouldLighthouseAudit } = require('./shouldLighthouseAudit');
 const { setAuditStatus } = require('./setAuditStatus');
+const { getReportFile } = require('./getReportFile');
 
 const validReportTypes = ['lighthouse', 'phpcs_phpcompatibilitywp'];
 
@@ -129,11 +130,16 @@ const addAuditReports = async (audit, reportTypes) => {
         const reportId = updatedAudit.reports[reportType]
             ? updatedAudit.reports[reportType].id : null;
         if (reportId) {
-            const report = await getReportDoc(reportId);
+            const reportDoc = await getReportDoc(reportId);
+            const reportData = await getReportFile(reportType, reportId);
+
             /* istanbul ignore else */
-            if (report) {
+            if (reportDoc && reportData) {
                 // Attach the audit report to the doc.
-                updatedAudit.reports[reportType] = report;
+                updatedAudit.reports[reportType] = {
+                    ...reportDoc,
+                    ...reportData,
+                };
             }
         }
     }));

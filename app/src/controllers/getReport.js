@@ -2,6 +2,7 @@
  * Internal Dependencies.
  */
 const { getReportDoc } = require('../integrations/firestore');
+const { getReportFile } = require('../util/getReportFile');
 
 /**
  * Gets an existing Audit Report.
@@ -29,9 +30,16 @@ const getReport = async (req, res) => {
     } else {
         try {
             const reportId = req.params.id.replace(/[^\w.-]+/g, '');
-            const report = await getReportDoc(reportId);
+            const reportDoc = await getReportDoc(reportId);
+            const reportType = (reportDoc && reportDoc.type) || '';
+            const reportData = await getReportFile(reportType, reportId);
 
-            if (report) {
+            if (reportDoc && reportData) {
+                const report = {
+                    ...reportDoc,
+                    ...reportData,
+                };
+
                 res.set('Cache-control', 'public, max-age=86400');
                 res.status(200).json(report);
             } else {

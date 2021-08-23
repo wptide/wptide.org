@@ -13,6 +13,8 @@ COPY package-lock.json package-lock.json
 COPY lighthouseServer.js index.js
 
 RUN mkdir data
+RUN mkdir data/lighthouse
+RUN mkdir data/phpcs_phpcompatibilitywp
 RUN echo @edge https://dl-cdn.alpinelinux.org/alpine/edge/community >> /etc/apk/repositories \
   && echo @edge https://dl-cdn.alpinelinux.org/alpine/edge/main >> /etc/apk/repositories \
   && apk -U upgrade \
