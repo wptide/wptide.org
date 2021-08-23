@@ -238,6 +238,7 @@ jobs:
       - name: Deploy to Cloud Functions
         env:
           GOOGLE_CLOUD_PROJECT: ${{ secrets.GOOGLE_CLOUD_PROJECT_STAGING }}
+          GOOGLE_CLOUD_STORAGE_BUCKET_NAME: ${{ secrets.GOOGLE_CLOUD_STORAGE_BUCKET_NAME_STAGING }}
         run: |
           make deploy.api
           make deploy.spec

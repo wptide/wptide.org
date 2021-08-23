@@ -50,10 +50,10 @@ start.sync:
 	@docker run -v $(PWD)/app/src:/app/src --rm -p 5012:8080 --env-file .env.server gcr.io/${GOOGLE_CLOUD_PROJECT}/sync:${VERSION}
 
 deploy.api: setup
-	@gcloud functions deploy api --source app --allow-unauthenticated --runtime nodejs12 --trigger-http
+	@gcloud functions deploy api --source app --allow-unauthenticated --runtime nodejs12 --trigger-http --set-env-vars "NODE_ENV=production,GOOGLE_CLOUD_STORAGE_BUCKET_NAME=${GOOGLE_CLOUD_STORAGE_BUCKET_NAME}"
 
 deploy.spec: setup
-	@gcloud functions deploy spec --source app --allow-unauthenticated --runtime nodejs12 --trigger-http
+	@gcloud functions deploy spec --source app --allow-unauthenticated --runtime nodejs12 --trigger-http --set-env-vars "NODE_ENV=production,GOOGLE_CLOUD_STORAGE_BUCKET_NAME=${GOOGLE_CLOUD_STORAGE_BUCKET_NAME}"
 
 deploy.firebase:
 	@firebase --project=${GOOGLE_CLOUD_PROJECT} deploy --only hosting
