@@ -9,7 +9,7 @@
     "url": "https://wptide.org"
   },
   "engines": {
-    "node": "12"
+    "node": "14"
   },
   "license": "MIT",
   "private": true,
