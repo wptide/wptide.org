@@ -12,8 +12,15 @@ setup.cloud: setup
 	@gcloud components update
 	@gcloud auth login
 	@gcloud auth configure-docker
+	@gcloud services enable appengine.googleapis.com
+	@gcloud services enable cloudscheduler.googleapis.com
+	@gcloud services enable cloudfunctions.googleapis.com
+	@gcloud services enable cloudbuild.googleapis.com
 	@gcloud services enable containerregistry.googleapis.com
 	@gcloud services enable run.googleapis.com
+
+setup.bucket: setup
+	@gsutil mb -c STANDARD -l US -b on gs://${GOOGLE_CLOUD_PROJECT}-reports
 
 setup.firestore: setup
 	@gcloud app create --region=us-central
@@ -50,10 +57,10 @@ start.sync:
 	@docker run -v $(PWD)/app/src:/app/src --rm -p 5012:8080 --env-file .env.server gcr.io/${GOOGLE_CLOUD_PROJECT}/sync:${VERSION}
 
 deploy.api: setup
-	@gcloud functions deploy api --source app --allow-unauthenticated --runtime nodejs12 --trigger-http --set-env-vars "NODE_ENV=production,GOOGLE_CLOUD_STORAGE_BUCKET_NAME=${GOOGLE_CLOUD_STORAGE_BUCKET_NAME}"
+	@gcloud functions deploy api --source app --allow-unauthenticated --runtime nodejs14 --trigger-http --set-env-vars "NODE_ENV=production,GOOGLE_CLOUD_STORAGE_BUCKET_NAME=${GOOGLE_CLOUD_STORAGE_BUCKET_NAME}"
 
 deploy.spec: setup
-	@gcloud functions deploy spec --source app --allow-unauthenticated --runtime nodejs12 --trigger-http --set-env-vars "NODE_ENV=production,GOOGLE_CLOUD_STORAGE_BUCKET_NAME=${GOOGLE_CLOUD_STORAGE_BUCKET_NAME}"
+	@gcloud functions deploy spec --source app --allow-unauthenticated --runtime nodejs14 --trigger-http --set-env-vars "NODE_ENV=production,GOOGLE_CLOUD_STORAGE_BUCKET_NAME=${GOOGLE_CLOUD_STORAGE_BUCKET_NAME}"
 
 deploy.firebase:
 	@firebase --project=${GOOGLE_CLOUD_PROJECT} deploy --only hosting
@@ -119,6 +126,9 @@ describe.sync: setup
 
 delete.firestore:
 	@firebase --project=${GOOGLE_CLOUD_PROJECT} firestore:delete --all-collections
+
+delete.scheduler:
+	@gcloud scheduler jobs delete sync-server
 
 download.keys: setup
 	@gcloud iam service-accounts create local-server --display-name "Local Development Server"
