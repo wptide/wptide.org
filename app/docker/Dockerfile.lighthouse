@@ -1,5 +1,5 @@
 # Node
-FROM node:12-alpine3.12
+FROM node:17-alpine3.12
 
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 ENV CHROMIUM_PATH /usr/bin/chromium-browser
