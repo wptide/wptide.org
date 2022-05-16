@@ -17,7 +17,7 @@
     "start": "functions-framework --target=tide --signature-type=http"
   },
   "dependencies": {
-    "@google-cloud/functions-framework": "^1.9.0",
+    "@google-cloud/functions-framework": "^3.0.0",
     "@google-cloud/pubsub": "^2.16.1",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
