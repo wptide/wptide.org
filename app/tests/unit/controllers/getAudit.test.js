@@ -8,15 +8,19 @@ const { getReportFile } = require('../../../src/util/getReportFile');
 jest.mock('../../../src/services/pubsub');
 jest.mock('../../../src/util/shouldLighthouseAudit');
 jest.mock('../../../src/util/dateTime');
-jest.mock('../../../src/services/firestore',
+jest.mock(
+    '../../../src/services/firestore',
     () => ({
         get: jest.fn(),
         set: jest.fn(),
-    }));
-jest.mock('../../../src/util/getSourceUrl',
+    }),
+);
+jest.mock(
+    '../../../src/util/getSourceUrl',
     () => ({
         getSourceUrl: async (type, slug, version) => (slug === 'non-existent' ? null : `https://downloads.wordpress.org/${type}/${slug}.${version}.zip`),
-    }));
+    }),
+);
 jest.mock('../../../src/util/getReportFile');
 
 const firestoreGet = get;

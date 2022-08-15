@@ -2,11 +2,13 @@ const getReport = require('../../../src/controllers/getReport');
 const { get, set } = require('../../../src/services/firestore');
 const { getReportFile } = require('../../../src/util/getReportFile');
 
-jest.mock('../../../src/services/firestore',
+jest.mock(
+    '../../../src/services/firestore',
     () => ({
         get: jest.fn(),
         set: jest.fn(),
-    }));
+    }),
+);
 jest.mock('../../../src/util/getReportFile');
 
 const firestoreGet = get;

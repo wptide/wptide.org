@@ -5,11 +5,13 @@ const { get, set } = require('../../../src/services/firestore');
 const { canProceed } = require('../../../src/util/canProceed');
 const { dateTime } = require('../../../src/util/dateTime');
 
-jest.mock('../../../src/services/firestore',
+jest.mock(
+    '../../../src/services/firestore',
     () => ({
         get: jest.fn(),
         set: jest.fn(),
-    }));
+    }),
+);
 jest.mock('../../../src/util/dateTime');
 
 const firestoreGet = get;

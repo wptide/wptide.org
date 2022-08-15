@@ -20,15 +20,19 @@ const themeDataSingle = require('../data/themeDataSingle.json');
 const themeDataSingleWithTrunk = require('../data/themeDataSingleWithTrunk.json');
 const themeDataTwoWithVersions = require('../data/themeDataTwoWithVersions.json');
 
-jest.mock('../../../src/util/auditHelpers',
+jest.mock(
+    '../../../src/util/auditHelpers',
     () => ({
         getAuditData: jest.fn(),
-    }));
-jest.mock('../../../src/services/firestore',
+    }),
+);
+jest.mock(
+    '../../../src/services/firestore',
     () => ({
         get: jest.fn(),
         set: jest.fn(),
-    }));
+    }),
+);
 
 const firestoreGet = get;
 const firestoreSet = set;

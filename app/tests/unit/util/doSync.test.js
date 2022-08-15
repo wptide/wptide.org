@@ -8,13 +8,15 @@ const {
 const { doSync } = require('../../../src/util/doSync');
 
 jest.mock('../../../src/util/syncHelpers');
-jest.mock('../../../src/services/firestore',
+jest.mock(
+    '../../../src/services/firestore',
     () => ({
         get: jest.fn(),
         set: jest.fn(),
         remove: jest.fn(),
         snapshot: jest.fn(),
-    }));
+    }),
+);
 
 const firestoreGet = get;
 const firestoreSet = set;

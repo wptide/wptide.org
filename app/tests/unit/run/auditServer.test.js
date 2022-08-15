@@ -15,32 +15,40 @@ const { getBucketName } = require('../../../src/util/getBucketName');
 const { bucketExists, saveFile } = require('../../../src/services/storage');
 
 jest.mock('../../../src/util/sendError');
-jest.mock('../../../src/audits/lighthouseReporter',
+jest.mock(
+    '../../../src/audits/lighthouseReporter',
     () => jest.fn().mockReturnValue({
         report: {},
-    }));
+    }),
+);
 jest.mock('../../../src/util/canProceed');
 jest.mock('../../../src/util/dateTime');
-jest.mock('../../../src/integrations/firestore',
+jest.mock(
+    '../../../src/integrations/firestore',
     () => ({
         getAuditDoc: jest.fn(),
         getStatusDoc: jest.fn(),
         setAuditDoc: jest.fn(),
         setReportDoc: jest.fn(),
         setStatusDoc: jest.fn(),
-    }));
-jest.mock('../../../src/services/firestore',
+    }),
+);
+jest.mock(
+    '../../../src/services/firestore',
     () => ({
         get: jest.fn(),
         set: jest.fn(),
-    }));
+    }),
+);
 jest.mock('../../../src/util/getReportFile');
 jest.mock('../../../src/util/getBucketName');
-jest.mock('../../../src/services/storage',
+jest.mock(
+    '../../../src/services/storage',
     () => ({
         bucketExists: jest.fn(),
         saveFile: jest.fn(),
-    }));
+    }),
+);
 
 const firestoreGet = get;
 const firestoreSet = set;

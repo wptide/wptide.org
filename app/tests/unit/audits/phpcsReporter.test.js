@@ -4,12 +4,14 @@
 const phpcsReporter = require('../../../src/audits/phpcsReporter');
 const { phpcsDownloader, phpcsRemover, phpcsProcessor } = require('../../../src/util/phpcsHelpers');
 
-jest.mock('../../../src/util/phpcsHelpers',
+jest.mock(
+    '../../../src/util/phpcsHelpers',
     () => ({
         phpcsDownloader: jest.fn(),
         phpcsRemover: jest.fn(),
         phpcsProcessor: jest.fn(),
-    }));
+    }),
+);
 
 beforeEach(() => {
     phpcsDownloader.mockClear();

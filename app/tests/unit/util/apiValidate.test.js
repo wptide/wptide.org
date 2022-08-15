@@ -13,10 +13,12 @@ describe('apiValidate', () => {
     });
     it('Returns a 500 server error message', async () => {
         jest.resetModules();
-        jest.mock('../../../src/util/apiSpec',
+        jest.mock(
+            '../../../src/util/apiSpec',
             () => ({
                 apiSpec: () => 'apispec',
-            }));
+            }),
+        );
 
         // eslint-disable-next-line global-require
         const validate = require('../../../src/util/apiValidate');
