@@ -60,7 +60,7 @@
           v-for="(report, index) in reports"
           :key="index"
         >
-          <Report
+          <ReportBlock
             v-bind="report"
             :type="index"
             :status_datetime="created_datetime"
@@ -90,7 +90,7 @@ import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
 import processTime from '../../util/processTime';
 
-import Report from './Report.vue';
+import ReportBlock from './ReportBlock.vue';
 import Status from './Status.vue';
 
 TimeAgo.addDefaultLocale(en);
@@ -98,7 +98,7 @@ const timeAgo = new TimeAgo('en-US');
 export default {
     name: 'Project',
     components: {
-        Report,
+        ReportBlock,
         Status,
     },
     props: {

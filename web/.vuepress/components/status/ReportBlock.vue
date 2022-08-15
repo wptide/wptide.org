@@ -47,7 +47,7 @@ import processTime from '../../util/processTime';
 import Status from './Status.vue';
 
 export default {
-    name: 'Report',
+    name: 'ReportBlock',
     components: {
         Status,
     },
