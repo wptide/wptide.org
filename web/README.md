@@ -1,4 +1,4 @@
 ---
 pageClass: home
 ---
-<Hero/>
+<HeroBlock/>
