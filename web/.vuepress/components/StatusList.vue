@@ -1,7 +1,7 @@
 <template>
   <div class="status-list">
-    <Select
-      class="status-list__select"
+    <SelectType
+      class="status-list__select-type"
       :status.sync="status"
       :type.sync="type"
     />
@@ -24,12 +24,12 @@
 
 <script>
 import Project from './status/Project.vue';
-import Select from './status/Select.vue';
+import SelectType from './status/SelectType.vue';
 
 export default {
     name: 'StatusList',
     components: {
-        Select,
+        SelectType,
         Project,
     },
     data: () => ({
@@ -102,7 +102,7 @@ export default {
   position relative
   padding-top 2rem
 
-.status-list .status-list__select
+.status-list .status-list__select-type
   margin-bottom 2rem
 
 .status-list__projects
@@ -125,11 +125,11 @@ export default {
     opacity 1
 
 @media (min-width: 1024px)
-  .status-list .status-list__select
+  .status-list .status-list__select-type
     position absolute
     right 0
     top -10.675rem
 @media (min-width: 1084px)
-  .status-list .status-list__select
+  .status-list .status-list__select-type
     top -9rem
 </style>
