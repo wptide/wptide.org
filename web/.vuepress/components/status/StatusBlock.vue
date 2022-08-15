@@ -13,7 +13,7 @@
 
 <script>
 export default {
-    name: 'Status',
+    name: 'StatusBlock',
     props: {
         status: {
             type: String,

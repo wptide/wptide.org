@@ -7,7 +7,7 @@
   >
     <div class="status-row__header">
       <div class="status-row__header-title">
-        <Status :status="status" />
+        <StatusBlock :status="status" />
         <div class="status-row__header-title-text">
           <span>/api/v1/audit/wporg/{{ type }}/<strong>{{ slug }}/{{ version }}</strong> <a
             :href="audit"
@@ -91,15 +91,15 @@ import en from 'javascript-time-ago/locale/en';
 import processTime from '../../util/processTime';
 
 import ReportBlock from './ReportBlock.vue';
-import Status from './Status.vue';
+import StatusBlock from './StatusBlock.vue';
 
 TimeAgo.addDefaultLocale(en);
 const timeAgo = new TimeAgo('en-US');
 export default {
-    name: 'Project',
+    name: 'ProjectBlock',
     components: {
         ReportBlock,
-        Status,
+        StatusBlock,
     },
     props: {
         id: {

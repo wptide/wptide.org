@@ -10,7 +10,7 @@
         :key="project.key"
         v-for="project in projects"
       >
-        <Project v-bind="project.data" />
+        <ProjectBlock v-bind="project.data" />
       </li>
       <li
         class="custom-block tip status-list__projects--none"
@@ -23,14 +23,14 @@
 </template>
 
 <script>
-import Project from './status/Project.vue';
+import ProjectBlock from './status/ProjectBlock.vue';
 import SelectType from './status/SelectType.vue';
 
 export default {
     name: 'StatusList',
     components: {
         SelectType,
-        Project,
+        ProjectBlock,
     },
     data: () => ({
         projects: [],
