@@ -108,7 +108,7 @@ module.exports = {
                         'services/lighthouse-server/',
                         'services/phpcs-server/',
                         'services/sync-server/',
-                    ]
+                    ],
                 },
                 {
                     title: 'API v1',

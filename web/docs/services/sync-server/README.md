@@ -2,7 +2,15 @@
 
 The Sync Server is a Node.js app running on an Alpine Linux Docker image that polls the wp.org API's for themes and plugins to process and writes them to appropriate queue.
 
-This sync action is triggered by message submitted every 5 minutes to `MESSAGE_TYPE_SYNC_REQUEST` queue by Google Cloud scheduler job. When running locally, use `npm run start:server:sync` to start this server.
+The sync process is triggered by message submitted every 5 minutes to `MESSAGE_TYPE_SYNC_REQUEST` queue by Google Cloud scheduler job.
+
+When running locally, use `npm run start:server:sync` to start this server. Then, open the `http://localhost:5012/` url to start the sync process.
+
+::: tip IMPORTANT
+
+Turning on the Sync Server on will put around 50k audits in the queue which will take days to process locally and potentially lock up all your computers resources, so you probably want to stop its execution after fetching a couple of messages, which you can do with `Ctrl+C` in your keyboard.
+
+:::
 
 ## Commands
 
