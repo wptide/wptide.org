@@ -85,7 +85,6 @@ module.exports = {
                     collapsable: false,
                     children: [
                         '',
-                        'services/',
                         'installation/',
                         'google-cloud/',
                     ],
@@ -99,6 +98,17 @@ module.exports = {
                         'roadmap/',
                         'sponsors/',
                     ],
+                },
+                {
+                    title: 'Services',
+                    collapsable: false,
+                    children: [
+                        'services/',
+                        'services/api-server/',
+                        'services/lighthouse-server/',
+                        'services/phpcs-server/',
+                        'services/sync-server/',
+                    ]
                 },
                 {
                     title: 'API v1',
