@@ -31,7 +31,7 @@ const phpcsDownloader = async (url, dir, filename) => {
  * @param   {string} dir The absolute path to the report directory.
  * @returns {void}
  */
-const phpcsRemover = (dir) => fs.rmdirSync(dir, { recursive: true });
+const phpcsRemover = (dir) => fs.rmSync(dir, { recursive: true, force: true });
 
 /**
  * Process a PHPCS JSON report.
