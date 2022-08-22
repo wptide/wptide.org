@@ -124,6 +124,9 @@ describe.phpcs: setup
 describe.sync: setup
 	@gcloud run services describe sync-server --format 'value(status.url)'
 
+delete.files:
+	@gsutil -m rm -r gs://${GOOGLE_CLOUD_STORAGE_BUCKET_NAME}/**
+
 delete.firestore:
 	@firebase --project=${GOOGLE_CLOUD_PROJECT} firestore:delete --all-collections
 
