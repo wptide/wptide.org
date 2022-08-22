@@ -31,14 +31,14 @@ describe('shouldLighthouseAudit', () => {
     it('Returns true when the theme is the most recent version', async () => {
         nock('https://api.wordpress.org')
             .intercept(apiPath('twentytwenty'), 'GET')
-            .reply(200, { slug: 'twentytwenty', version: '1.8' });
+            .reply(200, { slug: 'twentytwenty', version: '2.0' });
 
-        expect(await shouldLighthouseAudit({ slug: 'twentytwenty', version: '1.8' })).toBeTruthy();
+        expect(await shouldLighthouseAudit({ slug: 'twentytwenty', version: '2.0' })).toBeTruthy();
     });
     it('Returns false when the theme is not the most recent version', async () => {
         nock('https://api.wordpress.org')
             .intercept(apiPath('twentytwenty'), 'GET')
-            .reply(200, { slug: 'twentytwenty', version: '1.8' });
+            .reply(200, { slug: 'twentytwenty', version: '2.0' });
 
         expect(await shouldLighthouseAudit({ slug: 'twentytwenty', version: '1.7' })).toBeFalsy();
     });
