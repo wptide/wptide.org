@@ -22,7 +22,9 @@ const { getBucketName } = require('../util/getBucketName');
  */
 const delay = async (min, max) => {
     const ms = Math.floor(Math.random() * (max - min + 1)) + min;
-    await new Promise((resolve) => setTimeout(resolve, ms));
+    await new Promise((resolve) => {
+        setTimeout(resolve, ms);
+    });
 };
 
 /**

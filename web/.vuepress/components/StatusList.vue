@@ -1,6 +1,6 @@
 <template>
   <div class="status-list">
-    <Select
+    <StatusType
       class="status-list__select"
       :status.sync="status"
       :type.sync="type"
@@ -10,7 +10,7 @@
         :key="project.key"
         v-for="project in projects"
       >
-        <Project v-bind="project.data" />
+        <StatusRow v-bind="project.data" />
       </li>
       <li
         class="custom-block tip status-list__projects--none"
@@ -23,14 +23,14 @@
 </template>
 
 <script>
-import Project from './status/Project.vue';
-import Select from './status/Select.vue';
+import StatusRow from './StatusRow.vue';
+import StatusType from './StatusType.vue';
 
 export default {
     name: 'StatusList',
     components: {
-        Select,
-        Project,
+        StatusRow,
+        StatusType,
     },
     data: () => ({
         projects: [],

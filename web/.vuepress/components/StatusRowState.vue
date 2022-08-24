@@ -1,7 +1,7 @@
 <template>
-  <div class="status-row__status">
+  <div class="status-row__state">
     <img
-      :class="'status-row__status-icon status-row__status-icon--' + status"
+      :class="'status-row__state-icon status-row__state-icon--' + status"
       :src="'/assets/img/icon-status-' + status + '.svg'"
       alt=""
       :title="label"
@@ -13,7 +13,7 @@
 
 <script>
 export default {
-    name: 'Status',
+    name: 'StatusRowState',
     props: {
         status: {
             type: String,
@@ -44,16 +44,16 @@ export default {
     to
       transform rotate(1turn)
 
-  .status-row__status
+  .status-row__state
     display flex
     align-items center
     font-weight 700
     margin-right 1rem
 
-  .status-row__header-title .status-row__status
+  .status-row__header-title .status-row__state
     margin-top 0.1rem
 
-  img.status-row__status-icon
+  img.status-row__state-icon
     display block
     width 1rem
     height 1rem
@@ -61,9 +61,9 @@ export default {
     flex-shrink 0
     flex-grow 0
 
-  .status-row__header-title img.status-row__status-icon
+  .status-row__header-title img.status-row__state-icon
     margin-top 0.25rem
 
-  .status-row__status-icon--in-progress
+  .status-row__state-icon--in-progress
     animation rotate 1s linear infinite
 </style>

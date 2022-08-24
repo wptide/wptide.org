@@ -2,7 +2,7 @@
 <template>
   <div class="status-row__report">
     <div class="status-row__report-title">
-      <Status :status="status" />
+      <StatusRowState :status="status" />
       <code>{{ type }}</code>
     </div>
     <div class="status-row__report-results">
@@ -43,13 +43,13 @@
 
 <!-- eslint-disable max-len -->
 <script>
-import processTime from '../../util/processTime';
-import Status from './Status.vue';
+import processTime from '../util/processTime';
+import StatusRowState from './StatusRowState.vue';
 
 export default {
-    name: 'Report',
+    name: 'StatusRowReport',
     components: {
-        Status,
+        StatusRowState,
     },
     props: {
         type: {

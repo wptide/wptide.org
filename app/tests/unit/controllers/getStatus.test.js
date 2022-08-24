@@ -1,11 +1,13 @@
 const getStatus = require('../../../src/controllers/getStatus');
 const { get, set } = require('../../../src/services/firestore');
 
-jest.mock('../../../src/services/firestore',
+jest.mock(
+    '../../../src/services/firestore',
     () => ({
         get: jest.fn(),
         set: jest.fn(),
-    }));
+    }),
+);
 
 const firestoreGet = get;
 const firestoreSet = set;
