@@ -1,7 +1,7 @@
 {
   "name": "wptide.org",
   "version": "1.0.0-beta",
-  "description": "Tide is a WordPress.org Component and built as an Infrastructure as Code (IaC) monorepo that contains a Firebase hosted static documentation website built with VuePress, along with an implementation of the Tide API using the OpenAPI v3 Specification and deployed to Cloud Functions, with Cloud Run servers auditing WordPress.org themes & plugins, backed by Firestore, and orchestrated with Pub/Sub events.",
+  "description": "Tide is a WordPress.org Component and built as an Infrastructure as Code (IaC) monorepo that contains a Firebase hosted static documentation website built with VuePress, along with an implementation of the Tide API using the OpenAPI v3 Specification and deployed to Cloud Functions, with Cloud Run servers auditing WordPress.org themes & plugins, orchestrated with Pub/Sub events, and backed by Firestore and Cloud Storage.",
   "main": "index.js",
   "author": {
     "name": "Tide Maintainers",

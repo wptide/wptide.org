@@ -1,7 +1,7 @@
 {
   "name": "app-server",
   "version": "1.0.0-beta",
-  "description": "Shared Node setup for the Cloud Functions API and Lighthouse & PHPCS Cloud Run servers.",
+  "description": "Shared Node setup for the Cloud Functions API and Cloud Run Lighthouse, PHPCS, and Sync servers.",
   "main": "index.js",
   "author": {
     "name": "Tide Maintainers",
