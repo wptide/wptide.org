@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   version: 1.0.0-beta
-  title: Tide OpenAPI Specification
+  title: Tide OpenAPI v3 Specification
   description: Definition and usage reference for the wptide.org JSON API server
   contact:
     name: Tide Maintainers
