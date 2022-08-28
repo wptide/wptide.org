@@ -25,6 +25,7 @@ RUN echo @edge https://dl-cdn.alpinelinux.org/alpine/edge/community >> /etc/apk/
     harfbuzz@edge \
     ttf-freefont@edge \
     libstdc++@edge
+RUN npm install --location=global npm
 RUN npm ci --ignore-scripts
 
 EXPOSE 8080

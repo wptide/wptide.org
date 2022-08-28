@@ -11,6 +11,7 @@ COPY package.json package.json
 COPY package-lock.json package-lock.json
 COPY syncServer.js index.js
 
+RUN npm install --location=global npm
 RUN npm ci --ignore-scripts
 
 EXPOSE 8080

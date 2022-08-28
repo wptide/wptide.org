@@ -30,6 +30,7 @@ COPY --from=backend /app/vendor/ ./vendor/
 RUN mkdir data
 RUN mkdir data/lighthouse
 RUN mkdir data/phpcs_phpcompatibilitywp
+RUN npm install --location=global npm
 RUN npm ci --ignore-scripts
 
 EXPOSE 8080
