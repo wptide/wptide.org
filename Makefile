@@ -157,7 +157,7 @@ deploy.pubsub: setup.iam deploy.iam deploy.topics
 	@gcloud pubsub subscriptions create lighthouse-server-dead-letter --topic MESSAGE_TYPE_LIGHTHOUSE_REQUEST_DEAD_LETTER
 	@gcloud pubsub subscriptions create lighthouse-server --topic MESSAGE_TYPE_LIGHTHOUSE_REQUEST \
 		--push-endpoint=${GOOGLE_CLOUD_RUN_LIGHTHOUSE} \
-		--ack-deadline 300 \
+		--ack-deadline 180 \
 		--enable-message-ordering \
 		--push-auth-service-account=tide-run-server@${GOOGLE_CLOUD_PROJECT}.iam.gserviceaccount.com \
 		--max-delivery-attempts 5 \
@@ -170,7 +170,7 @@ deploy.pubsub: setup.iam deploy.iam deploy.topics
 	@gcloud pubsub subscriptions create phpcs-server-dead-letter --topic MESSAGE_TYPE_PHPCS_REQUEST_DEAD_LETTER
 	@gcloud pubsub subscriptions create phpcs-server --topic MESSAGE_TYPE_PHPCS_REQUEST \
 		--push-endpoint=${GOOGLE_CLOUD_RUN_PHPCS} \
-		--ack-deadline 300 \
+		--ack-deadline 180 \
 		--enable-message-ordering \
 		--push-auth-service-account=tide-run-server@${GOOGLE_CLOUD_PROJECT}.iam.gserviceaccount.com \
 		--max-delivery-attempts 5 \
@@ -209,7 +209,7 @@ delete.files:
 	@gsutil -m rm -r gs://${GOOGLE_CLOUD_STORAGE_BUCKET_NAME}/**
 
 delete.firestore:
-	@firebase --project=${GOOGLE_CLOUD_PROJECT} firestore:delete --all-collections
+	@firebase --project=${GOOGLE_CLOUD_PROJECT} firestore:delete --force --all-collections
 
 delete.scheduler:
 	@gcloud scheduler jobs delete sync-server
