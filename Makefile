@@ -138,24 +138,60 @@ deploy.iam: setup
 
 deploy.topics: setup
 	@gcloud pubsub topics create MESSAGE_TYPE_LIGHTHOUSE_REQUEST
+	@gcloud pubsub topics create MESSAGE_TYPE_LIGHTHOUSE_REQUEST_DEAD_LETTER
+	@gcloud pubsub topics add-iam-policy-binding MESSAGE_TYPE_LIGHTHOUSE_REQUEST_DEAD_LETTER \
+		--member='serviceAccount:service-${GOOGLE_CLOUD_PROJECT_NUMBER}@gcp-sa-pubsub.iam.gserviceaccount.com' \
+		--role='roles/pubsub.publisher'
 	@gcloud pubsub topics create MESSAGE_TYPE_PHPCS_REQUEST
+	@gcloud pubsub topics create MESSAGE_TYPE_PHPCS_REQUEST_DEAD_LETTER
+	@gcloud pubsub topics add-iam-policy-binding MESSAGE_TYPE_PHPCS_REQUEST_DEAD_LETTER \
+		--member='serviceAccount:service-${GOOGLE_CLOUD_PROJECT_NUMBER}@gcp-sa-pubsub.iam.gserviceaccount.com' \
+		--role='roles/pubsub.publisher'
 	@gcloud pubsub topics create MESSAGE_TYPE_SYNC_REQUEST
+	@gcloud pubsub topics create MESSAGE_TYPE_SYNC_REQUEST_DEAD_LETTER
+	@gcloud pubsub topics add-iam-policy-binding MESSAGE_TYPE_SYNC_REQUEST_DEAD_LETTER \
+		--member='serviceAccount:service-${GOOGLE_CLOUD_PROJECT_NUMBER}@gcp-sa-pubsub.iam.gserviceaccount.com' \
+		--role='roles/pubsub.publisher'
 
 deploy.pubsub: setup.iam deploy.iam deploy.topics
-	@gcloud beta pubsub subscriptions create lighthouse-server --topic MESSAGE_TYPE_LIGHTHOUSE_REQUEST \
+	@gcloud pubsub subscriptions create lighthouse-server-dead-letter --topic MESSAGE_TYPE_LIGHTHOUSE_REQUEST_DEAD_LETTER
+	@gcloud pubsub subscriptions create lighthouse-server --topic MESSAGE_TYPE_LIGHTHOUSE_REQUEST \
 		--push-endpoint=${GOOGLE_CLOUD_RUN_LIGHTHOUSE} \
 		--ack-deadline 300 \
 		--enable-message-ordering \
-		--push-auth-service-account=tide-run-server@${GOOGLE_CLOUD_PROJECT}.iam.gserviceaccount.com
-	@gcloud beta pubsub subscriptions create phpcs-server --topic MESSAGE_TYPE_PHPCS_REQUEST \
+		--push-auth-service-account=tide-run-server@${GOOGLE_CLOUD_PROJECT}.iam.gserviceaccount.com \
+		--max-delivery-attempts 5 \
+		--dead-letter-topic MESSAGE_TYPE_LIGHTHOUSE_REQUEST_DEAD_LETTER \
+		--max-retry-delay 10 \
+		--min-retry-delay 1
+	@gcloud pubsub subscriptions add-iam-policy-binding lighthouse-server \
+    	--member=serviceAccount:service-${GOOGLE_CLOUD_PROJECT_NUMBER}@gcp-sa-pubsub.iam.gserviceaccount.com \
+    	--role=roles/pubsub.subscriber
+	@gcloud pubsub subscriptions create phpcs-server-dead-letter --topic MESSAGE_TYPE_PHPCS_REQUEST_DEAD_LETTER
+	@gcloud pubsub subscriptions create phpcs-server --topic MESSAGE_TYPE_PHPCS_REQUEST \
 		--push-endpoint=${GOOGLE_CLOUD_RUN_PHPCS} \
 		--ack-deadline 300 \
 		--enable-message-ordering \
-		--push-auth-service-account=tide-run-server@${GOOGLE_CLOUD_PROJECT}.iam.gserviceaccount.com
-	@gcloud beta pubsub subscriptions create sync-server --topic MESSAGE_TYPE_SYNC_REQUEST \
+		--push-auth-service-account=tide-run-server@${GOOGLE_CLOUD_PROJECT}.iam.gserviceaccount.com \
+		--max-delivery-attempts 5 \
+		--dead-letter-topic MESSAGE_TYPE_PHPCS_REQUEST_DEAD_LETTER \
+		--max-retry-delay 10 \
+		--min-retry-delay 1
+	@gcloud pubsub subscriptions add-iam-policy-binding phpcs-server \
+    	--member=serviceAccount:service-${GOOGLE_CLOUD_PROJECT_NUMBER}@gcp-sa-pubsub.iam.gserviceaccount.com \
+    	--role=roles/pubsub.subscriber
+	@gcloud pubsub subscriptions create sync-server-dead-letter --topic MESSAGE_TYPE_SYNC_REQUEST_DEAD_LETTER
+	@gcloud pubsub subscriptions create sync-server --topic MESSAGE_TYPE_SYNC_REQUEST \
 		--push-endpoint=${GOOGLE_CLOUD_RUN_SYNC} \
 		--ack-deadline 600 \
-		--push-auth-service-account=tide-run-server@${GOOGLE_CLOUD_PROJECT}.iam.gserviceaccount.com
+		--push-auth-service-account=tide-run-server@${GOOGLE_CLOUD_PROJECT}.iam.gserviceaccount.com \
+		--max-delivery-attempts 5 \
+		--dead-letter-topic MESSAGE_TYPE_SYNC_REQUEST_DEAD_LETTER \
+		--max-retry-delay 10 \
+		--min-retry-delay 1
+	@gcloud pubsub subscriptions add-iam-policy-binding sync-server \
+		--member=serviceAccount:service-${GOOGLE_CLOUD_PROJECT_NUMBER}@gcp-sa-pubsub.iam.gserviceaccount.com \
+		--role=roles/pubsub.subscriber
 
 deploy.scheduler: setup
 	@gcloud scheduler jobs create pubsub sync-server --schedule "*/5 * * * *" --topic MESSAGE_TYPE_SYNC_REQUEST --message-body "Start Sync/Ingest" --max-retry-attempts 0
