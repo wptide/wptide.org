@@ -88,7 +88,7 @@ complete then the status will be updated to `failed`.
 The Lighthouse Server runs the Google Lighthouse CLI in an instance of headless Chromium 
 within Puppeteer. It is important to note that the server only works for wp.org themes, 
 **and the most recent version**. This means that the Lighthouse CLI audits each theme by 
-loading the demo version found on [wp.org/themes][themes], which is always the latest 
+loading the demo version found on [wp-themes.com][themes], which is always the latest theme
 version. So if you request a theme audit for a previous version then a Pub/Sub message will
 not be made for the Lighthouse Server to process that theme.
 
@@ -116,5 +116,5 @@ The sync process is triggered by a Google Cloud scheduler job where Pub/Sub mess
 submitted every 5 minutes to the `MESSAGE_TYPE_SYNC_REQUEST` queue which initiates a single
 Cloud Run instance of the Sync Server.
 
-[themes]: https://wordpress.org/themes
+[themes]: https://wp-themes.com/
 [phpcs]: https://github.com/squizlabs/PHP_CodeSniffer
