@@ -33,7 +33,9 @@ node_modules/
 
 # dotenv environment variables file
 .env
-.env.server
+.env.*
+!.env.dist
+!.env.server.dist
 
 # vuepress build output
 web/.vuepress/dist
