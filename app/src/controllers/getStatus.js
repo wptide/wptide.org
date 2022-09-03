@@ -34,7 +34,8 @@ const getStatus = async (req, res) => {
             if (status) {
                 const addCache = Object
                     .keys(status.reports)
-                    .every((report) => status.reports[report].status !== 'pending');
+                    .every((report) => status.reports[report].status === 'complete')
+                    && status.status === 'complete';
 
                 if (addCache) {
                     res.set('Cache-control', 'public, max-age=86400');

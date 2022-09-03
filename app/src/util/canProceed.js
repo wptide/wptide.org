@@ -6,7 +6,7 @@ const { getStatusDoc, setStatusDoc } = require('../integrations/firestore');
 const { setAuditStatus } = require('./setAuditStatus');
 
 const MAX_DURATION = 180; // Max audit duration in seconds.
-const MAX_ATTEMPTS = 5; // Max number of times we can attempt the same audit, must be > 1.
+const MAX_ATTEMPTS = 3; // Max number of times we can attempt the same audit, must be > 1.
 
 /**
  * A gatekeeper for whether or not we can proceed with an audit
@@ -71,4 +71,6 @@ const canProceed = async (type, id) => {
 
 module.exports = {
     canProceed,
+    MAX_DURATION,
+    MAX_ATTEMPTS,
 };

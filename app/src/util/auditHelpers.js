@@ -11,6 +11,7 @@ const { publish, messageTypes } = require('../integrations/pubsub');
 const { shouldLighthouseAudit } = require('./shouldLighthouseAudit');
 const { setAuditStatus } = require('./setAuditStatus');
 const { getReportFile } = require('./getReportFile');
+const { MAX_DURATION, MAX_ATTEMPTS } = require('./canProceed');
 
 const validReportTypes = ['lighthouse', 'phpcs_phpcompatibilitywp'];
 
@@ -62,7 +63,9 @@ const createNewAudit = async (id, params) => {
             modified_datetime: timeNow,
             source_url: sourceUrl,
             status: 'pending',
-            reports: {},
+            reports: {
+                phpcs_phpcompatibilitywp: null,
+            },
         };
         const statusObj = {
             attempts: 0,
@@ -92,7 +95,6 @@ const createNewAudit = async (id, params) => {
                 ...statusObj,
             };
         }
-        audit.reports.phpcs_phpcompatibilitywp = null;
 
         await setStatusDoc(status.id, status);
         await setAuditDoc(audit.id, audit);
@@ -155,11 +157,76 @@ const addAuditReports = async (audit, reportTypes) => {
  */
 const getAuditData = async (auditParams) => {
     const id = getAuditId(auditParams);
+    const checkKeys = ['in-progress', 'pending'];
 
     let existingAuditData = await getAuditDoc(id);
 
     if (!existingAuditData) {
         existingAuditData = await createNewAudit(id, auditParams);
+
+        // Report is stuck in pending or in-progress longer than is allowed, force failure.
+        // @todo look into the root cause if this bug and patch it correctly.
+    } else if (
+        existingAuditData.status
+        && Object.keys(existingAuditData.reports).length
+        && checkKeys.includes(existingAuditData.status)
+        && !Object.keys(existingAuditData.reports).every((k) => !!existingAuditData.reports[k]) /* eslint-disable-line max-len */
+        && existingAuditData.created_datetime + (MAX_DURATION * MAX_ATTEMPTS) < dateTime()
+    ) {
+        const existingStatusData = await getStatusDoc(existingAuditData.id);
+
+        Object.keys(existingStatusData.reports).forEach((key) => {
+            /* istanbul ignore else */
+            if (checkKeys.includes(existingStatusData.reports[key].status)) {
+                existingStatusData.reports[key].status = 'failed';
+            }
+        });
+
+        existingAuditData.status = 'failed';
+        existingAuditData.modified_datetime = dateTime();
+
+        existingStatusData.status = 'failed';
+        existingStatusData.modified_datetime = dateTime();
+
+        await setAuditDoc(existingAuditData.id, existingAuditData);
+        await setStatusDoc(existingAuditData.id, existingStatusData);
+
+        // All reports are complete but were not updated, so we need to update the status.
+        // @todo look into the root cause if this bug and patch it correctly.
+    } else if (
+        existingAuditData.status
+        && Object.keys(existingAuditData.reports).length
+        && checkKeys.includes(existingAuditData.status)
+        && Object.keys(existingAuditData.reports).every((k) => !!existingAuditData.reports[k])
+    ) {
+        const existingStatusData = await getStatusDoc(existingAuditData.id);
+
+        Object.keys(existingStatusData.reports).forEach((key) => {
+            if (checkKeys.includes(existingStatusData.reports[key].status)) {
+                /* istanbul ignore else */
+                if (existingStatusData.reports[key].attempts === 0) {
+                    existingStatusData.reports[key].attempts = 1;
+                }
+                /* istanbul ignore else */
+                if (existingStatusData.reports[key].end_datetime === null) {
+                    existingStatusData.reports[key].end_datetime = dateTime();
+                }
+                /* istanbul ignore else */
+                if (existingStatusData.reports[key].start_datetime === null) {
+                    existingStatusData.reports[key].start_datetime = existingStatusData.created_datetime; /* eslint-disable-line max-len */
+                }
+                existingStatusData.reports[key].status = 'complete';
+            }
+        });
+
+        existingAuditData.status = 'complete';
+        existingAuditData.modified_datetime = dateTime();
+
+        existingStatusData.status = 'complete';
+        existingStatusData.modified_datetime = dateTime();
+
+        await setAuditDoc(existingAuditData.id, existingAuditData);
+        await setStatusDoc(existingAuditData.id, existingStatusData);
     }
 
     return existingAuditData;
