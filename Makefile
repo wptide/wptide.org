@@ -114,13 +114,13 @@ deploy.firestore:
 	@firebase --project=${GOOGLE_CLOUD_PROJECT} deploy --only firestore
 
 deploy.lighthouse: setup
-	@gcloud run deploy lighthouse-server --no-allow-unauthenticated --image gcr.io/${GOOGLE_CLOUD_PROJECT}/lighthouse:${VERSION} --memory ${GOOGLE_CLOUD_RUN_LIGHTHOUSE_MEMORY} --concurrency 1 --set-env-vars "NODE_ENV=production,GOOGLE_CLOUD_STORAGE_BUCKET_NAME=${GOOGLE_CLOUD_STORAGE_BUCKET_NAME}"
+	@gcloud run deploy lighthouse-server --no-allow-unauthenticated --image gcr.io/${GOOGLE_CLOUD_PROJECT}/lighthouse:${VERSION} --memory ${GOOGLE_CLOUD_RUN_LIGHTHOUSE_MEMORY} --timeout 10m --concurrency 1 --set-env-vars "NODE_ENV=production,GOOGLE_CLOUD_STORAGE_BUCKET_NAME=${GOOGLE_CLOUD_STORAGE_BUCKET_NAME}"
 
 deploy.phpcs: setup
-	@gcloud run deploy phpcs-server --no-allow-unauthenticated --image gcr.io/${GOOGLE_CLOUD_PROJECT}/phpcs:${VERSION} --memory ${GOOGLE_CLOUD_RUN_PHPCS_MEMORY} --concurrency 1 --set-env-vars "NODE_ENV=production,GOOGLE_CLOUD_STORAGE_BUCKET_NAME=${GOOGLE_CLOUD_STORAGE_BUCKET_NAME}"
+	@gcloud run deploy phpcs-server --no-allow-unauthenticated --image gcr.io/${GOOGLE_CLOUD_PROJECT}/phpcs:${VERSION} --memory ${GOOGLE_CLOUD_RUN_PHPCS_MEMORY} --timeout 10m --concurrency 1 --set-env-vars "NODE_ENV=production,GOOGLE_CLOUD_STORAGE_BUCKET_NAME=${GOOGLE_CLOUD_STORAGE_BUCKET_NAME}"
 
 deploy.sync: setup
-	@gcloud run deploy sync-server --no-allow-unauthenticated --image gcr.io/${GOOGLE_CLOUD_PROJECT}/sync:${VERSION} --memory ${GOOGLE_CLOUD_RUN_SYNC_MEMORY} --concurrency 1 --timeout 10m --set-env-vars "NODE_ENV=production"
+	@gcloud run deploy sync-server --no-allow-unauthenticated --image gcr.io/${GOOGLE_CLOUD_PROJECT}/sync:${VERSION} --memory ${GOOGLE_CLOUD_RUN_SYNC_MEMORY} --timeout 10m --concurrency 1 --set-env-vars "NODE_ENV=production" --max-instances 1
 
 deploy.iam: setup
 	@gcloud run services add-iam-policy-binding lighthouse-server \
@@ -183,7 +183,7 @@ deploy.pubsub: setup.iam deploy.iam deploy.topics
 	@gcloud pubsub subscriptions create sync-server-dead-letter --topic MESSAGE_TYPE_SYNC_REQUEST_DEAD_LETTER
 	@gcloud pubsub subscriptions create sync-server --topic MESSAGE_TYPE_SYNC_REQUEST \
 		--push-endpoint=${GOOGLE_CLOUD_RUN_SYNC} \
-		--ack-deadline 600 \
+		--ack-deadline 180 \
 		--push-auth-service-account=tide-run-server@${GOOGLE_CLOUD_PROJECT}.iam.gserviceaccount.com \
 		--max-delivery-attempts 5 \
 		--dead-letter-topic MESSAGE_TYPE_SYNC_REQUEST_DEAD_LETTER \
