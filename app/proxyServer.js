@@ -10,15 +10,15 @@ const { messageTypes, subscribe } = require('./src/integrations/pubsub');
 const main = async () => {
     await subscribe(messageTypes.MESSAGE_TYPE_LIGHTHOUSE_REQUEST, {
         pushEndpoint: 'http://localhost:5010',
-        ackDeadlineSeconds: 300,
+        ackDeadlineSeconds: 180,
     });
     await subscribe(messageTypes.MESSAGE_TYPE_PHPCS_REQUEST, {
         pushEndpoint: 'http://localhost:5011',
-        ackDeadlineSeconds: 300,
+        ackDeadlineSeconds: 180,
     });
     await subscribe(messageTypes.MESSAGE_TYPE_SYNC_REQUEST, {
         pushEndpoint: 'http://localhost:5012',
-        ackDeadlineSeconds: 30,
+        ackDeadlineSeconds: 180,
     });
 };
 
