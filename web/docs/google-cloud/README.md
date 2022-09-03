@@ -201,7 +201,7 @@ Get the Lighthouse Server endpoint on Cloud Run:
 The PHPCS Server is used to perform PHP Coding Standards audits and while it could 
 theoretically handle more than one audit at a time it is safer to have the same
 [`--concurrency`][concurrency-argument] argument set to `1` here, as well as, lower the 
-required memory in `GOOGLE_CLOUD_RUN_PHPCS_MEMORY` to run the process set to `512Mi` for 
+required memory in `GOOGLE_CLOUD_RUN_PHPCS_MEMORY` to run the process set to `1024Mi` for 
 the [`--memory`][memory-arg] argument.
 
 Deploy the PHPCS Server to Cloud Run:
@@ -218,7 +218,7 @@ The Sync Server handles consuming the WordPress.org plugins & themes API to list
 versions being added to the repository. Additionally, it could consume the entire API of 
 60k+ projects and all their versions if that was a desired outcome. This server must have 
 the [`--concurrency`][concurrency-argument] argument set to `1` and memory in 
-`GOOGLE_CLOUD_RUN_SYNC_MEMORY` set to `512Mi` for the [`--memory`][memory-arg] argument
+`GOOGLE_CLOUD_RUN_SYNC_MEMORY` set to `1024Mi` for the [`--memory`][memory-arg] argument
 seems to work well. 
 
 Deploy the Sync Server to Cloud Run:
