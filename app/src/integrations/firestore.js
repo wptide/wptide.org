@@ -38,6 +38,7 @@ const getAuditDoc = async (id) => {
             source_url: audit.source_url,
             created_datetime: audit.created_datetime,
             modified_datetime: audit.modified_datetime,
+            job_runs: audit.job_runs,
             status: audit.status,
         }, audit);
     }

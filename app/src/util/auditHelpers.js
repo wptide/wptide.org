@@ -42,6 +42,57 @@ const sendAuditMessages = async (audit) => {
 };
 
 /**
+ * Rerun an exiting audit.
+ *
+ * @param   {object} audit Existing audit doc.
+ * @returns {object}       Update audit doc.
+ */
+const attemptRerunAudit = async (audit) => {
+    const status = await getStatusDoc(audit.id);
+    const timeNow = dateTime();
+    const auditDoc = {
+        ...audit,
+        modified_datetime: timeNow,
+        job_runs: audit.job_runs + 1,
+        status: 'pending',
+        reports: {
+            phpcs_phpcompatibilitywp: null,
+        },
+    };
+
+    const statusObj = {
+        attempts: 0,
+        end_datetime: null,
+        start_datetime: null,
+        status: 'pending',
+    };
+    const statusDoc = {
+        ...status,
+        modified_datetime: timeNow,
+        status: 'pending',
+        reports: {
+            phpcs_phpcompatibilitywp: {
+                ...statusObj,
+            },
+        },
+    };
+
+    /* istanbul ignore else */
+    if (auditDoc.type === 'theme' && await shouldLighthouseAudit(auditDoc)) {
+        auditDoc.reports.lighthouse = null;
+        statusDoc.reports.lighthouse = {
+            ...statusObj,
+        };
+    }
+
+    await setStatusDoc(statusDoc.id, statusDoc);
+    await setAuditDoc(auditDoc.id, auditDoc);
+    await sendAuditMessages(auditDoc);
+
+    return getAuditDoc(auditDoc.id);
+};
+
+/**
  * Create a new audit
  *
  * @param   {string}        id     Audit ID.
@@ -62,6 +113,7 @@ const createNewAudit = async (id, params) => {
             created_datetime: timeNow,
             modified_datetime: timeNow,
             source_url: sourceUrl,
+            job_runs: 1,
             status: 'pending',
             reports: {
                 phpcs_phpcompatibilitywp: null,
@@ -277,6 +329,7 @@ const addMissingAuditReports = async (existingAuditData) => {
 
 module.exports = {
     sendAuditMessages,
+    attemptRerunAudit,
     createNewAudit,
     addAuditReports,
     getAuditData,
