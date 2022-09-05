@@ -11,7 +11,7 @@ RUN echo 'memory_limit = -1' >> /usr/local/etc/php/conf.d/memory-limit.ini
 RUN composer install
 
 # Node
-FROM node:16.16-alpine3.16
+FROM node:16.17-alpine3.16
 
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 
