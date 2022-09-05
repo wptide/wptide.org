@@ -1,4 +1,5 @@
 .gcloudignore
+data
 docker
 node_modules
 tests
@@ -7,5 +8,6 @@ composer.json
 composer.lock
 lighthouseServer.js
 phpcsServer.js
+service-account.json
 proxyServer.js
 syncServer.js

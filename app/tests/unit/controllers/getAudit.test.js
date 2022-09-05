@@ -3,19 +3,25 @@ const { get, set } = require('../../../src/services/firestore');
 const { publishMessage } = require('../../../src/services/pubsub');
 const { dateTime } = require('../../../src/util/dateTime');
 const { shouldLighthouseAudit } = require('../../../src/util/shouldLighthouseAudit');
+const { getReportFile } = require('../../../src/util/getReportFile');
 
 jest.mock('../../../src/services/pubsub');
 jest.mock('../../../src/util/shouldLighthouseAudit');
 jest.mock('../../../src/util/dateTime');
-jest.mock('../../../src/services/firestore',
+jest.mock(
+    '../../../src/services/firestore',
     () => ({
         get: jest.fn(),
         set: jest.fn(),
-    }));
-jest.mock('../../../src/util/getSourceUrl',
+    }),
+);
+jest.mock(
+    '../../../src/util/getSourceUrl',
     () => ({
         getSourceUrl: async (type, slug, version) => (slug === 'non-existent' ? null : `https://downloads.wordpress.org/${type}/${slug}.${version}.zip`),
-    }));
+    }),
+);
+jest.mock('../../../src/util/getReportFile');
 
 const firestoreGet = get;
 const firestoreSet = set;
@@ -44,6 +50,7 @@ beforeEach(() => {
     firestoreSet.mockClear();
     publishMessage.mockClear();
     shouldLighthouseAudit.mockClear();
+    getReportFile.mockClear();
 });
 
 describe('The getAudit route handler', () => {
@@ -147,6 +154,7 @@ describe('The getAudit route handler', () => {
             version: '2',
             created_datetime: 1600000000,
             modified_datetime: 1600000001,
+            job_runs: 1,
             reports: {
                 phpcs_phpcompatibilitywp: {
                     id: 'e5085200b1a1db56c82af70ee206947aa449ed9512e524e06085b03a25f599fd',
@@ -183,6 +191,7 @@ describe('The getAudit route handler', () => {
             version: '2.0.1',
             created_datetime: 1600000000,
             modified_datetime: 1600000001,
+            job_runs: 1,
             reports: {
                 phpcs_phpcompatibilitywp: {
                     id: 'e5085200b1a1db56c82af70ee206947aa449ed9512e524e06085b03a25f599fd',
@@ -223,12 +232,18 @@ describe('The getAudit route handler', () => {
             },
         };
         firestoreGet.mockResolvedValueOnce(mockLighthouseReport);
+        getReportFile.mockResolvedValue({
+            key: 'value',
+        });
 
         await getAudit(req, res);
         expect(firestoreSet).toBeCalledTimes(0);
         expect(res.json).toBeCalledWith({
             reports: {
-                phpcs_phpcompatibilitywp: { ...mockCompatReport },
+                phpcs_phpcompatibilitywp: {
+                    ...mockCompatReport,
+                    key: 'value',
+                },
             },
             ...mockAudit,
         });
@@ -237,8 +252,14 @@ describe('The getAudit route handler', () => {
         expect(firestoreSet).toBeCalledTimes(0);
         expect(res.json).toBeCalledWith({
             reports: {
-                phpcs_phpcompatibilitywp: { ...mockCompatReport },
-                lighthouse: { ...mockLighthouseReport },
+                phpcs_phpcompatibilitywp: {
+                    ...mockCompatReport,
+                    key: 'value',
+                },
+                lighthouse: {
+                    ...mockLighthouseReport,
+                    key: 'value',
+                },
             },
             ...mockAudit,
         });
@@ -264,6 +285,7 @@ describe('The getAudit route handler', () => {
             created_datetime: currentTime,
             modified_datetime: currentTime,
             source_url: 'https://downloads.wordpress.org/plugin/fooslug.2.zip',
+            job_runs: 1,
             status: 'pending',
             reports: {
                 phpcs_phpcompatibilitywp: null,
@@ -302,6 +324,7 @@ describe('The getAudit route handler', () => {
             created_datetime: currentTime,
             modified_datetime: currentTime,
             source_url: 'https://downloads.wordpress.org/theme/fooslug.2.0.1.zip',
+            job_runs: 1,
             status: 'pending',
             reports: {
                 lighthouse: null,
@@ -355,6 +378,7 @@ describe('The getAudit route handler', () => {
             id: '01aeced35125e34401a3e23dc6dd8ea064b14af48eaf47ff1be8d97a9a9038a3',
             created_datetime: currentTime,
             modified_datetime: currentTime,
+            job_runs: 1,
             reports: {
                 phpcs_phpcompatibilitywp: null,
             },
@@ -419,6 +443,7 @@ describe('The getAudit route handler', () => {
             created_datetime: currentTime,
             modified_datetime: currentTime,
             source_url: 'https://downloads.wordpress.org/plugin/fooslug.2.zip',
+            job_runs: 1,
             status: 'complete',
             reports: {
                 phpcs_phpcompatibilitywp: 12345,
@@ -426,5 +451,129 @@ describe('The getAudit route handler', () => {
         });
         await getAudit(req, res);
         expect(res.set).toHaveBeenCalledWith('Cache-control', 'public, max-age=86400');
+    });
+
+    it('Successfully attempts to rerun the audit', async () => {
+        const req = mock.req();
+        const res = mock.res();
+        req.params = {
+            type: 'theme',
+            slug: 'fooslug',
+            version: '2.0.1',
+        };
+        req.query = {
+            attempt_job_rerun: true,
+        };
+        const currentTime = 1000;
+        const expectedAudit = {
+            ...req.params,
+            id: 'd29213d0e05c8669ece2f68ce995e19407212debcdc6519f79b1208aa07c0b27',
+            created_datetime: currentTime,
+            modified_datetime: currentTime,
+            source_url: 'https://downloads.wordpress.org/theme/fooslug.2.0.1.zip',
+            job_runs: 1,
+            status: 'failed',
+            reports: {
+                lighthouse: null,
+                phpcs_phpcompatibilitywp: null,
+            },
+        };
+        const expectedStatus = {
+            ...req.params,
+            id: 'd29213d0e05c8669ece2f68ce995e19407212debcdc6519f79b1208aa07c0b27',
+            source_url: 'https://downloads.wordpress.org/theme/fooslug.2.0.1.zip',
+            created_datetime: currentTime,
+            modified_datetime: currentTime,
+            status: 'failed',
+        };
+        const statusObj = {
+            attempts: 0,
+            end_datetime: null,
+            start_datetime: null,
+            status: 'pending',
+        };
+        expectedStatus.reports = {
+            lighthouse: { ...statusObj },
+            phpcs_phpcompatibilitywp: { ...statusObj },
+        };
+
+        dateTime.mockReturnValue(currentTime);
+        firestoreGet.mockResolvedValueOnce(expectedAudit);
+        firestoreGet.mockResolvedValueOnce(expectedStatus);
+        shouldLighthouseAudit.mockReturnValue(true);
+
+        await getAudit(req, res);
+
+        const expectedMessage = {
+            ...req.params,
+            id: expectedAudit.id,
+            source_url: 'https://downloads.wordpress.org/theme/fooslug.2.0.1.zip',
+        };
+
+        expectedAudit.status = 'pending';
+        expectedAudit.job_runs = 2;
+        expectedStatus.status = 'pending';
+
+        expect(firestoreSet).toHaveBeenCalledWith(`Status/${expectedAudit.id}`, expectedStatus);
+        expect(firestoreSet).toHaveBeenCalledWith(`Audit/${expectedAudit.id}`, expectedAudit);
+        expect(publishMessage).toHaveBeenCalledWith(expectedMessage, 'MESSAGE_TYPE_PHPCS_REQUEST');
+        expect(publishMessage).toHaveBeenCalledWith(expectedMessage, 'MESSAGE_TYPE_LIGHTHOUSE_REQUEST');
+        expect(res.set).toHaveBeenCalledWith('Cache-control', 'no-store');
+    });
+
+    it('Fails attempts to rerun the audit', async () => {
+        const req = mock.req();
+        const res = mock.res();
+        req.params = {
+            type: 'theme',
+            slug: 'fooslug',
+            version: '2.0.1',
+        };
+        req.query = {
+            attempt_job_rerun: true,
+        };
+        const currentTime = 1000;
+        const expectedAudit = {
+            ...req.params,
+            id: 'd29213d0e05c8669ece2f68ce995e19407212debcdc6519f79b1208aa07c0b27',
+            created_datetime: currentTime,
+            modified_datetime: currentTime,
+            source_url: 'https://downloads.wordpress.org/theme/fooslug.2.0.1.zip',
+            job_runs: 2,
+            status: 'failed',
+            reports: {
+                lighthouse: null,
+                phpcs_phpcompatibilitywp: null,
+            },
+        };
+        const expectedStatus = {
+            ...req.params,
+            id: 'd29213d0e05c8669ece2f68ce995e19407212debcdc6519f79b1208aa07c0b27',
+            source_url: 'https://downloads.wordpress.org/theme/fooslug.2.0.1.zip',
+            created_datetime: currentTime,
+            modified_datetime: currentTime,
+            status: 'failed',
+        };
+        const statusObj = {
+            attempts: 0,
+            end_datetime: null,
+            start_datetime: null,
+            status: 'pending',
+        };
+        expectedStatus.reports = {
+            lighthouse: { ...statusObj },
+            phpcs_phpcompatibilitywp: { ...statusObj },
+        };
+
+        dateTime.mockReturnValue(currentTime);
+        firestoreGet.mockResolvedValueOnce(expectedAudit);
+        firestoreGet.mockResolvedValueOnce(expectedStatus);
+        shouldLighthouseAudit.mockReturnValue(true);
+
+        await getAudit(req, res);
+
+        expect(firestoreSet).toBeCalledTimes(0);
+        expect(publishMessage).toBeCalledTimes(0);
+        expect(res.set).toHaveBeenCalledWith('Cache-control', 'no-store');
     });
 });

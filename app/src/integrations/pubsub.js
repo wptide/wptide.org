@@ -32,6 +32,7 @@ const maybeCreateTopics = async () => {
                 // eslint-disable-next-line no-await-in-loop
                 await createTopic(topicName);
             } catch (err) {
+                /* istanbul ignore next */
                 console.log(err);
             }
         }
@@ -41,17 +42,17 @@ const maybeCreateTopics = async () => {
 
 const publish = async (message, topicName) => {
     await maybeCreateTopics();
-    await publishMessage(message, topicName);
+    return publishMessage(message, topicName);
 };
 
 const subscribe = async (subscriptionName, options) => {
     await maybeCreateTopics();
-    return await subscribeTopic(subscriptionName, options); // eslint-disable-line no-return-await
+    return subscribeTopic(subscriptionName, options);
 };
 
 module.exports = {
-    topicsExist,
     messageTypes,
-    subscribe,
+    topicsExist,
     publish,
+    subscribe,
 };

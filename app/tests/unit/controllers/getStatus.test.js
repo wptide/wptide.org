@@ -1,11 +1,13 @@
 const getStatus = require('../../../src/controllers/getStatus');
 const { get, set } = require('../../../src/services/firestore');
 
-jest.mock('../../../src/services/firestore',
+jest.mock(
+    '../../../src/services/firestore',
     () => ({
         get: jest.fn(),
         set: jest.fn(),
-    }));
+    }),
+);
 
 const firestoreGet = get;
 const firestoreSet = set;
@@ -80,13 +82,14 @@ describe('Main index entry point getStatus', () => {
             expect(res.set).toHaveBeenCalledWith('Cache-control', 'no-store');
         });
 
-        it('Returns uncached status if one exists.', async () => {
+        it('Returns uncached status if only one is completed.', async () => {
             const req = mock.req();
             const res = mock.res();
             req.params.id = 'status1';
 
             const mockReport = {
                 id: 'status1',
+                status: 'in-progress',
                 reports: {
                     phpcs_phpcompatibilitywp: {
                         start_datetime: 1,
@@ -108,46 +111,19 @@ describe('Main index entry point getStatus', () => {
             expect(res.json).toBeCalledWith(mockReport);
             expect(res.set).toHaveBeenCalledWith('Cache-control', 'no-store');
         });
-        it('Returns cached status if one exists.', async () => {
+        it('Returns cached status if all are complete.', async () => {
             const req = mock.req();
             const res = mock.res();
             req.params.id = 'status1';
 
             const mockReport = {
                 id: 'status1',
+                status: 'complete',
                 reports: {
                     phpcs_phpcompatibilitywp: {
                         start_datetime: 1,
                         attempts: 1,
                         status: 'complete',
-                    },
-                    lighthouse: {
-                        start_datetime: 1,
-                        attempts: 1,
-                        status: 'complete',
-                    },
-                },
-            };
-
-            firestoreGet.mockResolvedValue(mockReport);
-
-            await getStatus(req, res);
-            expect(firestoreSet).toBeCalledTimes(0);
-            expect(res.json).toBeCalledWith(mockReport);
-            expect(res.set).toHaveBeenCalledWith('Cache-control', 'public, max-age=86400');
-        });
-        it('Returns cached status if one exists and has failed.', async () => {
-            const req = mock.req();
-            const res = mock.res();
-            req.params.id = 'status1';
-
-            const mockReport = {
-                id: 'status1',
-                reports: {
-                    phpcs_phpcompatibilitywp: {
-                        start_datetime: 1,
-                        attempts: 1,
-                        status: 'failed',
                     },
                     lighthouse: {
                         start_datetime: 1,

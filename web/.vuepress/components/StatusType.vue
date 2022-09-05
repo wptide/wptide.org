@@ -1,15 +1,15 @@
 <template>
   <div
-    class="select"
+    class="status-type"
     :class="{ 'is-open': isOpen }"
   >
     <button
-      class="select__trigger"
+      class="status-type__trigger"
       @click="isOpen = !isOpen"
       type="button"
     >
       <svg
-        class="select__trigger-icon"
+        class="status-type__trigger-icon"
         width="18"
         height="12"
         viewBox="0 0 18 12"
@@ -18,11 +18,11 @@
       >
         <path d="M7 12H11V10H7V12ZM0 0V2H18V0H0ZM3 7H15V5H3V7Z" />
       </svg>
-      <span class="select__trigger-value">
+      <span class="status-type__trigger-value">
         {{ status }}: {{ splitType }}
       </span>
       <svg
-        class="select__trigger-chevron"
+        class="status-type__trigger-chevron"
         width="14"
         height="7"
         viewBox="0 0 14 7"
@@ -38,49 +38,49 @@
         />
       </svg>
     </button>
-    <form class="select__body">
+    <form class="status-type__body">
       <div
-        class="select__fieldset"
+        class="status-type__fieldset"
         role="group"
       >
-        <div class="select__fieldset-legend">
+        <div class="status-type__fieldset-legend">
           Status
         </div>
-        <label class="select__value">
+        <label class="status-type__value">
           <input
-            class="select__value-radio"
+            class="status-type__value-radio"
             type="radio"
             value="Any"
             v-model="status"
           > Any
         </label>
-        <label class="select__value">
+        <label class="status-type__value">
           <input
-            class="select__value-radio"
+            class="status-type__value-radio"
             type="radio"
             value="Pending"
             v-model="status"
           > Pending
         </label>
-        <label class="select__value">
+        <label class="status-type__value">
           <input
-            class="select__value-radio"
+            class="status-type__value-radio"
             type="radio"
             value="In-Progress"
             v-model="status"
           > In-Progress
         </label>
-        <label class="select__value">
+        <label class="status-type__value">
           <input
-            class="select__value-radio"
+            class="status-type__value-radio"
             type="radio"
             value="Complete"
             v-model="status"
           > Complete
         </label>
-        <label class="select__value">
+        <label class="status-type__value">
           <input
-            class="select__value-radio"
+            class="status-type__value-radio"
             type="radio"
             value="Failed"
             v-model="status"
@@ -88,23 +88,23 @@
         </label>
       </div>
       <div
-        class="select__fieldset"
+        class="status-type__fieldset"
         role="group"
       >
-        <div class="select__fieldset-legend">
+        <div class="status-type__fieldset-legend">
           Type
         </div>
-        <label class="select__value">
+        <label class="status-type__value">
           <input
-            class="select__value-checkbox"
+            class="status-type__value-checkbox"
             type="checkbox"
             value="Plugin"
             v-model="type"
           > Plugin
         </label>
-        <label class="select__value">
+        <label class="status-type__value">
           <input
-            class="select__value-checkbox"
+            class="status-type__value-checkbox"
             type="checkbox"
             value="Theme"
             v-model="type"
@@ -117,7 +117,7 @@
 
 <script>
 export default {
-    name: 'Select',
+    name: 'StatusType',
     data: () => ({
         isOpen: false,
         status: 'Any',
@@ -148,7 +148,7 @@ export default {
 </script>
 
 <style scoped lang="stylus">
-.select
+.status-type
   display: block;
   position relative
   border 1px solid #dcdde0
@@ -161,13 +161,13 @@ export default {
     border-bottom 0
     border-bottom-left-radius 0
     border-bottom-right-radius 0
-    .select__trigger-icon
+    .status-type__trigger-icon
       fill $accentColor
-    .select__body
+    .status-type__body
       display block
   svg
     transition fill 0.4s ease
-.select__trigger
+.status-type__trigger
   width: 100%;
   display flex
   align-items center
@@ -178,16 +178,16 @@ export default {
   color inherit
   background transparent
   border none
-.select__trigger-icon
+.status-type__trigger-icon
   margin-right 11px
   flex-shrink 0
   fill #2C3E50
-.select__trigger-value
+.status-type__trigger-value
   margin-right 16px
-.select__trigger-chevron
+.status-type__trigger-chevron
   margin-left auto
   flex-shrink 0
-.select__body
+.status-type__body
   display none
   position absolute
   top 100%
@@ -198,20 +198,20 @@ export default {
   border-bottom-right-radius 4px
   background-color #fff
   padding-top 16px
-.select__fieldset
+.status-type__fieldset
   padding 0 16px
   margin-bottom 24px
-.select__fieldset-legend
+.status-type__fieldset-legend
   text-transform uppercase
   font-weight bold
   font-size 12px
   letter-spacing 2px
   color #959FA7
-.select__value
+.status-type__value
   display flex
   align-items center
   margin-top 8px
-.select__value-radio, .select__value-checkbox
+.status-type__value-radio, .status-type__value-checkbox
   flex-shrink 0
   flex-grow 0
   width 24px
@@ -222,10 +222,10 @@ export default {
   appearance none
   &:checked
     background-color $accentColor
-.select__value-radio
+.status-type__value-radio
   border-radius 50%
   box-shadow inset 0 0 0 0.375em #fff
-.select__value-checkbox
+.status-type__value-checkbox
   border-radius 4px
   background: url("data:image/svg+xml,%3Csvg width='13' height='9' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 2L5.075 8 2 4.954' stroke='%23fff' stroke-width='1.5' stroke-linecap='square' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat center center;
 </style>

@@ -1,5 +1,5 @@
 ---
-title: OpenAPI Specification
+title: OpenAPI v3 Specification
 pageClass: spec
 ---
 <SpecFrame/>

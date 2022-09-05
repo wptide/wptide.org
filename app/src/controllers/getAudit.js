@@ -1,7 +1,12 @@
 /**
  * Internal Dependencies.
  */
-const { getAuditData, addAuditReports, addMissingAuditReports } = require('../util/auditHelpers');
+const {
+    attemptRerunAudit,
+    getAuditData,
+    addAuditReports,
+    addMissingAuditReports,
+} = require('../util/auditHelpers');
 
 /**
  * Gets an existing Audit.
@@ -53,6 +58,16 @@ const getAudit = async (req, res) => {
     } else {
         try {
             let existingAuditData = await getAuditData(req.params);
+
+            if (
+                existingAuditData
+                && existingAuditData.status === 'failed'
+                && req.query
+                && req.query.attempt_job_rerun
+                && existingAuditData.job_runs === 1
+            ) {
+                existingAuditData = await attemptRerunAudit(existingAuditData);
+            }
 
             if (existingAuditData && req.query && req.query.reports) {
                 const { reports } = req.query;

@@ -1,5 +1,5 @@
 # Node
-FROM node:12-alpine3.12
+FROM node:16.16-alpine3.16
 
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 ENV CHROMIUM_PATH /usr/bin/chromium-browser
@@ -13,6 +13,8 @@ COPY package-lock.json package-lock.json
 COPY lighthouseServer.js index.js
 
 RUN mkdir data
+RUN mkdir data/lighthouse
+RUN mkdir data/phpcs_phpcompatibilitywp
 RUN echo @edge https://dl-cdn.alpinelinux.org/alpine/edge/community >> /etc/apk/repositories \
   && echo @edge https://dl-cdn.alpinelinux.org/alpine/edge/main >> /etc/apk/repositories \
   && apk -U upgrade \
@@ -23,7 +25,8 @@ RUN echo @edge https://dl-cdn.alpinelinux.org/alpine/edge/community >> /etc/apk/
     harfbuzz@edge \
     ttf-freefont@edge \
     libstdc++@edge
-RUN npm ci --only=production --ignore-scripts
+RUN npm install --location=global npm
+RUN npm ci --ignore-scripts
 
 EXPOSE 8080
 

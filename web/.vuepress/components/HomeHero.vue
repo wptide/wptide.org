@@ -1,10 +1,10 @@
 <!-- eslint-disable max-len -->
 <template>
-  <div class="hero">
-    <div class="hero__brand">
-      <span class="hero__title">Official Documentation</span>
+  <div class="home-hero">
+    <div class="home-hero__brand">
+      <span class="home-hero__title">Official Documentation</span>
       <svg
-        class="hero__logo"
+        class="home-hero__logo"
         viewBox="0 0 700 233"
         xmlns="http://www.w3.org/2000/svg"
       >
@@ -52,14 +52,14 @@
           transform="translate(576 70)"
         />
       </svg>
-      <span class="hero__version">{{ version }}</span>
+      <span class="home-hero__version">{{ version }}</span>
     </div>
     <hr>
-    <div class="hero__content">
-      <p class="hero__description">
+    <div class="home-hero__content">
+      <p class="home-hero__description">
         {{ $description }}
       </p>
-      <p class="hero__action">
+      <p class="home-hero__action">
         <a
           href="/docs/"
           class="nav-link action-button"
@@ -67,7 +67,7 @@
       </p>
     </div>
     <canvas
-      class="hero__canvas"
+      class="home-hero__canvas"
       id="canvas"
     />
   </div>
@@ -78,7 +78,7 @@ import Waves from '../util/waves';
 import { version } from '../../../package.json';
 
 export default {
-    name: 'Hero',
+    name: 'HomeHero',
     data() {
         return {
             version,
@@ -112,41 +112,41 @@ export default {
 </script>
 
 <style lang="stylus">
-.hero
+.home-hero
   position relative
   height calc(100vh -13.1rem)
 
-.hero__brand
+.home-hero__brand
   display flex
   flex-direction column
   align-items flex-start
   padding-bottom 2.5rem
 
-.hero__logo
+.home-hero__logo
   width 500px
   max-width 100%
 
-.hero__title
+.home-hero__title
   font-size 40px
   font-weight 200
   margin-bottom 20px
   text-align left
 
-.hero__content
+.home-hero__content
   z-index 1
   text-align left
   padding 1.5rem 0
   position relative
 
-  .hero__description
+  .home-hero__description
     font-size 1.15rem
     line-height 1.5
 
-  .hero__action
+  .home-hero__action
     text-align center
     padding-top 1.5rem
 
-.hero__canvas
+.home-hero__canvas
   position absolute
   bottom 0
   left 50%
@@ -154,20 +154,20 @@ export default {
   transform translateX(-50%)
   display none
 
-.hero__brand
+.home-hero__brand
   position relative
 
-.hero__version
+.home-hero__version
   font-weight 300
   position absolute
   left 0
   top -1.5rem
 
 @media (min-width: 960px)
-  .hero
+  .home-hero
     padding-top 10vh
     height calc(90vh -13.1rem)
 
-  .hero__canvas
+  .home-hero__canvas
     display block
 </style>

@@ -7,7 +7,7 @@
   >
     <div class="status-row__header">
       <div class="status-row__header-title">
-        <Status :status="status" />
+        <StatusRowState :status="status" />
         <div class="status-row__header-title-text">
           <span>/api/v1/audit/wporg/{{ type }}/<strong>{{ slug }}/{{ version }}</strong> <a
             :href="audit"
@@ -60,7 +60,7 @@
           v-for="(report, index) in reports"
           :key="index"
         >
-          <Report
+          <StatusRowReport
             v-bind="report"
             :type="index"
             :status_datetime="created_datetime"
@@ -88,18 +88,18 @@
 <script>
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
-import processTime from '../../util/processTime';
+import processTime from '../util/processTime';
 
-import Report from './Report.vue';
-import Status from './Status.vue';
+import StatusRowReport from './StatusRowReport.vue';
+import StatusRowState from './StatusRowState.vue';
 
 TimeAgo.addDefaultLocale(en);
 const timeAgo = new TimeAgo('en-US');
 export default {
-    name: 'Project',
+    name: 'StatusRow',
     components: {
-        Report,
-        Status,
+        StatusRowReport,
+        StatusRowState,
     },
     props: {
         id: {

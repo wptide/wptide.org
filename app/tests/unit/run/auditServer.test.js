@@ -9,27 +9,46 @@ const {
 } = require('../../../src/integrations/firestore');
 const { canProceed } = require('../../../src/util/canProceed');
 const { get, set } = require('../../../src/services/firestore');
+const { unlink } = require('../../../src/util/dataFile');
+const { getReportFile } = require('../../../src/util/getReportFile');
+const { getBucketName } = require('../../../src/util/getBucketName');
+const { bucketExists, saveFile } = require('../../../src/services/storage');
 
 jest.mock('../../../src/util/sendError');
-jest.mock('../../../src/audits/lighthouseReporter',
+jest.mock(
+    '../../../src/audits/lighthouseReporter',
     () => jest.fn().mockReturnValue({
         report: {},
-    }));
+    }),
+);
 jest.mock('../../../src/util/canProceed');
 jest.mock('../../../src/util/dateTime');
-jest.mock('../../../src/integrations/firestore',
+jest.mock(
+    '../../../src/integrations/firestore',
     () => ({
         getAuditDoc: jest.fn(),
         getStatusDoc: jest.fn(),
         setAuditDoc: jest.fn(),
         setReportDoc: jest.fn(),
         setStatusDoc: jest.fn(),
-    }));
-jest.mock('../../../src/services/firestore',
+    }),
+);
+jest.mock(
+    '../../../src/services/firestore',
     () => ({
         get: jest.fn(),
         set: jest.fn(),
-    }));
+    }),
+);
+jest.mock('../../../src/util/getReportFile');
+jest.mock('../../../src/util/getBucketName');
+jest.mock(
+    '../../../src/services/storage',
+    () => ({
+        bucketExists: jest.fn(),
+        saveFile: jest.fn(),
+    }),
+);
 
 const firestoreGet = get;
 const firestoreSet = set;
@@ -62,6 +81,22 @@ beforeEach(() => {
     setAuditDoc.mockClear();
     setReportDoc.mockClear();
     setStatusDoc.mockClear();
+    getReportFile.mockClear();
+    getBucketName.mockClear();
+    bucketExists.mockClear();
+    saveFile.mockClear();
+});
+
+beforeAll(() => {
+    process.chdir('./app');
+});
+
+afterAll(async () => {
+    // Remove generated files.
+    await unlink('lighthouse/1507a324738693391cd8ab1869de6a9e7b931d360b6a6a539556007540a0d825.json');
+    await unlink('phpcs_phpcompatibilitywp/58ac7cd92f7bdcda38f5c518d52afcd82782aaabdc794646ae5c87caab43d8e0.json');
+
+    process.chdir('../');
 });
 
 describe('The auditServer HTTP handler', () => {
@@ -277,9 +312,13 @@ describe('The auditServer HTTP handler', () => {
 
         statusMock.reports.lighthouse.end_datetime = 1000;
         statusMock.reports.lighthouse.status = 'complete';
-        firestoreSet.mockResolvedValue(statusMock);
-        await auditServer(req, res, async () => ({
+        const fileMock = {
             report: {},
+        };
+        firestoreSet.mockResolvedValue(statusMock);
+        getReportFile.mockResolvedValue(fileMock);
+        await auditServer(req, res, async () => ({
+            ...fileMock,
         }), 'lighthouse', 'Lighthouse');
         expect(spy).toBeCalledWith('Lighthouse audit for fake-slug v1.0.1 started.');
         expect(spy.mock.calls[1][0]).toContain('Lighthouse audit for fake-slug v1.0.1 completed successfully');
@@ -323,15 +362,22 @@ describe('The auditServer HTTP handler', () => {
         getStatusDoc.mockResolvedValueOnce(statusMock);
         getAuditDoc.mockResolvedValue(auditMock);
         canProceed.mockResolvedValue(true);
+        getBucketName.mockResolvedValue(true);
+        bucketExists.mockResolvedValue(true);
+        saveFile.mockResolvedValue(true);
 
         statusMock.reports.phpcs_phpcompatibilitywp.end_datetime = 1000;
         statusMock.reports.phpcs_phpcompatibilitywp.status = 'complete';
-        firestoreSet.mockResolvedValue(statusMock);
-        await auditServer(req, res, async () => ({
+        const fileMock = {
             report: {
                 compatible: ['5.6'],
                 incompatible: [],
             },
+        };
+        firestoreSet.mockResolvedValue(statusMock);
+        getReportFile.mockResolvedValue(fileMock);
+        await auditServer(req, res, async () => ({
+            ...fileMock,
         }), 'phpcs_phpcompatibilitywp', 'PHPCS');
         expect(spy).toBeCalledWith('PHPCS audit for fake-slug v1.0.1 started.');
         console.log(spy.mock.calls);

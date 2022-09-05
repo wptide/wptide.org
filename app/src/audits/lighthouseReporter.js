@@ -48,7 +48,7 @@ const lighthouseReporter = async (message) => {
                 dependencies: [
                     {
                         vendor: 'GoogleChrome/lighthouse',
-                        version: execSync('npm info lighthouse version').toString().match(/\d+(\.\d+)+/g)[0],
+                        version: execSync("npm list lighthouse | awk -F@ 'FNR==2{print $2}'").toString().match(/\d+(\.\d+)+/g)[0],
                     },
                 ],
             },

@@ -5,11 +5,13 @@ const { get, set } = require('../../../src/services/firestore');
 const { canProceed } = require('../../../src/util/canProceed');
 const { dateTime } = require('../../../src/util/dateTime');
 
-jest.mock('../../../src/services/firestore',
+jest.mock(
+    '../../../src/services/firestore',
     () => ({
         get: jest.fn(),
         set: jest.fn(),
-    }));
+    }),
+);
 jest.mock('../../../src/util/dateTime');
 
 const firestoreGet = get;
@@ -151,7 +153,7 @@ describe('canProceed', () => {
         expect(errorMessage).toEqual('Audit 12345abced is still in progress.');
     });
 
-    it('Returns false when we try and run an audit a third time', async () => {
+    it('Returns false when we try and run an audit a sixth time', async () => {
         const statusDoc = {
             id: '12345abced',
             type: 'theme',
@@ -161,7 +163,7 @@ describe('canProceed', () => {
             modified_datetime: 1,
             reports: {
                 lighthouse: {
-                    attempts: 2,
+                    attempts: 5,
                     start_datetime: 1,
                     status: 'pending',
                 },
@@ -228,7 +230,7 @@ describe('canProceed', () => {
         expect(firestoreSet).toHaveBeenCalledWith(`Status/${statusDoc.id}`, statusDoc);
     });
 
-    it('Returns false when the audit previously failed twice', async () => {
+    it('Returns false when the audit previously failed five times', async () => {
         const statusDoc = {
             id: '12345abced',
             type: 'theme',
@@ -239,7 +241,7 @@ describe('canProceed', () => {
             status: 'failed',
             reports: {
                 lighthouse: {
-                    attempts: 2,
+                    attempts: 5,
                     start_datetime: 1000,
                     status: 'failed',
                 },

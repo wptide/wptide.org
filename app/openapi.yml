@@ -1,12 +1,12 @@
 openapi: 3.0.3
 info:
   version: 1.0.0-beta
-  title: Tide OpenAPI Specification
+  title: Tide OpenAPI v3 Specification
   description: Definition and usage reference for the wptide.org JSON API server
   contact:
     name: Tide Maintainers
     email: support@wptide.org
-    url: "https://staging.wptide.org/"
+    url: "https://wptide.org/"
   license:
     name: MIT
     url: 'https://opensource.org/licenses/MIT'
@@ -54,6 +54,7 @@ paths:
         - $ref: '#/components/parameters/slugParam'
         - $ref: '#/components/parameters/versionParam'
         - $ref: '#/components/parameters/reportsParam'
+        - $ref: '#/components/parameters/attemptJobRerunParam'
   '/api/v1/status/{id}':
     get:
       tags:
@@ -113,6 +114,8 @@ components:
           type: string
         status:
           type: string
+        job_runs:
+          type: integer
         reports:
           type: object
           required:
@@ -478,6 +481,13 @@ components:
             - all
             - lighthouse
             - phpcs_phpcompatibilitywp
+    attemptJobRerunParam:
+      name: attempt_job_rerun
+      in: query
+      description: Attempts to rerun the job for a failed audit.
+      required: false
+      schema:
+        type: boolean
     slugParam:
       name: slug
       in: path
