@@ -7,5 +7,11 @@
     "constraints": {
       "node": "16.16.0"
     }
-  }
+  },
+  "packageRules": [
+    {
+      "matchPackageNames": ["node-fetch"],
+      "allowedVersions": "<=2.6.7"
+    }
+  ]
 }
