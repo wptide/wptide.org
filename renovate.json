@@ -7,6 +7,11 @@
     {
       "matchPackageNames": ["node-fetch"],
       "allowedVersions": "<=2.6.7"
+    },
+    {
+      "matchPackageNames": ["node"],
+      "matchManagers": ["dockerfile"],
+      "enabled": false
     }
   ]
 }
