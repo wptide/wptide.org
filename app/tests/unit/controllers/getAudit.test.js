@@ -111,7 +111,7 @@ describe('The getAudit route handler', () => {
         firestoreGet.mockResolvedValueOnce(null);
 
         await getAudit(req, res);
-        expect(res.json).toBeCalledWith({
+        expect(res.json).toHaveBeenCalledWith({
             message: 'The audit requested does not exist.',
             status: 404,
         });
@@ -129,8 +129,8 @@ describe('The getAudit route handler', () => {
         });
 
         await getAudit(req, res);
-        expect(firestoreSet).toBeCalledTimes(0);
-        expect(res.json).toBeCalledWith({
+        expect(firestoreSet).toHaveBeenCalledTimes(0);
+        expect(res.json).toHaveBeenCalledWith({
             message: 'The server could not respond to the request.',
             status: 500,
         });
@@ -165,8 +165,8 @@ describe('The getAudit route handler', () => {
         firestoreGet.mockResolvedValue(mockAudit);
 
         await getAudit(req, res);
-        expect(firestoreSet).toBeCalledTimes(0);
-        expect(res.json).toBeCalledWith(mockAudit);
+        expect(firestoreSet).toHaveBeenCalledTimes(0);
+        expect(res.json).toHaveBeenCalledWith(mockAudit);
     });
 
     it('Returns completed audit with reports if requested.', async () => {
@@ -237,8 +237,8 @@ describe('The getAudit route handler', () => {
         });
 
         await getAudit(req, res);
-        expect(firestoreSet).toBeCalledTimes(0);
-        expect(res.json).toBeCalledWith({
+        expect(firestoreSet).toHaveBeenCalledTimes(0);
+        expect(res.json).toHaveBeenCalledWith({
             reports: {
                 phpcs_phpcompatibilitywp: {
                     ...mockCompatReport,
@@ -249,8 +249,8 @@ describe('The getAudit route handler', () => {
         });
         req.query.reports = ['all'];
         await getAudit(req, res);
-        expect(firestoreSet).toBeCalledTimes(0);
-        expect(res.json).toBeCalledWith({
+        expect(firestoreSet).toHaveBeenCalledTimes(0);
+        expect(res.json).toHaveBeenCalledWith({
             reports: {
                 phpcs_phpcompatibilitywp: {
                     ...mockCompatReport,
@@ -572,8 +572,8 @@ describe('The getAudit route handler', () => {
 
         await getAudit(req, res);
 
-        expect(firestoreSet).toBeCalledTimes(0);
-        expect(publishMessage).toBeCalledTimes(0);
+        expect(firestoreSet).toHaveBeenCalledTimes(0);
+        expect(publishMessage).toHaveBeenCalledTimes(0);
         expect(res.set).toHaveBeenCalledWith('Cache-control', 'no-store');
     });
 });

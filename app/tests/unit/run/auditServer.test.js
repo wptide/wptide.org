@@ -172,8 +172,8 @@ describe('The auditServer HTTP handler', () => {
 
         getAuditDoc.mockResolvedValue(auditMock);
         await tide(req, res);
-        expect(res.send).toBeCalledTimes(1);
-        expect(spy).toBeCalledWith('Skipping: Audit for fake-slug v1.0.1 already exists.');
+        expect(res.send).toHaveBeenCalledTimes(1);
+        expect(spy).toHaveBeenCalledWith('Skipping: Audit for fake-slug v1.0.1 already exists.');
         spy.mockRestore();
     });
 
@@ -199,8 +199,8 @@ describe('The auditServer HTTP handler', () => {
         getAuditDoc.mockResolvedValue(auditMock);
         canProceed.mockResolvedValue(false);
         await tide(req, res);
-        expect(res.send).toBeCalledTimes(1);
-        expect(spy).toBeCalledTimes(0);
+        expect(res.send).toHaveBeenCalledTimes(1);
+        expect(spy).toHaveBeenCalledTimes(0);
         spy.mockRestore();
     });
 
@@ -227,7 +227,7 @@ describe('The auditServer HTTP handler', () => {
         canProceed.mockResolvedValue(true);
         getAuditDoc.mockResolvedValueOnce(null); // Simulate DB failure.
         await tide(req, res);
-        expect(spy).toBeCalledWith('Lighthouse audit for fake-slug v1.0.1 started.');
+        expect(spy).toHaveBeenCalledWith('Lighthouse audit for fake-slug v1.0.1 started.');
         expect(sendError.mock.calls[0][1]).toBe('Audit for fake-slug v1.0.1 is missing.');
         spy.mockRestore();
     });
@@ -267,9 +267,9 @@ describe('The auditServer HTTP handler', () => {
         canProceed.mockResolvedValue(true);
         getAuditDoc.mockResolvedValueOnce(auditMockComplete);
         await tide(req, res);
-        expect(spy).toBeCalledWith('Lighthouse audit for fake-slug v1.0.1 started.');
-        expect(spy).toBeCalledWith('Warning: Audit for fake-slug v1.0.1 was already completed.');
-        expect(res.send).toBeCalledTimes(1);
+        expect(spy).toHaveBeenCalledWith('Lighthouse audit for fake-slug v1.0.1 started.');
+        expect(spy).toHaveBeenCalledWith('Warning: Audit for fake-slug v1.0.1 was already completed.');
+        expect(res.send).toHaveBeenCalledTimes(1);
         spy.mockRestore();
     });
 
@@ -320,9 +320,9 @@ describe('The auditServer HTTP handler', () => {
         await auditServer(req, res, async () => ({
             ...fileMock,
         }), 'lighthouse', 'Lighthouse');
-        expect(spy).toBeCalledWith('Lighthouse audit for fake-slug v1.0.1 started.');
+        expect(spy).toHaveBeenCalledWith('Lighthouse audit for fake-slug v1.0.1 started.');
         expect(spy.mock.calls[1][0]).toContain('Lighthouse audit for fake-slug v1.0.1 completed successfully');
-        expect(res.send).toBeCalledTimes(1);
+        expect(res.send).toHaveBeenCalledTimes(1);
         spy.mockRestore();
     });
 
@@ -379,10 +379,10 @@ describe('The auditServer HTTP handler', () => {
         await auditServer(req, res, async () => ({
             ...fileMock,
         }), 'phpcs_phpcompatibilitywp', 'PHPCS');
-        expect(spy).toBeCalledWith('PHPCS audit for fake-slug v1.0.1 started.');
+        expect(spy).toHaveBeenCalledWith('PHPCS audit for fake-slug v1.0.1 started.');
         console.log(spy.mock.calls);
         expect(spy.mock.calls[1][0]).toContain('PHPCS audit for fake-slug v1.0.1 completed successfully');
-        expect(res.send).toBeCalledTimes(1);
+        expect(res.send).toHaveBeenCalledTimes(1);
         spy.mockRestore();
     });
 
@@ -432,9 +432,9 @@ describe('The auditServer HTTP handler', () => {
                 incompatible: [],
             },
         }), 'phpcs_phpcompatibilitywp', 'PHPCS');
-        expect(spy).toBeCalledWith('PHPCS audit for fake-slug v1.0.1 started.');
+        expect(spy).toHaveBeenCalledWith('PHPCS audit for fake-slug v1.0.1 started.');
         expect(spy.mock.calls[1][0]).toContain('PHPCS audit for fake-slug v1.0.1 failed in');
-        expect(res.send).toBeCalledTimes(1);
+        expect(res.send).toHaveBeenCalledTimes(1);
         spy.mockRestore();
     });
 
@@ -478,9 +478,9 @@ describe('The auditServer HTTP handler', () => {
         statusMock.reports.lighthouse.status = 'complete';
         firestoreSet.mockResolvedValue(statusMock);
         await tide(req, res);
-        expect(spy).toBeCalledWith('Lighthouse audit for fake-slug v1.0.1 started.');
+        expect(spy).toHaveBeenCalledWith('Lighthouse audit for fake-slug v1.0.1 started.');
         expect(spy.mock.calls[1][0]).toContain('Lighthouse audit for fake-slug v1.0.1 completed successfully');
-        expect(res.send).toBeCalledTimes(1);
+        expect(res.send).toHaveBeenCalledTimes(1);
         spy.mockRestore();
     });
 });

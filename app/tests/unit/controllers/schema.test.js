@@ -30,7 +30,7 @@ describe('Main index entry point schema', () => {
             apiValidate.mockResolvedValueOnce(api);
             await schema(null, res);
 
-            expect(res.json).toBeCalledWith(api);
+            expect(res.json).toHaveBeenCalledWith(api);
             expect(res.set).toHaveBeenCalledWith('Cache-control', 'public, max-age=86400');
         });
         it('Invokes route handler with a 404 response', async () => {
@@ -42,7 +42,7 @@ describe('Main index entry point schema', () => {
             apiValidate.mockResolvedValueOnce(api);
             await schema(null, res);
 
-            expect(res.json).toBeCalledWith(api);
+            expect(res.json).toHaveBeenCalledWith(api);
             expect(res.set).toHaveBeenCalledWith('Cache-control', 'no-store');
         });
     });

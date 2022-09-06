@@ -17,37 +17,37 @@ afterEach(() => {
 describe('Pub/Sub service', () => {
     it('The topic does not exist.', async () => {
         await createTopic('CUSTOM_TOPIC');
-        expect(global.console.debug).toBeCalledTimes(1);
-        expect(global.console.debug).toBeCalledWith('Creating topic CUSTOM_TOPIC');
+        expect(global.console.debug).toHaveBeenCalledTimes(1);
+        expect(global.console.debug).toHaveBeenCalledWith('Creating topic CUSTOM_TOPIC');
     });
     it('The topic already exists.', async () => {
         await createTopic('EXISTING_TOPIC');
-        expect(global.console.debug).toBeCalledTimes(0);
+        expect(global.console.debug).toHaveBeenCalledTimes(0);
     });
     it('The subscription does not exist.', async () => {
         await subscribeTopic('CUSTOM_SUBSCRIPTION', {});
-        expect(global.console.error).toBeCalledTimes(1);
-        expect(global.console.error).toBeCalledWith('Existing subscription to CUSTOM_SUBSCRIPTION could not be deleted: ', ' Subscription does not exist');
+        expect(global.console.error).toHaveBeenCalledTimes(1);
+        expect(global.console.error).toHaveBeenCalledWith('Existing subscription to CUSTOM_SUBSCRIPTION could not be deleted: ', ' Subscription does not exist');
     });
     it('The subscription already exists.', async () => {
         await subscribeTopic('EXISTING_SUBSCRIPTION', {});
-        expect(global.console.debug).toBeCalledTimes(1);
-        expect(global.console.debug).toBeCalledWith('Existing subscription to EXISTING_SUBSCRIPTION successfully deleted');
+        expect(global.console.debug).toHaveBeenCalledTimes(1);
+        expect(global.console.debug).toHaveBeenCalledWith('Existing subscription to EXISTING_SUBSCRIPTION successfully deleted');
     });
     it('The message was published.', async () => {
         const messageId = await publishMessage({
             key: 'value',
         }, 'EXISTING_TOPIC');
         expect(messageId).toStrictEqual(1);
-        expect(global.console.debug).toBeCalledTimes(1);
-        expect(global.console.debug).toBeCalledWith('Message 1 published to EXISTING_TOPIC with {"key":"value"}');
+        expect(global.console.debug).toHaveBeenCalledTimes(1);
+        expect(global.console.debug).toHaveBeenCalledWith('Message 1 published to EXISTING_TOPIC with {"key":"value"}');
     });
     it('The message was not published.', async () => {
         const messageId = await publishMessage({
             key: 'value',
         }, 'INVALID_TOPIC');
         expect(messageId).toStrictEqual(null);
-        expect(global.console.error).toBeCalledTimes(1);
-        expect(global.console.error).toBeCalledWith('Message could not be published to INVALID_TOPIC with {"key":"value"}', new Error('some error happened'));
+        expect(global.console.error).toHaveBeenCalledTimes(1);
+        expect(global.console.error).toHaveBeenCalledWith('Message could not be published to INVALID_TOPIC with {"key":"value"}', new Error('some error happened'));
     });
 });

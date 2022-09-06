@@ -32,34 +32,34 @@ describe('Firestore service', () => {
     it('The document does not exists because of an error.', async () => {
         const doc = await get(null);
         expect(doc).toBeNull();
-        expect(global.console.log).toBeCalledTimes(1);
+        expect(global.console.log).toHaveBeenCalledTimes(1);
     });
     it('The document was set.', async () => {
         const doc = await set(mockReport, mockData);
         expect(doc).toBeTruthy();
-        expect(global.console.log).toBeCalledTimes(0);
+        expect(global.console.log).toHaveBeenCalledTimes(0);
     });
     it('The document was updated.', async () => {
         const mockDataClone = { ...mockData };
         mockDataClone.key = 'new-value';
         const doc = await set(mockReport, mockDataClone);
         expect(doc).toBeTruthy();
-        expect(global.console.log).toBeCalledTimes(0);
+        expect(global.console.log).toHaveBeenCalledTimes(0);
     });
     it('The document was not set because of an error.', async () => {
         const doc = await set(null, null);
         expect(doc).toBeFalsy();
-        expect(global.console.log).toBeCalledTimes(1);
+        expect(global.console.log).toHaveBeenCalledTimes(1);
     });
     it('The document was deleted.', async () => {
         const doc = await remove(mockReport);
         expect(doc).toBeTruthy();
-        expect(global.console.log).toBeCalledTimes(0);
+        expect(global.console.log).toHaveBeenCalledTimes(0);
     });
     it('The document was not deleted because of an error.', async () => {
         const doc = await remove(null);
         expect(doc).toBeFalsy();
-        expect(global.console.log).toBeCalledTimes(1);
+        expect(global.console.log).toHaveBeenCalledTimes(1);
     });
     it('The collection exists with 3 docs.', async () => {
         let counter = 0;

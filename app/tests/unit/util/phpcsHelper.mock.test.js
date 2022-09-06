@@ -37,7 +37,7 @@ describe('phpcsHelpers', () => {
         const data = phpcsProcessor('', tmp, app);
         expect(data.report.compatible.length).toEqual(0);
         expect(data.report.incompatible.length).toEqual(0);
-        expect(spy).toBeCalledWith('Cannot convert undefined or null to object');
+        expect(spy).toHaveBeenCalledWith('Cannot convert undefined or null to object');
         expect(spy).toHaveBeenCalledTimes(7);
         spy.mockRestore();
         phpcsRunner.mockClear();

@@ -67,7 +67,7 @@ describe('shouldLighthouseAudit', () => {
             });
 
         expect(await shouldLighthouseAudit({ slug: 'twentytwenty', version: '8' })).toBeFalsy();
-        expect(spy).toBeCalledTimes(1);
+        expect(spy).toHaveBeenCalledTimes(1);
         expect(spy.mock.calls[0][0].code).toBe('ENOTFOUND');
         spy.mockRestore();
     });

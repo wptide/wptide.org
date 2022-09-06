@@ -81,8 +81,8 @@ describe('doSync', () => {
         getSyncList.mockResolvedValueOnce(theme);
         await doSync();
 
-        expect(firestoreSet).toBeCalledTimes(1);
-        expect(firestoreSet).toBeCalledWith('Sync/delta', expectedDelta);
+        expect(firestoreSet).toHaveBeenCalledTimes(1);
+        expect(firestoreSet).toHaveBeenCalledWith('Sync/delta', expectedDelta);
     });
     it('process items in the ingest queue', async () => {
         const expectedDelta = {
@@ -118,12 +118,12 @@ describe('doSync', () => {
         firestoreSet.mockResolvedValue(true);
         await doSync();
 
-        expect(makeAuditRequest).toBeCalledWith({ type: 'plugin', slug: 'custom-plugin-10', version: '1.1.0' });
-        expect(makeAuditRequest).toBeCalledWith({ type: 'theme', slug: 'custom-theme-10', version: '2.0.0' });
-        expect(makeAuditRequest).toBeCalledTimes(2);
-        expect(firestoreRemove).toBeCalledWith('Ingest/12345');
-        expect(firestoreRemove).toBeCalledWith('Ingest/12345');
-        expect(firestoreRemove).toBeCalledTimes(2);
+        expect(makeAuditRequest).toHaveBeenCalledWith({ type: 'plugin', slug: 'custom-plugin-10', version: '1.1.0' });
+        expect(makeAuditRequest).toHaveBeenCalledWith({ type: 'theme', slug: 'custom-theme-10', version: '2.0.0' });
+        expect(makeAuditRequest).toHaveBeenCalledTimes(2);
+        expect(firestoreRemove).toHaveBeenCalledWith('Ingest/12345');
+        expect(firestoreRemove).toHaveBeenCalledWith('Ingest/12345');
+        expect(firestoreRemove).toHaveBeenCalledTimes(2);
     });
     it('exit sync loop if getSyncListPage fails', async () => {
         const expectedDelta = {
@@ -145,8 +145,8 @@ describe('doSync', () => {
         });
         await doSync();
 
-        expect(firestoreSet).toBeCalledTimes(1);
-        expect(firestoreSet).toBeCalledWith('Sync/delta', expectedDelta);
+        expect(firestoreSet).toHaveBeenCalledTimes(1);
+        expect(firestoreSet).toHaveBeenCalledWith('Sync/delta', expectedDelta);
     });
     it('exit ingest loop if getSyncListPage fails', async () => {
         const expectedDelta = {
@@ -167,7 +167,7 @@ describe('doSync', () => {
         });
         await doSync();
 
-        expect(firestoreSet).toBeCalledTimes(4);
+        expect(firestoreSet).toHaveBeenCalledTimes(4);
         expect(firestoreSet).toHaveBeenNthCalledWith(4, 'Sync/delta', {
             ingest: false,
             page: {
@@ -205,13 +205,13 @@ describe('doSync', () => {
 
         await doSync();
 
-        expect(makeAuditRequest).toBeCalledWith({ type: 'plugin', slug: 'custom-plugin', version: '1.1.0' });
-        expect(makeAuditRequest).toBeCalledWith({ type: 'plugin', slug: 'custom-plugin', version: '1.0.9' });
-        expect(makeAuditRequest).toBeCalledWith({ type: 'theme', slug: 'custom-theme', version: '2.0.0' });
-        expect(makeAuditRequest).toBeCalledWith({ type: 'theme', slug: 'custom-theme', version: '1.9.8' });
-        expect(makeAuditRequest).toBeCalledTimes(4);
-        expect(firestoreSet).toBeCalledTimes(1);
-        expect(firestoreSet).toBeCalledWith('Sync/delta', expectedDelta);
+        expect(makeAuditRequest).toHaveBeenCalledWith({ type: 'plugin', slug: 'custom-plugin', version: '1.1.0' });
+        expect(makeAuditRequest).toHaveBeenCalledWith({ type: 'plugin', slug: 'custom-plugin', version: '1.0.9' });
+        expect(makeAuditRequest).toHaveBeenCalledWith({ type: 'theme', slug: 'custom-theme', version: '2.0.0' });
+        expect(makeAuditRequest).toHaveBeenCalledWith({ type: 'theme', slug: 'custom-theme', version: '1.9.8' });
+        expect(makeAuditRequest).toHaveBeenCalledTimes(4);
+        expect(firestoreSet).toHaveBeenCalledTimes(1);
+        expect(firestoreSet).toHaveBeenCalledWith('Sync/delta', expectedDelta);
     });
     it('sync page two of themes and no plugins', async () => {
         const expectedDelta = {
@@ -247,10 +247,10 @@ describe('doSync', () => {
 
         await doSync();
 
-        expect(makeAuditRequest).toBeCalledWith({ type: 'theme', slug: 'custom-theme-2', version: '2.0.0' });
-        expect(makeAuditRequest).toBeCalledTimes(1);
-        expect(firestoreSet).toBeCalledTimes(1);
-        expect(firestoreSet).toBeCalledWith('Sync/delta', expectedDelta);
+        expect(makeAuditRequest).toHaveBeenCalledWith({ type: 'theme', slug: 'custom-theme-2', version: '2.0.0' });
+        expect(makeAuditRequest).toHaveBeenCalledTimes(1);
+        expect(firestoreSet).toHaveBeenCalledTimes(1);
+        expect(firestoreSet).toHaveBeenCalledWith('Sync/delta', expectedDelta);
     });
     it('ingest all themes and plugins', async () => {
         firestoreGet.mockResolvedValueOnce({
@@ -334,7 +334,7 @@ describe('doSync', () => {
             theme: 'custom-theme',
         });
 
-        expect(firestoreSet).toBeCalledTimes(7);
+        expect(firestoreSet).toHaveBeenCalledTimes(7);
     });
     it('no new theme audit is created', async () => {
         const existingDelta = {
@@ -364,7 +364,7 @@ describe('doSync', () => {
 
         await doSync();
 
-        expect(firestoreSet).toBeCalledWith('Sync/delta', expectedDelta);
+        expect(firestoreSet).toHaveBeenCalledWith('Sync/delta', expectedDelta);
     });
     it('no new plugin audit is created', async () => {
         const existingDelta = {
@@ -394,6 +394,6 @@ describe('doSync', () => {
 
         await doSync();
 
-        expect(firestoreSet).toBeCalledWith('Sync/delta', expectedDelta);
+        expect(firestoreSet).toHaveBeenCalledWith('Sync/delta', expectedDelta);
     });
 });

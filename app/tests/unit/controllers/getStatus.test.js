@@ -57,8 +57,8 @@ describe('Main index entry point getStatus', () => {
             firestoreGet.mockResolvedValue(false);
 
             await getStatus(req, res);
-            expect(firestoreSet).toBeCalledTimes(0);
-            expect(res.json).toBeCalledWith({
+            expect(firestoreSet).toHaveBeenCalledTimes(0);
+            expect(res.json).toHaveBeenCalledWith({
                 message: 'The provided status identifier does not exist.',
                 status: 404,
             });
@@ -74,8 +74,8 @@ describe('Main index entry point getStatus', () => {
             });
 
             await getStatus(req, res);
-            expect(firestoreSet).toBeCalledTimes(0);
-            expect(res.json).toBeCalledWith({
+            expect(firestoreSet).toHaveBeenCalledTimes(0);
+            expect(res.json).toHaveBeenCalledWith({
                 message: 'The server could not respond to the request.',
                 status: 500,
             });
@@ -107,8 +107,8 @@ describe('Main index entry point getStatus', () => {
             firestoreGet.mockResolvedValue(mockReport);
 
             await getStatus(req, res);
-            expect(firestoreSet).toBeCalledTimes(0);
-            expect(res.json).toBeCalledWith(mockReport);
+            expect(firestoreSet).toHaveBeenCalledTimes(0);
+            expect(res.json).toHaveBeenCalledWith(mockReport);
             expect(res.set).toHaveBeenCalledWith('Cache-control', 'no-store');
         });
         it('Returns cached status if all are complete.', async () => {
@@ -136,8 +136,8 @@ describe('Main index entry point getStatus', () => {
             firestoreGet.mockResolvedValue(mockReport);
 
             await getStatus(req, res);
-            expect(firestoreSet).toBeCalledTimes(0);
-            expect(res.json).toBeCalledWith(mockReport);
+            expect(firestoreSet).toHaveBeenCalledTimes(0);
+            expect(res.json).toHaveBeenCalledWith(mockReport);
             expect(res.set).toHaveBeenCalledWith('Cache-control', 'public, max-age=86400');
         });
     });
