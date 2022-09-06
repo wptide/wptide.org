@@ -2,5 +2,10 @@
   "extends": [
     "config:base",
     ":preserveSemverRanges"
-  ]
+  ],
+  "force": {
+    "constraints": {
+      "node": "16.16.0"
+    }
+  }
 }
