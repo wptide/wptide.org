@@ -25,7 +25,7 @@ describe('sourceUrlExists', () => {
         sourceUrlExists.mockReturnValueOnce(expected);
 
         expect(await getSourceUrl('plugin', 'custom-plugin', '1.0.0')).toBe(expected);
-        expect(sourceUrlExists).toBeCalledTimes(4);
+        expect(sourceUrlExists).toHaveBeenCalledTimes(4);
     });
     it('Returns addTrail URL for plugin that wrongly added a trailing zero to the tag', async () => {
         const expected = 'https://downloads.wordpress.org/plugin/custom-plugin.1.0.0.zip';
@@ -35,6 +35,6 @@ describe('sourceUrlExists', () => {
         sourceUrlExists.mockReturnValueOnce(expected);
 
         expect(await getSourceUrl('plugin', 'custom-plugin', '1.0')).toBe(expected);
-        expect(sourceUrlExists).toBeCalledTimes(3);
+        expect(sourceUrlExists).toHaveBeenCalledTimes(3);
     });
 });

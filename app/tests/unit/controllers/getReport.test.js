@@ -61,8 +61,8 @@ describe('Main index entry point getReport', () => {
             getReportFile.mockResolvedValue(false);
 
             await getReport(req, res);
-            expect(firestoreSet).toBeCalledTimes(0);
-            expect(res.json).toBeCalledWith({
+            expect(firestoreSet).toHaveBeenCalledTimes(0);
+            expect(res.json).toHaveBeenCalledWith({
                 message: 'The provided report identifier does not exist.',
                 status: 404,
             });
@@ -78,8 +78,8 @@ describe('Main index entry point getReport', () => {
             });
 
             await getReport(req, res);
-            expect(firestoreSet).toBeCalledTimes(0);
-            expect(res.json).toBeCalledWith({
+            expect(firestoreSet).toHaveBeenCalledTimes(0);
+            expect(res.json).toHaveBeenCalledWith({
                 message: 'The server could not respond to the request.',
                 status: 500,
             });
@@ -105,8 +105,8 @@ describe('Main index entry point getReport', () => {
             getReportFile.mockResolvedValue(mockFile);
 
             await getReport(req, res);
-            expect(firestoreSet).toBeCalledTimes(0);
-            expect(res.json).toBeCalledWith({
+            expect(firestoreSet).toHaveBeenCalledTimes(0);
+            expect(res.json).toHaveBeenCalledWith({
                 ...mockReport,
                 ...mockFile,
             });

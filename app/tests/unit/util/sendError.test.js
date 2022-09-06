@@ -21,13 +21,13 @@ describe('sendError', () => {
     it('The response function is called.', async () => {
         const res = mock.res();
         await sendError(res, 'error', null);
-        expect(res.send).toBeCalledTimes(1);
+        expect(res.send).toHaveBeenCalledTimes(1);
     });
 
     it('The error message is set.', async () => {
         const res = mock.res();
         await sendError(res, 'error', 500);
-        expect(res.send).toBeCalledTimes(1);
-        expect(global.console.log).toBeCalledWith('error');
+        expect(res.send).toHaveBeenCalledTimes(1);
+        expect(global.console.log).toHaveBeenCalledWith('error');
     });
 });

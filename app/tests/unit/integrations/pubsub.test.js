@@ -20,16 +20,16 @@ describe('subscribe', () => {
     it('subscribes to a topic with maybeCreateTopics on first run', async () => {
         const sub = await subscribe(subscriptionName, {});
         expect(sub).toStrictEqual(subscriptionName);
-        expect(global.console.debug).toBeCalledTimes(3);
-        expect(global.console.debug).toBeCalledWith('Creating topic MESSAGE_TYPE_LIGHTHOUSE_REQUEST');
-        expect(global.console.debug).toBeCalledWith('Creating topic MESSAGE_TYPE_PHPCS_REQUEST');
-        expect(global.console.debug).toBeCalledWith('Creating topic MESSAGE_TYPE_SYNC_REQUEST');
-        expect(global.console.error).toBeCalledTimes(1);
-        expect(global.console.error).toBeCalledWith(`Existing subscription to ${subscriptionName} could not be deleted: `, ' Subscription does not exist');
+        expect(global.console.debug).toHaveBeenCalledTimes(3);
+        expect(global.console.debug).toHaveBeenCalledWith('Creating topic MESSAGE_TYPE_LIGHTHOUSE_REQUEST');
+        expect(global.console.debug).toHaveBeenCalledWith('Creating topic MESSAGE_TYPE_PHPCS_REQUEST');
+        expect(global.console.debug).toHaveBeenCalledWith('Creating topic MESSAGE_TYPE_SYNC_REQUEST');
+        expect(global.console.error).toHaveBeenCalledTimes(1);
+        expect(global.console.error).toHaveBeenCalledWith(`Existing subscription to ${subscriptionName} could not be deleted: `, ' Subscription does not exist');
     });
     it('subscribes to a topic with maybeCreateTopics on second run', async () => {
         const sub = await subscribe(subscriptionName, {});
         expect(sub).toStrictEqual(subscriptionName);
-        expect(global.console.debug).toBeCalledTimes(0);
+        expect(global.console.debug).toHaveBeenCalledTimes(0);
     });
 });

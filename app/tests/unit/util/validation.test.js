@@ -53,13 +53,13 @@ describe('validation', () => {
             errors: [],
         };
         await handleValidation()(req, res, next);
-        expect(res.json).toBeCalledTimes(0);
+        expect(res.json).toHaveBeenCalledTimes(0);
         req.validation.errors.push({
             message: 'A report identifier is required.',
             parameter: 'id',
         });
         res.json.mockImplementationOnce(() => req.validation);
         await handleValidation()(req, res, next);
-        expect(res.json).toBeCalledWith(req.validation);
+        expect(res.json).toHaveBeenCalledWith(req.validation);
     });
 });

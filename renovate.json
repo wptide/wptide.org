@@ -2,5 +2,11 @@
   "extends": [
     "config:base",
     ":preserveSemverRanges"
+  ],
+  "packageRules": [
+    {
+      "matchPackageNames": ["node-fetch"],
+      "allowedVersions": "<=2.6.7"
+    }
   ]
 }

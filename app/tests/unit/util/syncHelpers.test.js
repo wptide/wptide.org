@@ -156,7 +156,7 @@ describe('syncHelpers', () => {
         firestoreGet.mockResolvedValueOnce(null);
         getAuditData.mockResolvedValue(null);
         expect(await makeAuditRequest(mockParams)).toBeFalsy();
-        expect(firestoreSet).toBeCalledWith('Sync/failed', {
+        expect(firestoreSet).toHaveBeenCalledWith('Sync/failed', {
             plugin: [
                 {
                     ...mockParams,

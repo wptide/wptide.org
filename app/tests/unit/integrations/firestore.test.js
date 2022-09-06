@@ -28,15 +28,15 @@ describe('firestore', () => {
         firestoreSet.mockResolvedValueOnce(true);
         await setReportDoc('12345', {});
 
-        expect(firestoreSet).toBeCalledWith('Report/12345', {});
-        expect(firestoreSet).toBeCalledTimes(1);
+        expect(firestoreSet).toHaveBeenCalledWith('Report/12345', {});
+        expect(firestoreSet).toHaveBeenCalledTimes(1);
     });
 
     it('setReportDoc responds with correct data after first failed write attempt', async () => {
         firestoreSet.mockResolvedValueOnce(true);
         await setReportDoc('12345', {});
 
-        expect(firestoreSet).toBeCalledWith('Report/12345', {});
-        expect(firestoreSet).toBeCalledTimes(1);
+        expect(firestoreSet).toHaveBeenCalledWith('Report/12345', {});
+        expect(firestoreSet).toHaveBeenCalledTimes(1);
     });
 });
