@@ -11,7 +11,7 @@
   "license": "MIT",
   "private": true,
   "engines": {
-    "node": "16"
+    "node": "16.16.0"
   },
   "scripts": {
     "copy": "cp .env.dist .env && cp .env.server.dist .env.server && cp .firebaserc.dist .firebaserc",
@@ -31,7 +31,7 @@
     "test:coverage": "NODE_ENV=test jest --detectOpenHandles --forceExit --coverage --coverageDirectory ./app/tests/coverage"
   },
   "dependencies": {
-    "dotenv": "^16.0.1",
+    "dotenv": "^16.0.2",
     "javascript-time-ago": "^2.5.7"
   },
   "devDependencies": {
