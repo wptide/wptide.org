@@ -11,7 +11,7 @@
   "license": "MIT",
   "private": true,
   "engines": {
-    "node": "16.16.0"
+    "node": "16.18.0"
   },
   "scripts": {
     "copy": "cp .env.dist .env && cp .env.server.dist .env.server && cp .firebaserc.dist .firebaserc",
