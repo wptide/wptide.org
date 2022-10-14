@@ -29,7 +29,7 @@
     "js-yaml": "^4.1.0",
     "lighthouse": "^9.6.7",
     "node-fetch": "^2.6.7",
-    "puppeteer": "^17.1.1",
+    "puppeteer": "^19.0.0",
     "swagger-ui-express": "^4.5.0",
     "swagger-parser": "^10.0.3",
     "swagger-routes-express": "^3.3.2"
