@@ -27,7 +27,7 @@
     "firebase-admin": "^11.0.1",
     "firebase-functions": "^3.23.0",
     "js-yaml": "^4.1.0",
-    "lighthouse": "^9.6.7",
+    "lighthouse": "^10.0.0",
     "node-fetch": "^2.6.7",
     "puppeteer": "^17.1.1",
     "swagger-ui-express": "^4.5.0",
