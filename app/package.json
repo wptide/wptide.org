@@ -11,7 +11,7 @@
   "license": "MIT",
   "private": true,
   "engines": {
-    "node": "16.16.0"
+    "node": "18.18.2"
   },
   "scripts": {
     "start": "functions-framework --target=tide --signature-type=http"
