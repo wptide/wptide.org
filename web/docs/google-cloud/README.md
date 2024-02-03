@@ -267,6 +267,12 @@ The following command should only be used once.
 
 ### Scheduler
 
+The Scheduler plays a crucial role in the functioning of the Sync Server within the Tide infrastructure. It is responsible for managing scheduled tasks related to syncing data from the WordPress.org Themes and Plugins APIs. Users may choose to deploy or delete the Scheduler based on their specific needs and operational requirements.
+
+The Sync Server is tasked with consuming data from the WordPress.org plugins and themes API. The Scheduler, as an integral component, orchestrates this data ingestion process. It periodically makes requests to the WordPress.org APIs to determine whether any changes, such as new versions or updates, have occurred since the last scheduled request. When executed, the Scheduler generates messages that are added to a Pub/Sub queue associated with the relevant Report Server. These messages trigger the asynchronous processing of data by the Audit Servers, ensuring the timely update of information related to WordPress themes and plugins.
+
+In summary, the Scheduler is pivotal for keeping the Tide environment synchronized with the dynamic landscape of WordPress.org themes and plugins. Whether deploying it for regular updates or deleting it for more selective syncing, users can tailor the Scheduler's presence to align with their specific requirements and preferences.
+
 Deploy the Scheduler for the Sync Server:
 
     make deploy.scheduler
