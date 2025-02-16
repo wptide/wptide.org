@@ -6,7 +6,7 @@ const crypto = require('crypto');
 /**
  * Get a hash for a given input.
  *
- * @param   {string | object | Array} input A string or any input that can be coverted to JSON.
+ * @param   {string | object | Array} input A string or any input that can be converted to JSON.
  * @returns {string}                        Hash for given input.
  */
 const getHash = (input) => {
