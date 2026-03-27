@@ -9,10 +9,10 @@
 
 > A rising tide lifts all boats. -- United States President, John F. Kennedy (borrowed from the New England Council)
 
-Tide is an automated tool to provide insight into WordPress code and highlight areas to improve the quality of plugins and themes.
+Tide is an automated tool that provides insight into WordPress code and highlight areas to improve the quality of plugins and themes.
 
-We believe the web can be better. With Tide, the code which underpins every website can be more standardized, faster, and more secure. Tide is focused on WordPress because no other platform has as large an impact on the state of the web. Tide raises the quality of code one plugin or theme at a time, by elevating the importance of code quality in the developer consciousness. Because a rising Tide lifts all boats.
+We believe the web can be better. With Tide, the code that underpins every website can be more standardized, faster, and more secure. Tide is focused on WordPress because no other platform has as large an impact on the state of the web. Tide raises the quality of code one plugin or theme at a time, by elevating the importance of code quality in the developer consciousness. Because a rising Tide lifts all boats.
 
 ## Documentation
 
-The Markdown files used to generate the [documentation](https://wptide.org) site can be found in the [web/docs](web/docs) directory. There you will find information about Tide, all its services, and how to get the development environment setup.
+The Markdown files used to generate the [documentation](https://wptide.org) site can be found in the [web/docs](web/docs) directory. There you will find information about Tide, all its services, and how to set up the development environment.
