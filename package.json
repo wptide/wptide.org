@@ -39,7 +39,7 @@
     "@google-cloud/functions-framework": "^3.1.2",
     "@vuepress/plugin-back-to-top": "^1.9.7",
     "@vuepress/plugin-pwa": "^1.9.7",
-    "eslint": "^8.23.0",
+    "eslint": "^10.0.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-jest": "^27.0.1",
