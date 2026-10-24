@@ -39,24 +39,27 @@ report will be updated in Firestore for the API Server to then serve back to con
 
 ```json
 {
-    id: "fa84c802226460267323135cf80007da0526c27f226b0276b35df87c0c71af60",
-    type: "theme",
-    slug: "twentytwenty",
-    version: "2.0",
-    source_url: "https://downloads.wordpress.org/theme/twentytwenty.2.0.zip",
-    created_datetime: 1653421204,
-    modified_datetime: 1653421229,
-    status: "complete",
-    reports: {
-        lighthouse: {
-            id: "fe91936589c42f98b6b8e73202723ac60cb405dc82876eb936d41cecf68549cb"
-        },
-        phpcs_phpcompatibilitywp: {
-            id: "7aad7d65abaea37872bc063f4f473d111b25429b04c2fb82f3e6fbc14bc0dac7"
+    "id": "fa84c802226460267323135cf80007da0526c27f226b0276b35df87c0c71af60",
+    "type": "theme",
+    "slug": "twentytwenty",
+    "version": "2.0",
+    "source_url": "https://downloads.wordpress.org/theme/twentytwenty.2.0.zip",
+    "created_datetime": 1678247291,
+    "modified_datetime": 1678247298,
+    "job_runs": 1,
+    "status": "complete",
+    "reports": {
+        "phpcs_phpcompatibilitywp": {
+            "id": "7aad7d65abaea37872bc063f4f473d111b25429b04c2fb82f3e6fbc14bc0dac7"
         }
     }
 }
 ```
+
+The `status` of an audit is one of `pending`, `in-progress`, `complete` or `failed`. A report
+with a `null` value has not completed yet, or it has failed. Use the `/api/v1/status/{id}`
+endpoint with the audit `id` to see the status of each report. A `lighthouse` report is only
+added for the current version of a theme, see the [Lighthouse Server](#lighthouse-server).
 
 ## Report Servers
 
@@ -67,7 +70,7 @@ HTTP event driven services cannot be directly accessed, they are only orchestrat
 Pub/Sub. Meaning the audit report process is **only** triggered by Pub/Sub messages created
 to the `MESSAGE_TYPE_LIGHTHOUSE_REQUEST` and `MESSAGE_TYPE_PHPCS_REQUEST` queues. This is
 initiated by either the Sync Server, or by making an HTTP `GET` request to the API Server 
-for the most recent version of a specific theme or plugin. See the above 
+for a theme or plugin version that has not been audited yet. See the above
 [example request](./#example-request).
 
 Once a report is completed, the generated reports are then stored in Google Cloud 
@@ -77,9 +80,10 @@ then serve back to consumers.
 There are several changes to Firestore that take place in the lifecycle of an audit report.
 The first is to find the Status document associated with the audit UUID being processed then
 increment the `attempts` for that report type, update when the report process started in the
-`start_datetime` property, and set the status to `in-progress`in both the Status document and
-the Audit document. Once complete both the Status and Audit documents will again be updated
-with a `completed` status, time when completed in the `end_datetime` property, and then store
+`start_datetime` property, and set the status to `in-progress` in the Status document. The
+Audit document is not changed at this point. It is only updated when the report finishes.
+Once complete both the Status and Audit documents will be updated with a `complete` status,
+time when completed in the `end_datetime` property of the Status document, and then store
 a reference to the Report document UUID in the Audit document. If the report fails to
 complete then the status will be updated to `failed`.
 
