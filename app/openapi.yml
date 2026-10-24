@@ -114,8 +114,17 @@ components:
           type: string
         status:
           type: string
+          description: The audit status.
+          enum:
+            - pending
+            - in-progress
+            - complete
+            - failed
         job_runs:
           type: integer
+          description: >-
+            The number of times the audit job has run. A failed audit can be rerun once with
+            the `attempt_job_rerun` parameter.
         reports:
           type: object
           required:
@@ -148,6 +157,12 @@ components:
           type: string
         status:
           type: string
+          description: The audit status.
+          enum:
+            - pending
+            - in-progress
+            - complete
+            - failed
         reports:
           type: object
           required:
@@ -210,6 +225,12 @@ components:
           type: integer
         status:
           type: string
+          description: The report status.
+          enum:
+            - pending
+            - in-progress
+            - complete
+            - failed
     ReportRef:
       type: object
       properties:
