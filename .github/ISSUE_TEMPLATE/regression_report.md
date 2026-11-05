@@ -10,7 +10,7 @@ labels: regression, needs triage
 
 ## Expected Behaviour
 
-<!-- Please describe clearly and concisely what the expected behaviour use to be. -->
+<!-- Please describe clearly and concisely what the expected behaviour used to be. -->
 
 ## Steps to reproduce
 
@@ -50,7 +50,7 @@ _Do not alter or remove anything below. The following sections will be managed b
 
 ## Implementation brief
 
-* <!-- One or more bullet points for how to technically resolve the issue. For significant Implementation Design, it is ok use a Google document **accessible by anyone**. -->
+* <!-- One or more bullet points for how to technically resolve the issue. For significant Implementation Design, it is ok to use a Google document **accessible by anyone**. -->
 
 ## QA testing instructions
 
