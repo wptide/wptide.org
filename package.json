@@ -35,7 +35,7 @@
     "javascript-time-ago": "^2.5.7"
   },
   "devDependencies": {
-    "@babel/eslint-parser": "^7.18.9",
+    "@babel/eslint-parser": "^8.0.0",
     "@google-cloud/functions-framework": "^3.1.2",
     "@vuepress/plugin-back-to-top": "^1.9.7",
     "@vuepress/plugin-pwa": "^1.9.7",
